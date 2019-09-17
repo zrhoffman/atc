@@ -31,6 +31,7 @@
     enablerepo: "{{ additional_yum_repos | default([]) }}"
   retries: 5
   delay: 5
+  notify: Restart Traffic OpsDB
 
 - name: Ensure postgres data directory exists
   file:
@@ -38,7 +39,8 @@
     path: "{{ postgresql_datadir }}"
     owner: "{{ postgresql_user }}"
     group: "{{ postgresql_group }}"
-    mode: 0755
+    mode: 0700
+  notify: Restart Traffic OpsDB
 
 - name: Initialize database
   shell: "{{ pgdb_init_command }}"
@@ -46,6 +48,7 @@
   become_user: "{{ postgresql_user }}"
   args:
     creates: "{{ postgresql_datadir }}/pg_hba.conf"
+  notify: Restart Traffic OpsDB
 
 - name: Update the systemd definition of PGDATA
   ini_file:
@@ -54,6 +57,7 @@
     section: Service
     option: Environment
     value: "PGDATA={{ postgresql_datadir }}"
+  notify: Restart Traffic OpsDB
 
 - name: Refresh Systemd
   systemd:
@@ -83,11 +87,12 @@
     src: "templates/{{ item }}.j2"
     owner: "{{ postgresql_user }}"
     group: "{{ postgresql_group }}"
-    mode: 0775
+    mode: 0700
     dest: "{{ postgresql_datadir }}/{{ item }}"
   with_items:
     - pg_hba.conf
     - postgresql.conf
+  notify: Restart Traffic OpsDB
 
 - name: Copy in SSL certificate
   copy:
@@ -97,6 +102,7 @@
     group: "{{ postgresql_group }}"
     mode: 0600
     remote_src: yes
+  notify: Restart Traffic OpsDB
 
 - name: Copy in SSL private key
   copy:
@@ -106,6 +112,7 @@
     group: "{{ postgresql_group }}"
     mode: 0600
     remote_src: yes
+  notify: Restart Traffic OpsDB
 
 - name: Copy in SSL CA certificate
   copy:
@@ -115,6 +122,7 @@
     group: "{{ postgresql_group }}"
     mode: 0600
     remote_src: yes
+  notify: Restart Traffic OpsDB
 
 - name: Update Log Directory Permissions
   file:
@@ -123,6 +131,7 @@
     owner: "{{ postgresql_user }}"
     group: "{{ postgresql_group }}"
     mode: 0775
+  notify: Restart Traffic OpsDB
 
 - name: Enable and start TODB
   systemd:
