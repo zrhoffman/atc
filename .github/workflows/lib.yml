@@ -1,4 +1,3 @@
-#!/bin/sh -l
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -16,20 +15,30 @@
 # specific language governing permissions and limitations
 # under the License.
 
-set -e
+name: Lib Push CI
 
-if [ -z "$INPUT_DIR" ]; then
-	# There's a bug in "defaults" for inputs
-	INPUT_DIR="./lib/..."
-fi
+on:
+  push:
+    paths:
+      - lib/**
 
-GOPATH="$(mktemp -d)"
-SRCDIR="$GOPATH/src/github.com/apache"
-mkdir -p "$SRCDIR"
-ln -s "$PWD" "$SRCDIR/trafficcontrol"
-cd "$SRCDIR/trafficcontrol"
+jobs:
+  lib:
 
-# Need to fetch golang.org/x/* dependencies
-/usr/local/go/bin/go get -v $INPUT_DIR
-/usr/local/go/bin/go test -v $INPUT_DIR
-exit $?
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Go build
+      uses: ./.github/actions/go-build
+      with:
+        dir: ./lib/...
+    - name: Go fmt lib
+      uses: ./.github/actions/go-fmt/
+      with:
+        dir: ./lib/...
+    - name: Run Go unit tests
+      uses: ./.github/actions/go-test/
+      with:
+        dir: ./lib/... ./grove/... ./traffic_monitor/... ./traffic_stats/... ./traffic_ops/ort/atstccfg/...

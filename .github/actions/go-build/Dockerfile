@@ -1,4 +1,3 @@
-#!/bin/sh -l
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -16,20 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-set -e
+FROM golang:1.11
 
-if [ -z "$INPUT_DIR" ]; then
-	# There's a bug in "defaults" for inputs
-	INPUT_DIR="./lib/..."
-fi
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod a+x /entrypoint.sh
 
-GOPATH="$(mktemp -d)"
-SRCDIR="$GOPATH/src/github.com/apache"
-mkdir -p "$SRCDIR"
-ln -s "$PWD" "$SRCDIR/trafficcontrol"
-cd "$SRCDIR/trafficcontrol"
-
-# Need to fetch golang.org/x/* dependencies
-/usr/local/go/bin/go get -v $INPUT_DIR
-/usr/local/go/bin/go test -v $INPUT_DIR
-exit $?
+ENTRYPOINT /entrypoint.sh

@@ -18,18 +18,22 @@
 
 set -e
 
-if [ -z "$INPUT_DIR" ]; then
-	# There's a bug in "defaults" for inputs
-	INPUT_DIR="./lib/..."
-fi
-
 GOPATH="$(mktemp -d)"
 SRCDIR="$GOPATH/src/github.com/apache"
 mkdir -p "$SRCDIR"
 ln -s "$PWD" "$SRCDIR/trafficcontrol"
 cd "$SRCDIR/trafficcontrol"
 
-# Need to fetch golang.org/x/* dependencies
-/usr/local/go/bin/go get -v $INPUT_DIR
-/usr/local/go/bin/go test -v $INPUT_DIR
-exit $?
+FILES="$(/usr/local/go/bin/go fmt $INPUT_DIR)"
+if [ -z "$FILES" ]; then
+	echo "No files to process, exiting" >&2
+	exit 0
+fi
+echo "$FILES"
+
+for f in "$FILES"; do
+	echo "$f" >&2
+done
+
+git --no-pager diff >&2
+exit 1
