@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - IMS warnings to Content Invalidation requests in Traffic Portal and documentation.
 - [#6032](https://github.com/apache/trafficcontrol/issues/6032) Add t3c setting mode 0600 for secure files
 - Traffic Vault: Added additional flag to TV Riak (Deprecated) Util
+- Traffic Router now includes a `Content-Length` header in each response.
 
 ### Fixed
 - [#6197](https://github.com/apache/trafficcontrol/issues/6197) - TO `/deliveryservices/:id/routing` makes requests to all TRs instead of by CDN.
