@@ -80,6 +80,8 @@
     method: GET
   register: get_all_cdns
   no_log: true
+  retries: 10
+  until: get_all_cdns['status']|default(0) == 200
 
 - name: Assign fqdn to cdn
   set_fact:
@@ -92,6 +94,8 @@
     method: GET
   register: get_all_tenants
   no_log: true
+  retries: 10
+  until: get_all_tenants['status']|default(0) == 200
 
 - name: Get All Roles
   uri:
@@ -99,6 +103,8 @@
     method: GET
   register: get_all_roles
   no_log: true
+  retries: 10
+  until: get_all_roles['status']|default(0) == 200
 
 - name: Create Types
   uri:
@@ -121,6 +127,8 @@
     method: GET
   register: get_all_types
   no_log: true
+  retries: 10
+  until: get_all_types['status']|default(0) == 200
 
 - name: Create Users
   uri:
@@ -207,6 +215,8 @@
     method: GET
   register: get_all_cachegroups
   no_log: true
+  retries: 10
+  until: get_all_cachegroups['status']|default(0) == 200
 
 - name: Create Cachegroups - Mid Tier
   uri:
@@ -232,6 +242,8 @@
     method: GET
   register: get_all_cachegroups
   no_log: true
+  retries: 10
+  until: get_all_cachegroups['status']|default(0) == 200
 
 - name: Create Cachegroups - Edge Tier
   uri:
@@ -257,6 +269,8 @@
     method: GET
   register: get_all_cachegroups
   no_log: true
+  retries: 10
+  until: get_all_cachegroups['status']|default(0) == 200
 
 # Map of hosts to cachegroups
 - name: Associate origins, caches, and routers to cachegroups
@@ -307,6 +321,8 @@
     method: GET
   register: get_all_divisions
   no_log: true
+  retries: 10
+  until: get_all_divisions['status']|default(0) == 200
 
 - name: Assemble assignments of region to division
   set_fact:
@@ -338,6 +354,8 @@
     method: GET
   register: get_all_regions
   no_log: true
+  retries: 10
+  until: get_all_regions['status']|default(0) == 200
 
 - name: Constuct physLocation payload
   set_fact:
@@ -378,6 +396,8 @@
     method: GET
   register: get_all_physlocations
   no_log: true
+  retries: 10
+  until: get_all_physlocations['status']|default(0) == 200
 
 - name: Assign types to servers
   set_fact:
@@ -470,6 +490,8 @@
         method: GET
       register: get_all_profiles
       no_log: true
+      retries: 10
+      until: get_all_profiles['status']|default(0) == 200
 
     - name: Get All Parameters from GLOBAL profile
       uri:
@@ -477,6 +499,8 @@
         method: GET
       register: get_global_parameters
       no_log: true
+      retries: 10
+      until: get_global_parameters['status']|default(0) == 200
 
     - name: Unlink all Global Profile parameters to be recreated
       uri:
@@ -541,6 +565,8 @@
         method: GET
       register: get_all_profiles
       no_log: true
+      retries: 10
+      until: get_all_profiles['status']|default(0) == 200
 
     - name: Get All Parameters per Profile
       uri:
@@ -551,6 +577,8 @@
       with_items: "{{ get_all_profiles.json.response | map(attribute='name') | list }}"
       register: get_all_parameters_by_profile
       no_log: true
+      retries: 10
+      until: get_all_parameters_by_profile['status']|default(0) == 200
 
     - name: Associate eligible profiles to hosts
       set_fact:
@@ -564,6 +592,8 @@
     method: GET
   register: get_all_statuses
   no_log: true
+  retries: 10
+  until: get_all_statuses['status']|default(0) == 200
 
 - name: Get the CDN Assignments into a more queryable form
   set_fact:
@@ -752,6 +782,8 @@
     method: GET
   register: get_all_servers
   no_log: true
+  retries: 10
+  until: get_all_servers['status']|default(0) == 200
 
 - name: Convert the CDN Delegation list into an index
   set_fact:
@@ -790,6 +822,8 @@
     method: GET
   register: get_all_ds
   no_log: true
+  retries: 10
+  until: get_all_ds['status']|default(0) == 200
 
 - name: Render Federations Lists
   with_items: "{{ cdnDelegationList }}"
