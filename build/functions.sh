@@ -136,6 +136,7 @@ function buildRpm () {
 		local rpm="${pre}.$(uname -m).rpm"
 		local srpm="${pre}.src.rpm"
 		echo "Building the rpm."
+		echo '%__os_install_post %{nil}' >> /etc/rpm/macros; # Do not strip binaries before packaging
 
 		cd "$RPMBUILD" && \
 			rpmbuild --define "_topdir $(pwd)" \

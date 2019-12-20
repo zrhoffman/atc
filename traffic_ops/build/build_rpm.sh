@@ -91,6 +91,8 @@ function initBuildArea() {
 		 { echo "Could not create tar archive $to_ort_dest: $?"; exit 1; }
 
 	export PLUGINS=$(grep -l -P '(?<!func )AddPlugin\(' ${TO_DIR}/traffic_ops_golang/plugin/*.go | xargs -I '{}' basename {} '.go')
+	export GO_GCFLAGS='all="-N -l"'; # Do not strip binaries
+
 	echo "The build area has been initialized."
 }
 
