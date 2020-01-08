@@ -61,8 +61,6 @@ RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && \
         perl-DBIx-Connector \
         perl-Digest-SHA1 \
         perl-JSON \
-        perl-JSON-PP \
-        perl-libwww-perl \
         perl-TermReadKey \
         perl-Test-CPAN-Meta \
         perl-WWW-Curl \
@@ -75,10 +73,13 @@ RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && \
 ADD traffic_router/core/src/test/resources/geo/GeoLite2-City.mmdb.gz /opt/traffic_ops/app/public/
 
 WORKDIR /opt/traffic_ops/app
-ADD traffic_ops/app/cpanfile traffic_ops/install/bin/install_goose.sh ./
-RUN cpanm -l ./local Carton && \
-    POSTGRES_HOME=/usr/pgsql-9.6 PERL5LIB=$(pwd)/local/lib/perl5 ./local/bin/carton  && \
-    rm -rf $HOME/.cpan* /tmp/Dockerfile /tmp/local.tar.gz ./cpanfile
+ADD traffic_ops/app/cpanfile traffic_ops/app/cpanfile.snapshot traffic_ops/install/bin/install_goose.sh ./
+RUN mkdir -p local/lib && \
+    ln -s /usr/share/perl5 local/lib && \
+    cpanm -l ./local Carton --skip-installed && \
+    rm -r local/lib/perl5/x86_64-linux-thread-multi/.meta && \
+    POSTGRES_HOME=/usr/pgsql-9.6 PERL5LIB=$(pwd)/local/lib/perl5 ./local/bin/carton install --deployment && \
+    rm -r $HOME/.cpan*
 RUN ./install_goose.sh
 
 # Override TRAFFIC_OPS_RPM arg to use a different one using --build-arg TRAFFIC_OPS_RPM=...  Can be local file or http://...
@@ -91,8 +92,8 @@ RUN yum install -y /$(basename $TRAFFIC_OPS_RPM) && \
 
 # Run carton again, in case the cpanfile included in the RPM differs from the one used earlier in the
 # build (should never happen - Perl is supposed to be going away)
-RUN POSTGRES_HOME=/usr/pgsql-9.6 PERL5LIB=$(pwd)/local/lib/perl5 ./local/bin/carton && \
-    rm -rf $HOME/.cpan* /tmp/Dockerfile /tmp/local.tar.gz
+RUN POSTGRES_HOME=/usr/pgsql-9.6 PERL5LIB=$(pwd)/local/lib/perl5 ./local/bin/carton install --deployment && \
+    rm -r $HOME/.cpan*
 
 ADD infrastructure/cdn-in-a-box/enroller/server_template.json \
     infrastructure/cdn-in-a-box/traffic_ops/run.sh \
