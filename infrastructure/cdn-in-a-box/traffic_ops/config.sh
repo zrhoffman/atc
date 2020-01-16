@@ -96,6 +96,8 @@ cat <<-EOF >/opt/traffic_ops/app/conf/cdn.conf
         "log_location_debug": "$TO_LOG_DEBUG",
         "log_location_event": "$TO_LOG_EVENT",
         "max_db_connections": 20,
+        "db_conn_max_lifetime_seconds": 86400,
+        "db_query_timeout_seconds": 86400,
         "backend_max_connections": {
             "mojolicious": 4
         },
