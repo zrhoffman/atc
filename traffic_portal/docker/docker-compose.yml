@@ -17,12 +17,13 @@ services:
   portal:
     build:
       context: ..
-      dockerfile: /opt/traffic_portal/docker/Dockerfile
+    working_dir: /usr/src/app
     ports:
       - 80:80
       - 443:443
     volumes:
-      - /etc/traffic_portal/conf:/etc/traffic_portal/conf
+      - ..:/usr/src/app
+      - ./conf:/etc/traffic_portal/conf
       - /etc/pki:/etc/pki
     networks:
       - default

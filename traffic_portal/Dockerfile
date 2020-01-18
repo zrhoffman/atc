@@ -11,14 +11,23 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-FROM node:4-onbuild
+FROM node:8-stretch
 #FROM buildpack-deps:jessie
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+ARG NODE_ENV
+ENV NODE_ENV $NODE_ENV
 
 RUN apt-get update -y && apt-get install libffi-dev ruby-dev rubygems vim -y
 
 # replace this with your application's default port
-RUN gem update --system && gem install --no-rdoc --no-ri compass && gem install --no-rdoc --no-ri sass -v 3.4.22
+RUN gem update --system && gem install --no-document compass && gem install --no-document sass -v 3.4.22
 RUN npm install -g bower grunt-cli
 RUN echo '{ "allow_root": true }' > /root/.bowerrc
-RUN cd /usr/src/app && /usr/local/bin/bower install
-RUN cd /usr/src/app && /usr/local/bin/grunt dist
+#RUN cd /usr/src/app && /usr/local/bin/bower install
+#RUN cd /usr/src/app && /usr/local/bin/grunt dist
+
+#ENTRYPOINT npm install && bash;
+CMD ["npm", "start"]

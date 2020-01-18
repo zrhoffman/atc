@@ -18,7 +18,7 @@
  */
 
 // this is the config that is consumed by /server.js on traffic portal startup (sudo service traffic_portal start)
-module.exports = {
+exports.config = {
     timeout: '120s',
     useSSL: true, // set to true if you plan to use https (self-signed or trusted certs).
     port: 80, // set to http port
@@ -36,7 +36,7 @@ module.exports = {
     // default static files location (this is where the traffic portal html, css and javascript was installed. rpm installs these files at /opt/traffic_portal/public
     // change this to ./app/dist/public/ if you are running locally for development
     files: {
-        static: '/opt/traffic_portal/public'
+        static: '/usr/src/app/app/src/modules/public'
     },
     // default log location (this is where traffic_portal logs are written)
     // change this to ./server/log/access.log if you are running traffic portal locally for development
