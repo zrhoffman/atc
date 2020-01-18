@@ -72,7 +72,14 @@ RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && \
         tar &&\
     yum -y clean all
 
-ADD https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz /
+RUN curl \
+        --verbose \
+        --compressed \
+        --user "${MAXMIND_ACCOUNT_ID}:${MAXMIND_LICENSE_KEY}" \
+        'https://updates.maxmind.com/geoip/databases/GeoLite2-City/update?db_md5=00000000000000000000000000000000' | \
+\
+        gzip > /GeoLite2-City.mmdb.gz
+
 
 WORKDIR /opt/traffic_ops/app
 ADD traffic_ops/app/cpanfile traffic_ops/install/bin/install_goose.sh ./
@@ -87,6 +94,8 @@ ADD $TRAFFIC_OPS_RPM /
 RUN yum install -y /$(basename $TRAFFIC_OPS_RPM) && \
     rm /$(basename $TRAFFIC_OPS_RPM) && \
     yum -y clean all
+
+COPY traffic_router/core/src/test/resources/geo/GeoLite2-City.mmdb.gz /opt/traffic_ops/app/public/
 
 # Run carton again, in case the cpanfile included in the RPM differs from the one used earlier in the
 # build (should never happen - Perl is supposed to be going away)

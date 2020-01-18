@@ -446,7 +446,7 @@ sub getDefaults {
                 "hidden"                             => "true"
             },
             {
-                "Download Maxmind Database?" => "yes",
+                "Download Maxmind Database?" => "no",
                 "config_var"                 => "maxmind"
             }
         ],
