@@ -866,6 +866,17 @@ class TOSession(RestApiSession):
 		:raises: Union[LoginError, OperationError]
 		"""
 
+	@api_request(u'post', u'deliveryservice_requests', (u'1.1', u'1.2', u'1.3', u'1.4', u'1.5'))
+	def create_deliveryservice_request(self, data=None):
+		"""
+		Allows user to create a delivery service.
+		:ref:`to-api-deliveryservice-requests`
+		:param data: The request data structure for the API request
+		:type data: Dict[str, Any]
+		:rtype: Tuple[Dict[str, Any], requests.Response]
+		:raises: Union[LoginError, OperationError]
+		"""
+
 	@api_request('delete', 'deliveryservice_server/{delivery_service_id:d}/{server_id:d}',('2.0',))
 	def delete_deliveryservice_servers_by_id(self, delivery_service_id=None, server_id=None):
 		"""
