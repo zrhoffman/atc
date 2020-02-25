@@ -866,7 +866,7 @@ class TOSession(RestApiSession):
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request(u'post', u'deliveryservice_requests', (u'1.1', u'1.2', u'1.3', u'1.4', u'1.5'))
+	@api_request(u'post', u'deliveryservice_requests', ('2.0',))
 	def create_deliveryservice_request(self, data=None):
 		"""
 		Allows user to create a delivery service.
