@@ -72,16 +72,16 @@ Request Structure
 
 Response Structure
 ------------------
-:author:            The author of the Delivery Service Request
-:authorId:          The integral, unique identifier assigned to the author
-:changeType:        The change type of the :term:`DSR <Delivery Service Request>`. It can be ``create``, ``update``, or ``delete``....
-:createdAt:         The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
-:deliveryService:   The delivery service that the :term:`DSR <Delivery Service Request>` is requesting to update.
-:id:                The integral, unique identifier assigned to the :term:`DSR <Delivery Service Request>`
-:lastEditedBy:      The username of user who last edited this :term:`DSR <Delivery Service Request>`
-:lastEditedById:    The integral, unique identifier assigned to the user who last edited this :term:`DSR <Delivery Service Request>`
-:lastUpdated:       The date and time at which the :term:`DSR <Delivery Service Request>` was last updated, in ISO format.
-:status:			The status of the request. Can be "draft", "submitted", "rejected", "pending", or "complete".
+:author:		The author of the Delivery Service Request
+:authorId:		The integral, unique identifier assigned to the author
+:changeType:		The change type of the :term:`DSR <Delivery Service Request>`. It can be ``create``, ``update``, or ``delete``....
+:createdAt:		The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
+:deliveryService:	The delivery service that the :term:`DSR <Delivery Service Request>` is requesting to update.
+:id:			The integral, unique identifier assigned to the :term:`DSR <Delivery Service Request>`
+:lastEditedBy:		The username of user who last edited this :term:`DSR <Delivery Service Request>`
+:lastEditedById:	The integral, unique identifier assigned to the user who last edited this :term:`DSR <Delivery Service Request>`
+:lastUpdated:		The date and time at which the :term:`DSR <Delivery Service Request>` was last updated, in ISO format.
+:status:		The status of the request. Can be "draft", "submitted", "rejected", "pending", or "complete".
 
 .. code-block:: http
 	:caption: Response Example
@@ -212,7 +212,7 @@ Creates a new :term:`Delivery Service Request`.
 Request Structure
 -----------------
 :changeType:		The action that you want to perform on the delivery service. It can be "create", "update", or "delete".
-:status:			The status of your request. Can be "draft", "submitted", "rejected", "pending", or "complete".
+:status:		The status of your request. Can be "draft", "submitted", "rejected", "pending", or "complete".
 :deliveryService:	The :term:`Delivery Service` that you have submitted for review as part of this request.
 
 .. code-block:: http
@@ -315,16 +315,16 @@ Request Structure
 
 Response Structure
 ------------------
-:author:			The author of the Delivery Service Request
-:authorId:			The integral, unique identifier assigned to the author
+:author:		The author of the Delivery Service Request
+:authorId:		The integral, unique identifier assigned to the author
 :changeType:		The change type of the :term:`DSR <Delivery Service Request>`. It can be ``create``, ``update``, or ``delete``....
-:createdAt:			The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
+:createdAt:		The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
 :deliveryService:	The delivery service that the :term:`DSR <Delivery Service Request>` is requesting to update.
-:id:				The integral, unique identifier assigned to the :term:`DSR <Delivery Service Request>`
+:id:			The integral, unique identifier assigned to the :term:`DSR <Delivery Service Request>`
 :lastEditedBy:		The username of user who last edited this :term:`DSR <Delivery Service Request>`
 :lastEditedById:	The integral, unique identifier assigned to the user who last edited this :term:`DSR <Delivery Service Request>`
 :lastUpdated:		The date and time at which the :term:`DSR <Delivery Service Request>` was last updated, in ISO format.
-:status:			The status of the request. Can be "draft", "submitted", "rejected", "pending", or "complete".
+:status:		The status of the request. Can be "draft", "submitted", "rejected", "pending", or "complete".
 
 .. code-block:: http
 	:caption: Response Example
@@ -454,15 +454,15 @@ Updates an existing :ref:`Delivery Service Request <ds_requests>`.
 
 Request Structure
 -----------------
-:author:			The author of the Delivery Service Request
-:authorId:			The integral, unique identifier assigned to the author
+:author:		The author of the Delivery Service Request
+:authorId:		The integral, unique identifier assigned to the author
 :changeType:		The change type of the :term:`DSR <Delivery Service Request>`. It can be ``create``, ``update``, or ``delete``....
-:createdAt:			The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
+:createdAt:		The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
 :deliveryService:	The delivery service that the :term:`DSR <Delivery Service Request>` is requesting to update.
-:id:				The integral, unique identifier assigned to the :term:`DSR <Delivery Service Request>`
+:id:			The integral, unique identifier assigned to the :term:`DSR <Delivery Service Request>`
 :lastEditedBy:		The username of user who last edited this :term:`DSR <Delivery Service Request>`
 :lastEditedById:	The integral, unique identifier assigned to the user who last edited this :term:`DSR <Delivery Service Request>`
-:status:			The status of the request. Can be "draft", "submitted", "rejected", "pending", or "complete".
+:status:		The status of the request. Can be "draft", "submitted", "rejected", "pending", or "complete".
 
 .. table:: Request Query Parameters
 
@@ -579,16 +579,16 @@ Request Structure
 
 Response Structure
 ------------------
-:author:			The author of the Delivery Service Request
-:authorId:			The integral, unique identifier assigned to the author
+:author:		The author of the Delivery Service Request
+:authorId:		The integral, unique identifier assigned to the author
 :changeType:		The change type of the :term:`DSR <Delivery Service Request>`. It can be ``create``, ``update``, or ``delete``....
-:createdAt:			The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
+:createdAt:		The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
 :deliveryService:	The delivery service that the :term:`DSR <Delivery Service Request>` is requesting to update.
-:id:				The integral, unique identifier assigned to the :term:`DSR <Delivery Service Request>`
+:id:			The integral, unique identifier assigned to the :term:`DSR <Delivery Service Request>`
 :lastEditedBy:		The username of user who last edited this :term:`DSR <Delivery Service Request>`
 :lastEditedById:	The integral, unique identifier assigned to the user who last edited this :term:`DSR <Delivery Service Request>`
 :lastUpdated:		The date and time at which the :term:`DSR <Delivery Service Request>` was last updated, in ISO format.
-:status:			The status of the request. Can be "draft", "submitted", "rejected", "pending", or "complete".
+:status:		The status of the request. Can be "draft", "submitted", "rejected", "pending", or "complete".
 
 .. code-block:: http
 	:caption: Response Example

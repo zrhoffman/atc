@@ -66,11 +66,11 @@ Request Structure
 
 Response Structure
 ------------------
-:asn:          An :abbr:`ASN (Autonomous System Number)` as specified by IANA for identifying a service provider
-:cachegroup:   A string that is the :ref:`cache-group-name` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
-:cachegroupId: An integer that is the :ref:`cache-group-id` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
-:id:           An integral, unique identifier for this association between an :abbr:`ASN (Autonomous System Number)` and a :term:`Cache Group`
-:lastUpdated:  The time and date this server entry was last updated in an ISO-like format
+:asn:		An :abbr:`ASN (Autonomous System Number)` as specified by IANA for identifying a service provider
+:cachegroup:	A string that is the :ref:`cache-group-name` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
+:cachegroupId:	An integer that is the :ref:`cache-group-id` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
+:id:		An integral, unique identifier for this association between an :abbr:`ASN (Autonomous System Number)` and a :term:`Cache Group`
+:lastUpdated:	The time and date this server entry was last updated in an ISO-like format
 
 .. code-block:: http
 	:caption: Response Example
@@ -110,12 +110,12 @@ Creates a new :abbr:`ASN (Autonomous System Number)`.
 
 Request Structure
 -----------------
-:asn:        The value of the new :abbr:`ASN (Autonomous System Number)`
-:cachegroup: An optional field which, if present, is a string that specifies the :ref:`cache-group-name` of a :term:`Cache Group` to which this :abbr:`ASN (Autonomous System Number)` will be assigned
+:asn:		The value of the new :abbr:`ASN (Autonomous System Number)`
+:cachegroup:	An optional field which, if present, is a string that specifies the :ref:`cache-group-name` of a :term:`Cache Group` to which this :abbr:`ASN (Autonomous System Number)` will be assigned
 
 	.. note:: While this endpoint accepts the ``cachegroup`` field, sending this in the request payload has no effect except that the response will (erroneously) name the :term:`Cache Group` to which the :abbr:`ASN (Autonomous System Number)` was assigned. Any subsequent requests will reveal that, in fact, the :term:`Cache Group` is set entirely by the ``cachegroupId`` field, and so the actual :ref:`cache-group-name` may differ from what was in the request.
 
-:cachegroupId: An integer that is the :ref:`cache-group-id` of a :term:`Cache Group` to which this :abbr:`ASN (Autonomous System Number)` will be assigned
+:cachegroupId:	An integer that is the :ref:`cache-group-id` of a :term:`Cache Group` to which this :abbr:`ASN (Autonomous System Number)` will be assigned
 
 .. code-block:: http
 	:caption: Request Example
@@ -133,11 +133,11 @@ Request Structure
 
 Response Structure
 ------------------
-:asn:          An :abbr:`ASN (Autonomous System Number)` as specified by IANA for identifying a service provider
-:cachegroup:   A string that is the :ref:`cache-group-name` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
-:cachegroupId: An integer that is the :ref:`cache-group-id` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
-:id:           An integral, unique identifier for this association between an :abbr:`ASN (Autonomous System Number)` and a :term:`Cache Group`
-:lastUpdated:  The time and date this server entry was last updated in an ISO-like format
+:asn:		An :abbr:`ASN (Autonomous System Number)` as specified by IANA for identifying a service provider
+:cachegroup:	A string that is the :ref:`cache-group-name` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
+:cachegroupId:	An integer that is the :ref:`cache-group-id` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
+:id:		An integral, unique identifier for this association between an :abbr:`ASN (Autonomous System Number)` and a :term:`Cache Group`
+:lastUpdated:	The time and date this server entry was last updated in an ISO-like format
 
 .. code-block:: http
 	:caption: Response Example
@@ -211,11 +211,11 @@ Request Structure
 
 Response Structure
 ------------------
-:asn:          An :abbr:`ASN (Autonomous System Number)` as specified by IANA for identifying a service provider
-:cachegroup:   A string that is the :ref:`cache-group-name` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
-:cachegroupId: An integer that is the :ref:`cache-group-id` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
-:id:           An integral, unique identifier for this association between an :abbr:`ASN (Autonomous System Number)` and a :term:`Cache Group`
-:lastUpdated:  The time and date this server entry was last updated in an ISO-like format
+:asn:		An :abbr:`ASN (Autonomous System Number)` as specified by IANA for identifying a service provider
+:cachegroup:	A string that is the :ref:`cache-group-name` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
+:cachegroupId:	An integer that is the :ref:`cache-group-id` of the :term:`Cache Group` that is associated with this :abbr:`ASN (Autonomous System Number)`
+:id:		An integral, unique identifier for this association between an :abbr:`ASN (Autonomous System Number)` and a :term:`Cache Group`
+:lastUpdated:	The time and date this server entry was last updated in an ISO-like format
 
 .. code-block:: http
 	:caption: Response Example

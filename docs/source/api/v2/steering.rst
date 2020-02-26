@@ -43,8 +43,8 @@ No parameters available.
 
 Response Structure
 ------------------
-:deliveryService:	A string that is the :ref:`ds-xmlid` of the steering :term:`Delivery Service`
-:clientSteering:	Whether this is a :ref:`client steering <ds-client-steering>` delivery service.
+:deliveryService:		A string that is the :ref:`ds-xmlid` of the steering :term:`Delivery Service`
+:clientSteering:		Whether this is a :ref:`client steering <ds-client-steering>` delivery service.
 :targets:			The delivery services that the steering delivery service targets.
 :filters:			Filters of type :ref:`STEERING_REGEXP <ds-steering-regexp>` that exist on either of the targets.
 
