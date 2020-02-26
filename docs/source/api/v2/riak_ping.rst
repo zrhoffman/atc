@@ -42,6 +42,9 @@ No parameters available.
 
 Response Structure
 ------------------
+:server:	The hostname and port of :ref:`tv-overview`.
+:status:	The `reaspon phrase <https://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html#sec6.1.1>`_ of the response that :ref:`to-overview` received from :ref:`tv-overview`.
+
 .. code-block:: http
 	:caption: Response Example
 

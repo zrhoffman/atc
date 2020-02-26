@@ -117,6 +117,10 @@ Request Structure
 
 Response Structure
 ------------------
+:id:		An integral, unique identifier for this type
+:lastUpdated:	The date and time at which this type was last updated, in ISO format
+:name:		The name of this type
+:useInTable:	The name of the Traffic Ops database table that contains objects which are grouped, identified, or described by this type
 
 .. code-block:: http
 	:caption: Response Example
