@@ -67,9 +67,9 @@ Request Structure
 
 Response Structure
 ------------------
-:active:A boolean that defines :ref:`ds-active`.
-:anonymousBlockingEnabled:A boolean that defines :ref:`ds-anonymous-blocking`
-:cacheurl:A :ref:`ds-cacheurl`
+:active:			A boolean that defines :ref:`ds-active`.
+:anonymousBlockingEnabled:	A boolean that defines :ref:`ds-anonymous-blocking`
+:cacheurl:			A :ref:`ds-cacheurl`
 
 	.. deprecated:: ATCv3.0
 		This field has been deprecated in Traffic Control 3.x and is subject to removal in Traffic Control 4.x or later
