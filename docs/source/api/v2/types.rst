@@ -24,7 +24,7 @@
 Retrieves all of the :term:`Types` of things configured in Traffic Ops. Yes, that is as specific as a description of a 'type' can be.
 
 :Auth. Required: Yes
-:Roles Required: "read-only"
+:Roles Required: None
 :Response Type:  Array
 
 Request Structure

@@ -24,7 +24,7 @@ Retrieves details of :ref:`tp-configure-servers`.
 ``GET``
 =======
 :Auth. Required: Yes
-:Roles Required: "read-only"
+:Roles Required: None
 :Response Type:  Array
 
 Request Structure
