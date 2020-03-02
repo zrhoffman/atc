@@ -83,7 +83,6 @@ Response Structure
 		}
 	]}
 
-========
 ``POST``
 ========
 Creates a new :term:`Type`.
