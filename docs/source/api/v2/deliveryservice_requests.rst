@@ -72,7 +72,7 @@ Request Structure
 
 Response Structure
 ------------------
-:author:		The author of the Delivery Service Request
+:author:		The username of the user who created the Delivery Service Request.
 :authorId:		The integral, unique identifier assigned to the author
 :changeType:		The change type of the :term:`DSR <Delivery Service Request>`. It can be ``create``, ``update``, or ``delete``....
 :createdAt:		The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
@@ -466,7 +466,7 @@ Request Structure
 
 Response Structure
 ------------------
-:author:		The author of the Delivery Service Request
+:author:		The username of the user who created the Delivery Service Request.
 :authorId:		The integral, unique identifier assigned to the author
 :changeType:		The change type of the :term:`DSR <Delivery Service Request>`. It can be ``create``, ``update``, or ``delete``....
 :createdAt:		The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
@@ -681,7 +681,7 @@ Updates an existing :ref:`Delivery Service Request <ds_requests>`.
 
 Request Structure
 -----------------
-:author:		The author of the Delivery Service Request
+:author:		The username of the user who created the Delivery Service Request.
 :authorId:		The integral, unique identifier assigned to the author
 :changeType:		The change type of the :term:`DSR <Delivery Service Request>`. It can be ``create``, ``update``, or ``delete``....
 :createdAt:		The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
@@ -882,7 +882,7 @@ Request Structure
 
 Response Structure
 ------------------
-:author:		The author of the Delivery Service Request
+:author:		The username of the user who created the Delivery Service Request.
 :authorId:		The integral, unique identifier assigned to the author
 :changeType:		The change type of the :term:`DSR <Delivery Service Request>`. It can be ``create``, ``update``, or ``delete``....
 :createdAt:		The date and time at which the :term:`DSR <Delivery Service Request>` was created, in ISO format.
@@ -1144,3 +1144,5 @@ Response Structure
 			}
 		]
 	}
+
+.. [#geoLimit] These fields must be defined if and only if ``geoLimit`` is non-zero
