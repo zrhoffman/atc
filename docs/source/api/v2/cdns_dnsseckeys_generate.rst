@@ -29,7 +29,7 @@ Generates :abbr:`ZSK (Zone-Signing Key)` and :abbr:`KSK (Key-Signing Key)` keypa
 
 Request Structure
 -----------------
-:effectiveDate:		UNIX epoch start date for the signing keys
+:effectiveDate:		An optional string containing the date and time at which the newly-generated :abbr:`ZSK (Zone-Signing Key)` and :abbr:`KSK (Key-Signing Key)` become effective, in :RFC:`3339` format. Defaults to the current time if not specified.
 :key:			Name of the CDN
 :kskExpirationDays:	Expiration (in days) for the :abbr:`KSKs (Key-Signing Keys)`
 :name:			Domain name used by the CDN
