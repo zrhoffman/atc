@@ -143,7 +143,11 @@
   environment:
     PATH: "{{ lookup('env', 'PATH') }}:{{ to_base_installdir }}/go/bin"
     GOPATH: /opt/traffic_ops/go
+  failed_when:
+    (db_migrations_output.stdout.find("Can't run goose") != -1) or
+    (db_migrations_output.rc != 0)
   run_once: true
+  register: db_migrations_output
 
 - name: Load Traffic Vault DB schema
   command: ./db/admin --trafficvault -env=production load_schema
