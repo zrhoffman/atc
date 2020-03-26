@@ -14,17 +14,23 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-FROM basho/riak-kv:ubuntu-2.2.3
+FROM zrhoffman/riak
 
-EXPOSE 8087 8098
+EXPOSE 8087 8088 8098
 
 RUN rm -rfv /etc/riak/prestart.d/* /etc/riak/poststart.d/*
 
-RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
- && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
- && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y net-tools ca-certificates dnsutils gettext-base \
- && rm -rf /var/lib/apt/lists/* && rm -rf /etc/apt/apt.conf.d/docker-gzip-indexes
+RUN set -o errexit;\
+	yum -y update;\
+	yum -y install \
+		# contains dig
+		bind-utils \
+		# contains envsubst
+		gettext \
+		# contains ifconfig and nsupdate
+		net-tools \
+	;\
+	yum -y clean all;
 
 ADD traffic_vault/prestart.d/* /etc/riak/prestart.d/
 ADD traffic_vault/poststart.d/* /etc/riak/poststart.d/

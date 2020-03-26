@@ -35,8 +35,8 @@ do
 done
 
 # Copy the CIAB-CA certificate to the traffic_router conf so it can be added to the trust store
-cp $X509_CA_CERT_FULL_CHAIN_FILE /usr/local/share/ca-certificates
-update-ca-certificates
+cp $X509_CA_CERT_FULL_CHAIN_FILE /etc/pki/ca-trust/source/anchors/
+update-ca-trust
 
 # Grep out the existing SSL and Socket listener config
 cp -af /etc/riak/riak.conf /etc/riak/riak.conf.orig
