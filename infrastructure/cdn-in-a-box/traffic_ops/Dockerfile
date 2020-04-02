@@ -21,20 +21,20 @@
 ############################################################
 
 
-FROM centos:7
+FROM centos:8
 
 EXPOSE 443
-ENV MOJO_MODE production
+ENV MOJO_MODE=production\
+    POSTGRES_HOME=/usr/pgsql-9.6\
+    PERL5LIB=/opt/traffic_ops/app/local/lib/perl5
 
-RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && \
-    rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7 && \
-    rpm --import https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG && \
-    yum -y update ca-certificates && \
-    yum-config-manager --add-repo https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64 && \
-    yum install -y \
-        epel-release \
-        pgdg-redhat-latest && \
-    yum install -y \
+RUN set -o errexit -o pipefail;\
+    dnf -y update;\
+    dnf -y module disable postgresql;\
+    dnf -y install dnf-plugins-core epel-release patch;\
+    dnf -y config-manager --set-enabled PowerTools;\
+    dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm;\
+    dnf -y install \
         bind-utils \
         cpanminus \
         expat-devel \
@@ -44,7 +44,6 @@ RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && \
         golang \
         iproute \
         jq \
-        libcurl \
         libcurl-devel \
         libidn-devel \
         libpcap-devel \
@@ -66,32 +65,55 @@ RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && \
         perl-TermReadKey \
         perl-Test-CPAN-Meta \
         perl-WWW-Curl \
-        postgresql96 \
         postgresql96-devel \
-        postgresql96-libs \
+        rsync \
         tar &&\
-    yum -y clean all && mkdir -p /opt/traffic_ops/app/public
+    dnf -y clean all && mkdir -p /opt/traffic_ops/app/public
 
 ADD traffic_router/core/src/test/resources/geo/GeoLite2-City.mmdb.gz /opt/traffic_ops/app/public/
 
 WORKDIR /opt/traffic_ops/app
 ADD traffic_ops/app/cpanfile traffic_ops/install/bin/install_goose.sh ./
+
+# These cpan modules fail out of the box but can be patched to succeed
+RUN set -o errexit -o nounset;\
+    cpanm -i inc::Module::Install;\
+    modules=(WWW::Curl::Easy Net::Pcap);\
+    patches=(\
+        http://cpan.cpantesters.org/authors/id/S/SR/SREZIC/patches/WWW-Curl-4.17-RT117793.patch \
+        https://src.fedoraproject.org/rpms/perl-Net-Pcap/raw/master/f/Net-Pcap-0.18-Fix-build-with-libpcap-1.9.0.patch \
+    );\
+    for index in ${!modules[@]}; do \
+        set -o errexit -o nounset;\
+        SHELL=/bin/bash cpanm --local-lib=./local --look ${modules[$index]} <<<"\
+            trap 'echo Error on line \${LINENO} of cpanm look for ${modules[$index]}; exit 1' ERR;\
+            set -o errexit -o pipefail;\
+            curl -v ${patches[$index]} |\
+                patch;\
+            perl Makefile.PL;\
+            make;\
+            make install;\
+        ";\
+        # Make sure the module is installed because cpan --look always returns exit code 0
+        perl -M${modules[$index]} -e '';\
+    done;
+
 RUN cpanm -l ./local Carton && \
-    POSTGRES_HOME=/usr/pgsql-9.6 PERL5LIB=$(pwd)/local/lib/perl5 ./local/bin/carton  && \
+    ./local/bin/carton && \
     rm -rf $HOME/.cpan* /tmp/Dockerfile /tmp/local.tar.gz ./cpanfile
 RUN ./install_goose.sh
 
 # Override TRAFFIC_OPS_RPM arg to use a different one using --build-arg TRAFFIC_OPS_RPM=...  Can be local file or http://...
 ARG TRAFFIC_OPS_RPM=infrastructure/cdn-in-a-box/traffic_ops/traffic_ops.rpm
 ADD $TRAFFIC_OPS_RPM /
-RUN yum install -y /$(basename $TRAFFIC_OPS_RPM) && \
+RUN dnf install -y /$(basename $TRAFFIC_OPS_RPM) && \
     rm /$(basename $TRAFFIC_OPS_RPM) && \
-    yum -y clean all && \
+    dnf -y clean all && \
     rm /opt/traffic_ops/app/bin/traffic_ops_golang
 
 # Run carton again, in case the cpanfile included in the RPM differs from the one used earlier in the
 # build (should never happen - Perl is supposed to be going away)
-RUN POSTGRES_HOME=/usr/pgsql-9.6 PERL5LIB=$(pwd)/local/lib/perl5 ./local/bin/carton && \
+RUN ./local/bin/carton && \
     rm -rf $HOME/.cpan* /tmp/Dockerfile /tmp/local.tar.gz
 
 ADD infrastructure/cdn-in-a-box/enroller/server_template.json \
