@@ -17,17 +17,31 @@
  * under the License.
  */
 
-module.exports = angular.module('trafficPortal.utils', [])
-    .service('collectionUtils', require('./CollectionUtils'))
-    .service('dateUtils', require('./DateUtils'))
-    .service('deliveryServiceUtils', require('./DeliveryServiceUtils'))
-    .service('fileUtils', require('./FileUtils'))
-    .service('formUtils', require('./FormUtils'))
-    .service('locationUtils', require('./LocationUtils'))
-    .service('numberUtils', require('./NumberUtils'))
-    .service('objectUtils', require('./ObjectUtils'))
-    .service('permissionUtils', require('./PermissionUtils'))
-    .service('serverUtils', require('./ServerUtils'))
-    .service('stringUtils', require('./StringUtils'))
-    .service('tenantUtils', require('./TenantUtils'))
-    .service('topologyUtils', require('./TopologyUtils'));
+var TableTopologiesController = function(topologies, $scope, $state, locationUtils) {
+
+	$scope.topologies = topologies;
+
+	$scope.editTopology = function(name) {
+		locationUtils.navigateToPath('/topologies/edit?name=' + name);
+	};
+
+	$scope.createTopology = function() {
+		locationUtils.navigateToPath('/topologies/new');
+	};
+
+	$scope.refresh = function() {
+		$state.reload(); // reloads all the resolves for the view
+	};
+
+	angular.element(document).ready(function () {
+		$('#topologiesTable').dataTable({
+			"aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+			"iDisplayLength": 25,
+			"aaSorting": []
+		});
+	});
+
+};
+
+TableTopologiesController.$inject = ['topologies', '$scope', '$state', 'locationUtils'];
+module.exports = TableTopologiesController;

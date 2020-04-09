@@ -17,19 +17,32 @@ specific language governing permissions and limitations
 under the License.
 -->
 
+
+
 <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-    <h4 class="modal-title">{{::params.title}}</h4>
+    <h3 class="modal-title">Servers assigned to {{::cacheGroupName}}</h3>
 </div>
 <div class="modal-body">
-    <p ng-bind-html="params.message"></p>
-    <form name="selectForm" novalidate>
-        <select class="form-control" name="selectFormDropdown" ng-model="selectedItemKeyValue" ng-options="item[key] as label(item) for item in collection" ng-required="{{::required}}">
-            <option value="">Select...</option>
-        </select>
-    </form>
+    <table id="topologyCacheGroupServersTable" class="table responsive-utilities jambo_table" style="table-layout:fixed; width:100%;">
+        <thead>
+        <tr class="headings">
+            <th>Host</th>
+            <th>Domain</th>
+            <th>CDN</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="s in ::cacheGroupServers">
+            <td data-search="^{{::s.hostName}}$">{{::s.hostName}}</td>
+            <td data-search="^{{::s.domainName}}$">{{::s.domainName}}</td>
+            <td data-search="^{{::s.cdnName}}$">{{::s.cdnName}}</td>
+            <td data-search="^{{::s.status}}$">{{::s.status}}</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-link" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-primary" ng-disabled="selectForm.$invalid" ng-click="select()">Submit</button>
+    <button class="btn btn-primary" ng-click="cancel()">Close</button>
 </div>

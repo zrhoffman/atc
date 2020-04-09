@@ -17,17 +17,18 @@
  * under the License.
  */
 
-module.exports = angular.module('trafficPortal.utils', [])
-    .service('collectionUtils', require('./CollectionUtils'))
-    .service('dateUtils', require('./DateUtils'))
-    .service('deliveryServiceUtils', require('./DeliveryServiceUtils'))
-    .service('fileUtils', require('./FileUtils'))
-    .service('formUtils', require('./FormUtils'))
-    .service('locationUtils', require('./LocationUtils'))
-    .service('numberUtils', require('./NumberUtils'))
-    .service('objectUtils', require('./ObjectUtils'))
-    .service('permissionUtils', require('./PermissionUtils'))
-    .service('serverUtils', require('./ServerUtils'))
-    .service('stringUtils', require('./StringUtils'))
-    .service('tenantUtils', require('./TenantUtils'))
-    .service('topologyUtils', require('./TopologyUtils'));
+module.exports = angular.module('trafficPortal.private.topologies', [])
+	.config(function($stateProvider, $urlRouterProvider) {
+		$stateProvider
+			.state('trafficPortal.private.topologies', {
+				url: 'topologies',
+				abstract: true,
+				views: {
+					privateContent: {
+						templateUrl: 'modules/private/topologies/topologies.tpl.html'
+					}
+				}
+			})
+		;
+		$urlRouterProvider.otherwise('/');
+	});
