@@ -65,6 +65,7 @@ const (
 	SteeringTargets
 	Tenants
 	ServerCheckExtensions
+	Topologies
 	Types
 	Users
 )
@@ -104,6 +105,7 @@ var withFuncs = map[TCObj]TCObjFuncs{
 	SteeringTargets:                      {SetupSteeringTargets, DeleteTestSteeringTargets},
 	Tenants:                              {CreateTestTenants, DeleteTestTenants},
 	ServerCheckExtensions:                {CreateTestServerCheckExtensions, DeleteTestServerCheckExtensions},
+	Topologies:                           {CreateTestTopologies, DeleteTestTopologies},
 	Types:                                {CreateTestTypes, DeleteTestTypes},
 	Users:                                {CreateTestUsers, ForceDeleteTestUsers},
 }
