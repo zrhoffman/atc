@@ -23,18 +23,18 @@
 ========
 Generates :abbr:`ZSK (Zone-Signing Key)` and :abbr:`KSK (Key-Signing Key)` keypairs for a CDN and all associated :term:`Delivery Services`.
 
-:Auth. Required:	Yes
-:Roles Required:	"admin"
-:Response Type:		Object (string)
+:Auth. Required:        Yes
+:Roles Required:        "admin"
+:Response Type:         Object (string)
 
 Request Structure
 -----------------
-:effectiveDate:		An optional string containing the date and time at which the newly-generated :abbr:`ZSK (Zone-Signing Key)` and :abbr:`KSK (Key-Signing Key)` become effective, in :RFC:`3339` format. Defaults to the current time if not specified.
-:key:			Name of the CDN
-:kskExpirationDays:	Expiration (in days) for the :abbr:`KSKs (Key-Signing Keys)`
-:name:			Domain name used by the CDN
-:ttl:			Time, in seconds, for which the keypairs shall remain valid
-:zskExpirationDays:	Expiration (in days) for the :abbr:`ZSKs (Zone-Signing Keys)`
+:effectiveDate:         An optional string containing the date and time at which the newly-generated :abbr:`ZSK (Zone-Signing Key)` and :abbr:`KSK (Key-Signing Key)` become effective, in :RFC:`3339` format. Defaults to the current time if not specified.
+:key:                   Name of the CDN
+:kskExpirationDays:     Expiration (in days) for the :abbr:`KSKs (Key-Signing Keys)`
+:name:                  Domain name used by the CDN
+:ttl:                   Time, in seconds, for which the keypairs shall remain valid
+:zskExpirationDays:     Expiration (in days) for the :abbr:`ZSKs (Zone-Signing Keys)`
 
 .. code-block:: http
 	:caption: Request Example
