@@ -52,11 +52,11 @@ Request Structure
 
 Response Structure
 ------------------
-:description:	A short description of this type
-:id:		An integral, unique identifier for this type
-:lastUpdated:	The date and time at which this type was last updated, in ISO format
-:name:		The name of this type
-:useInTable:	The name of the Traffic Ops database table that contains objects which are grouped, identified, or described by this type
+:description: A short description of this type
+:id:          An integral, unique identifier for this type
+:lastUpdated: The date and time at which this type was last updated, in ISO format
+:name:        The name of this type
+:useInTable:  The name of the Traffic Ops database table that contains objects which are grouped, identified, or described by this type
 
 .. code-block:: http
 	:caption: Response Example
@@ -82,73 +82,3 @@ Response Structure
 			"useInTable": "cachegroup"
 		}
 	]}
-
-``POST``
-========
-Creates a new :term:`Type`.
-
-:Auth. Required: Yes
-:Roles Required: "admin" or "operations"
-:Response Type:  Object
-
-Request Structure
------------------
-:name:		The name of this type
-:description:	A short description of this type
-:useInTable:	The name of the Traffic Ops database table that contains objects which are grouped, identified, or described by this type
-
-.. code-block:: http
-	:caption: Request Example
-
-	POST /api/2.0/types HTTP/1.1
-	User-Agent: python-requests/2.22.0
-	Accept-Encoding: gzip, deflate
-	Accept: */*
-	Connection: keep-alive
-	Cookie: mojolicious=...
-	Content-Length: 77
-
-	{
-		"name": "GRAFANA",
-		"description": "Grafana Service",
-		"useInTable": "server"
-	}
-
-Response Structure
-------------------
-:id:		An integral, unique identifier for this type
-:lastUpdated:	The date and time at which this type was last updated, in ISO format
-:name:		The name of this type
-:useInTable:	The name of the Traffic Ops database table that contains objects which are grouped, identified, or described by this type
-
-.. code-block:: http
-	:caption: Response Example
-
-	HTTP/1.1 200 OK
-	Access-Control-Allow-Credentials: true
-	Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Set-Cookie, Cookie
-	Access-Control-Allow-Methods: POST,GET,OPTIONS,PUT,DELETE
-	Access-Control-Allow-Origin: *
-	Content-Encoding: gzip
-	Content-Type: application/json
-	Set-Cookie: mojolicious=...; Path=/; Expires=Mon, 24 Feb 2020 15:48:38 GMT; Max-Age=3600; HttpOnly
-	Whole-Content-Sha512: jRcxymc1WlUuAO1WYNwxTGmyXGQvj6Xc8ZeFi8URWTDvsCI3jRqeYdKaxyGNrgZTmfhAXULg59GJXv9noip1Mw==
-	X-Server-Name: traffic_ops_golang/
-	Date: Mon, 24 Feb 2020 14:48:38 GMT
-	Content-Length: 182
-
-	{
-		"alerts": [
-			{
-				"text": "type was created.",
-				"level": "success"
-			}
-		],
-		"response": {
-			"id": 52,
-			"lastUpdated": "2020-02-24 14:48:38+00",
-			"name": "GRAFANA",
-			"description": "Grafana Service",
-			"useInTable": "server"
-		}
-	}
