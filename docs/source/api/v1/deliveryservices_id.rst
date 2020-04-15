@@ -21,8 +21,8 @@
 
 ``GET``
 =======
-.. caution::
-	It's often much better to the ``id`` query parameter of a ``GET`` request to :ref:`to-api-v1-deliveryservices` instead.
+.. deprecated:: ATCv4
+	Use the ``GET`` method of :ref:`to-api-v1-deliveryservices` with the ``id`` query parameter.
 
 Retrieves a specific :term:`Delivery Service`
 
@@ -102,7 +102,7 @@ Response Structure
 :dscp:              A :ref:`ds-dscp` to be used within the :term:`Delivery Service`
 :ecsEnabled:        A boolean that defines the :ref:`ds-ecs` setting on this :term:`Delivery Service`
 
-	.. versionadded:: 1.4
+	.. versionadded:: 1.5
 
 :edgeHeaderRewrite: A set of :ref:`ds-edge-header-rw-rules`
 :exampleURLs:       An array of :ref:`ds-example-urls`
@@ -157,6 +157,10 @@ Response Structure
 
 	.. versionadded:: 1.3
 
+:rangeSliceBlockSize: An integer that defines the byte block size for the ATS Slice Plugin. It can only and must be set if ``rangeRequestHandling`` is set to 3.
+
+	.. versionadded:: 1.5
+
 :sslKeyVersion: This integer indicates the :ref:`ds-ssl-key-version`
 :tenantId:      The integral, unique identifier of the :ref:`ds-tenant` who owns this :term:`Delivery Service`
 
@@ -189,7 +193,11 @@ Response Structure
 	Date: Mon, 10 Jun 2019 13:43:48 GMT
 	Content-Length: 1500
 
-	{ "response": [{
+	{ "alerts": [{
+		"level": "warning",
+		"text": "This endpoint is deprecated, please use GET /deliveryservices with the query parameter id instead."
+	}],
+	"response": [{
 		"active": true,
 		"anonymousBlockingEnabled": false,
 		"cacheurl": null,
@@ -268,7 +276,8 @@ Response Structure
 			"zyx"
 		],
 		"maxOriginConnections": 0,
-		"ecsEnabled": false
+		"ecsEnabled": false,
+		"rangeSliceBlockSize": null
 	}]}
 
 
@@ -312,7 +321,7 @@ Request Structure
 :dscp:              A :ref:`ds-dscp` to be used within the :term:`Delivery Service`
 :ecsEnabled:        A boolean that defines the :ref:`ds-ecs` setting on this :term:`Delivery Service`
 
-	.. versionadded:: 1.4
+	.. versionadded:: 1.5
 
 :edgeHeaderRewrite: A set of :ref:`ds-edge-header-rw-rules`
 :fqPacingRate:      The :ref:`ds-fqpr`
@@ -356,6 +365,10 @@ Request Structure
 :signingAlgorithm:     Either a :ref:`ds-signing-algorithm` or ``null`` to indicate URL/URI signing is not implemented on this :term:`Delivery Service`
 
 	.. versionadded:: 1.3
+
+:rangeSliceBlockSize: An integer that defines the byte block size for the ATS Slice Plugin. It can only and must be set if ``rangeRequestHandling`` is set to 3. It can only be between (inclusive) 262144 (256KB) - 33554432 (32MB).
+
+	.. versionadded:: 1.5
 
 :sslKeyVersion: This integer indicates the :ref:`ds-ssl-key-version`
 :tenantId:      The integral, unique identifier of the :ref:`ds-tenant` who owns this :term:`Delivery Service`

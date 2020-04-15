@@ -32,14 +32,16 @@ RUN	rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && \
 
 ### traffic_monitor specific requirements
 RUN	yum -y install \
+		# gcc is necessary in case -gcflags 'all=-N -l' is passed to go build
+		gcc \
 		git \
 		rpm-build && \
 	yum -y clean all
 
-RUN curl -LO https://dl.google.com/go/go1.11.13.linux-amd64.tar.gz && \
-    tar -C /usr/local -xvzf go1.11.13.linux-amd64.tar.gz && \
+RUN curl -LO https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz && \
+    tar -C /usr/local -xvzf go1.14.2.linux-amd64.tar.gz && \
     ln -s /usr/local/go/bin/go /usr/bin/go && \
-    rm go1.11.13.linux-amd64.tar.gz
+    rm go1.14.2.linux-amd64.tar.gz
 
 ###
 

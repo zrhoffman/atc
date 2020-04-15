@@ -285,42 +285,7 @@ class TOSession(RestApiSession):
 		"""
 
 	@api_request('put', 'asns', ('2.0',))
-	def create_asn(self, data=None, query_params=None):
-		"""
-		Create ASN
-		:ref:`to-api-asns`
-		:param data: The ASN data to use to replace the identified ASN.
-		:type data: Dict[str, Any]
-		:param query_params: 'id' is a required parameter, identifying the ASN to replace.
-		:type query_params: Dict[str, int]
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('post', 'asns', ('2.0',))
-	def create_asn(self, query_params=None):
-		"""
-		Create ASN
-		:ref:`to-api-asns`
-		:param query_params: 'id' is a required parameter, identifying the ASN to delete.
-		:type query_params: Dict[str, int]
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'asns/{asn_id:d}', ('2.0',))
-	def get_asn_by_id(self, asn_id=None):
-		"""
-		Get ASN by ID
-		:ref:`to-api-asns-id`
-		:param asn_id: The ID of the ASN to retrieve
-		:type asn_id: int
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('put', 'asns/{asn_id:d}', ('2.0',))
-	def update_asn(self, asn_id=None, query_params=None):
+	def update_asn(self, query_params=None):
 		"""
 		Update ASN
 		:ref:`to-api-asns-id`
@@ -330,8 +295,8 @@ class TOSession(RestApiSession):
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request('delete', 'asns/{asn_id:d}', ('2.0',))
-	def delete_asn(self, asn_id=None):
+	@api_request('delete', 'asns', ('2.0',))
+	def delete_asn(self, query_params=None):
 		"""
 		Delete ASN
 		:to-api-asns-id:
@@ -376,33 +341,11 @@ class TOSession(RestApiSession):
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request('get', 'cachegroups/{cache_group_id:d}', ('2.0',))
-	def get_cachegroup_by_id(self, cache_group_id=None):
-		"""
-		Get a Cache Group by Id.
-		:ref:`to-api-cachegroups-id`
-		:param cache_group_id: The cache group Id
-		:type cache_group_id: int
-		:rtype: Tuple[Dict[str, Any], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
 	@api_request('get', 'cachegroups/{cache_group_id:d}/parameters', ('2.0',))
 	def get_cachegroup_parameters(self, cache_group_id=None):
 		"""
 		Get a cache groups parameters
 		:ref:`to-api-cachegroups-id-parameters`
-		:param cache_group_id: The cache group Id
-		:type cache_group_id: int
-		:rtype: Tuple[Dict[str, Any], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'cachegroups/{cache_group_id:d}/unassigned_parameters', ('2.0',))
-	def get_cachegroup_unassigned_parameters(self, cache_group_id=None):
-		"""
-		Get a cache groups unassigned parameters
-		:ref:`to-api-cachegroups-id-unassigned_parameters`
 		:param cache_group_id: The cache group Id
 		:type cache_group_id: int
 		:rtype: Tuple[Dict[str, Any], requests.Response]
@@ -497,33 +440,13 @@ class TOSession(RestApiSession):
 	# CDN
 	#
 	@api_request('get', 'cdns', ('2.0',))
-	def get_cdns(self):
+	def get_cdns(self, query_params=None):
 		"""
 		Get all CDNs.
 		:ref:`to-api-cdns`
+		:param query_params: See API page for more information on accepted parameters
+		:type query_params: Dict[str, Any]
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'cdns/{cdn_id:d}', ('2.0',))
-	def get_cdn_by_id(self, cdn_id=None):
-		"""
-		Get a CDN by Id.
-		:ref:`to-api-cdns-id`
-		:param cdn_id: The CDN id
-		:type cdn_id: str
-		:rtype: Tuple[Dict[str, Any], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'cdns/name/{cdn_name}', ('2.0',))
-	def get_cdn_by_name(self, cdn_name=None):
-		"""
-		Get a CDN by name.
-		:ref:`to-api-cdns-name-name`
-		:param cdn_name: The CDN name
-		:type cdn_name: str
-		:rtype: Tuple[Dict[str, Any], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
 
@@ -661,11 +584,11 @@ class TOSession(RestApiSession):
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request('get', 'cdns/name/{cdn_name:s}/dnsseckeys/delete', ('2.0',))
+	@api_request('delete', 'cdns/name/{cdn_name:s}/dnsseckeys', ('2.0',))
 	def delete_cdn_dns_sec_keys(self, cdn_name=None):
 		"""
 		Delete dnssec keys for a cdn and all associated delivery services
-		:ref:`to-api-cdns-name-name-dnsseckeys-delete`
+		:ref:`to-api-cdns-name-name-dnsseckeys`
 		:param cdn_name: The CDN name to delete dnsseckeys info for
 		:type cdn_name: String
 		:rtype: Tuple[Dict[str, Any], requests.Response]
@@ -701,20 +624,10 @@ class TOSession(RestApiSession):
 	# Change Logs
 	#
 	@api_request('get', 'logs', ('2.0',))
-	def get_change_logs(self):
+	def get_change_logs(self, query_params=None):
 		"""
 		Retrieve all change logs from traffic ops
 		:ref:`to-api-logs`
-		:rtype: Tuple[Dict[str, Any], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'logs/{days:d}/days', ('2.0',))
-	def get_change_logs_for_days(self, days=None):
-		"""
-		Retrieve all change logs from Traffic Ops
-		:ref:`to-api-logs-days-days`
-		:param days: The number of days to retrieve change logs
 		:rtype: Tuple[Dict[str, Any], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
@@ -737,18 +650,6 @@ class TOSession(RestApiSession):
 		Retrieves all delivery services (if admin or ops) or all delivery services assigned to user.
 		:ref:`to-api-deliveryservices`
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'deliveryservices/{delivery_service_id:d}', ('2.0',))
-	def get_deliveryservice_by_id(self, delivery_service_id=None):
-		"""
-		Retrieves a specific delivery service. If not admin / ops, delivery service must be assigned
-		to user.
-		:ref:`to-api-deliveryservices-id`
-		:param delivery_service_id: The delivery service Id
-		:type delivery_service_id: int
-		:rtype: Tuple[Dict[str, Any], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
 
@@ -866,11 +767,11 @@ class TOSession(RestApiSession):
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request('delete', 'deliveryservice_server/{delivery_service_id:d}/{server_id:d}',('2.0',))
+	@api_request('delete', 'deliveryserviceserver/{delivery_service_id:d}/{server_id:d}',('2.0',))
 	def delete_deliveryservice_servers_by_id(self, delivery_service_id=None, server_id=None):
 		"""
 		Removes a server (cache) from a delivery service.
-		:ref:`to-api-deliveryservice_server-dsid-serverid`
+		:ref:`to-api-deliveryserviceserver-dsid-serverid`
 		:param delivery_service_id: The delivery service id
 		:type delivery_service_id: int
 		:param server_id: The server id to remove from delivery service
@@ -884,18 +785,6 @@ class TOSession(RestApiSession):
 		"""
 		Retrieves properties of CDN EDGE or ORG servers assigned to a delivery service.
 		:ref:`to-api-deliveryservices-id-servers`
-		:param delivery_service_id: The delivery service Id
-		:type delivery_service_id: int
-		:rtype: Tuple[Dict[str, Any], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'deliveryservices/{delivery_service_id:d}/unassigned_servers', ('2.0',))
-	def get_deliveryservice_unassigned_servers(self, delivery_service_id=None):
-		"""
-		Retrieves properties of CDN EDGE or ORG servers not assigned to a delivery service.
-		(Currently call does not work)
-		:ref:`to-api-deliveryservices-id-unassigned_servers`
 		:param delivery_service_id: The delivery service Id
 		:type delivery_service_id: int
 		:rtype: Tuple[Dict[str, Any], requests.Response]
@@ -930,11 +819,11 @@ class TOSession(RestApiSession):
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request('get', 'deliveryservices/xmlId/{xml_id}/sslkeys/delete', ('2.0',))
+	@api_request('delete', 'deliveryservices/xmlId/{xml_id}/sslkeys', ('2.0',))
 	def delete_deliveryservice_ssl_keys_by_xml_id(self, xml_id=None, query_params=None):
 		"""
 		Delete SSL keys for a Delivery Service by xmlId.
-		:ref:`to-api-deliveryservices-xmlid-xmlid-sslkeys-delete`
+		:ref:`to-api-deliveryservices-xmlid-xmlid-sslkeys`
 		:param xml_id: The Delivery Service xmlId
 		:type xml_id: str
 		:param query_params: The url query parameters for the call
@@ -992,25 +881,14 @@ class TOSession(RestApiSession):
 		"""
 
 	@api_request('get', 'deliveryservices/{delivery_service_id:d}/regexes', ('2.0',))
-	def get_deliveryservice_regexes_by_id(self, delivery_service_id=None):
+	def get_deliveryservice_regexes_by_id(self, delivery_service_id=None, query_params=None):
 		"""
 		Get RegExes for a Delivery Service by Id.
 		:ref:`to-api-deliveryservices-id-regexes`
 		:param delivery_service_id: The delivery service Id
 		:type delivery_service_id: int
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'deliveryservices/{delivery_service_id:d}/regexes/{regex_id:d}', ('2.0',))
-	def get_deliveryservice_regexes_by_regex_id(self, delivery_service_id=None, regex_id=None):
-		"""
-		Retrieves a regex for a specific delivery service.
-		:ref:`to-api-deliveryservices-id-regexes-rid`
-		:param delivery_service_id: The delivery service Id
-		:type delivery_service_id: int
-		:param regex_id: The delivery service regex id
-		:type regex_id: int
+		:param query_params: The url query parameters for the call
+		:type query_params: Dict[str, Any]
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
@@ -1077,21 +955,10 @@ class TOSession(RestApiSession):
 	# Divisions
 	#
 	@api_request('get', 'divisions', ('2.0',))
-	def get_divisions(self):
+	def get_divisions(self, query_params=None):
 		"""
 		Get all divisions.
 		:ref:`to-api-divisions`
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'divisions/{division_id:d}', ('2.0',))
-	def get_division_by_id(self, division_id=None):
-		"""
-		Get a division by division id
-		:ref:`to-api-divisions-id`
-		:param division_id: The division id to retrieve
-		:type division_id: int
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
@@ -1159,24 +1026,14 @@ class TOSession(RestApiSession):
 
 
 	@api_request('get', 'cdns/{cdn_name:s}/federations', ('2.0',))
-	def get_federations_for_cdn(self, cdn_name=None):
+	def get_federations_for_cdn(self, cdn_name=None, query_params=None):
 		"""
 		Retrieves a list of federations for a cdn.
 		:ref:`to-api-cdns-name-federations`
 		:param cdn_name: The CDN name to find federation
 		:type cdn_name: String
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-
-	@api_request('get', 'cdns/{cdn_name:s}/federations/{federation_id:d}', ('2.0',))
-	def get_federation_for_cdn_by_id(self, cdn_name=None, federation_id=None):
-		"""
-		Retrieves a federation for a cdn.
-		:ref:`to-api-cdns-name-federations-id`
-		:param cdn_name: The CDN name to find federation
-		:type cdn_name: String
+		:param query_params: The optional url query parameters for the call
+		:type query_params: Dict[str, Any]
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
@@ -1423,21 +1280,10 @@ class TOSession(RestApiSession):
 	# Parameter
 	#
 	@api_request('get', 'parameters', ('2.0',))
-	def get_parameters(self):
+	def get_parameters(self, query_params=None):
 		"""
 		Get all Parameters.
 		:ref:`to-api-parameters`
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'parameters/{parameter_id:d}', ('2.0',))
-	def get_parameter_by_id(self, parameter_id=None):
-		"""
-		Get a Parameter by Id.
-		:ref:`to-api-parameters-id`
-		:param parameter_id: The parameter Id
-		:type parameter_id: int
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
@@ -1447,17 +1293,6 @@ class TOSession(RestApiSession):
 		"""
 		Get all Parameters associated with a Profile by Id.
 		:ref:`to-api-profiles-id-parameters`
-		:param profile_id: The profile Id
-		:type profile_id: int
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'profiles/{id:d}/unassigned_parameters', ('2.0',))
-	def get_unnassigned_parameters_by_profile_id(self, profile_id=None):
-		"""
-		Get all Parameters associated with a Profile by Id.
-		:ref:`to-api-profiles-id-unassigned_parameters`
 		:param profile_id: The profile Id
 		:type profile_id: int
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
@@ -1521,26 +1356,6 @@ class TOSession(RestApiSession):
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request('get', 'phys_locations/trimmed', ('2.0',))
-	def get_trimmed_physical_locations(self):
-		"""
-		Get Physical Locations with name only
-		:ref:`to-api-phys_locations-trimmed`
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'phys_locations/{physical_location_id:d}', ('2.0',))
-	def get_physical_location_by_id(self, physical_location_id=None):
-		"""
-		Get Physical Location by id
-		:ref:`to-api-phys_locations-id`
-		:param physical_location_id: The id to retrieve
-		:type physical_location_id: int
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
 	@api_request('put', 'phys_locations/{physical_location_id:d}', ('2.0',))
 	def update_physical_location(self, physical_location_id=None, query_params=None):
 		"""
@@ -1564,6 +1379,18 @@ class TOSession(RestApiSession):
 		"""
 
 	#
+	# Plugins
+	#
+	@api_request('get', 'plugins', ('2.0',))
+	def get_plugins(self):
+		"""
+		Retrieves the list of plugins.
+		:ref:`to-api-plugins`
+		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
+		:raises: Union[LoginError, OperationError]
+		"""
+
+	#
 	# Profiles
 	#
 	@api_request('get', 'profiles', ('2.0',))
@@ -1572,26 +1399,6 @@ class TOSession(RestApiSession):
 		Get Profiles.
 		:ref:`to-api-profiles`
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'profiles/trimmed', ('2.0',))
-	def get_trimmed_profiles(self):
-		"""
-		Get Profiles with names only
-		:ref:`to-api-profiles-trimmed`
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'profiles/{profile_id:d}', ('2.0',))
-	def get_profile_by_id(self, profile_id=None):
-		"""
-		Get Profile by Id.
-		:ref:`to-api-profiles-id`
-		:param profile_id: The profile Id
-		:type profile_id: int
-		:rtype: Tuple[Dict[str, Any], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
 
@@ -1756,17 +1563,6 @@ class TOSession(RestApiSession):
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request('get', 'regions/{region_id:d}', ('2.0',))
-	def get_region_by_id(self, region_id=None):
-		"""
-		Get Region by ID
-		:ref:`to-api-regions-id`
-		:param region_id: The region id of the region to retrieve
-		:type region_id: int
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
 	@api_request('put', 'regions/{region_id:d}', ('2.0',))
 	def update_region(self, region_id=None):
 		"""
@@ -1836,17 +1632,6 @@ class TOSession(RestApiSession):
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request('get', 'servers/{server_id:d}', ('2.0',))
-	def get_server_by_id(self, server_id=None):
-		"""
-		Get Server by Server ID
-		:ref:`to-api-servers-id`
-		:param server_id: The server id to retrieve
-		:type server_id: int
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
 	@api_request('get', 'servers/{server_id:d}/deliveryservices', ('2.0',))
 	def get_server_delivery_services(self, server_id=None):
 		"""
@@ -1854,25 +1639,6 @@ class TOSession(RestApiSession):
 		:ref:`to-api-servers-id-deliveryservices`
 		:param server_id: The server id to retrieve
 		:type server_id: int
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'servers/status', ('2.0',))
-	def get_server_status_count(self):
-		"""
-		Retrieves a count of CDN servers by status
-		:ref:`to-api-servers-status`
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'servers/hostname/{name}/details', ('2.0',))
-	def get_server_details(self, name=None):
-		"""
-		Get server details from trafficOps
-		:ref:`to-api-servers-hostname-name-details`
-		:param hostname: Server hostname
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
@@ -2010,21 +1776,10 @@ class TOSession(RestApiSession):
 	# Status
 	#
 	@api_request('get', 'statuses', ('2.0',))
-	def get_statuses(self):
+	def get_statuses(self, query_params=None):
 		"""
 		Retrieves a list of the server status codes available.
 		:ref:`to-api-statuses`
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'statuses/{status_id:d}', ('2.0',))
-	def get_statuses_by_id(self, status_id=None):
-		"""
-		Retrieves a server status by ID.
-		:ref:`to-api-statuses-id`
-		:param status_id: The status id to retrieve
-		:type status_id: int
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
@@ -2046,21 +1801,10 @@ class TOSession(RestApiSession):
 	# Tenants
 	#
 	@api_request('get', 'tenants', ('2.0',))
-	def get_tenants(self):
+	def get_tenants(self, query_params=None):
 		"""
 		Get all tenants.
 		:ref:`to-api-tenants`
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'tenants/{tenant_id:d}', ('2.0',))
-	def get_tenant_by_id(self, tenant_id=None):
-		"""
-		Get a tenant by ID.
-		:ref:`to-api-tenants-id`
-		:param tenant_id: The tenant to retrieve
-		:type tenant_id: int
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
@@ -2091,31 +1835,31 @@ class TOSession(RestApiSession):
 	#
 	# TO Extensions
 	#
-	@api_request('get', 'to_extensions', ('2.0',))
-	def get_to_extensions(self):
+	@api_request('get', 'servercheck/extensions', ('2.0',))
+	def get_servercheck_extensions(self):
 		"""
 		Retrieves the list of extensions.
-		:ref:`to-api-to_extensions`
+		:ref:`to-api-servercheck_extensions`
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request('post', 'to_extensions', ('2.0',))
+	@api_request('post', 'servercheck/extensions', ('2.0',))
 	def create_to_extension(self, data=None):
 		"""
 		Creates a Traffic Ops extension.
-		:ref:`to-api-to_extensions`
+		:ref:`to-api-servercheck_extensions`
 		:param data: The update action. QueueUpdateRequest() can be used for this argument also.
 		:type data: Dict[str, Any]
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request('delete', 'to_extensions/{extension_id:d}', ('2.0',))
+	@api_request('delete', 'servercheck/extensions/{extension_id:d}', ('2.0',))
 	def delete_to_extension(self, extension_id=None):
 		"""
 		Deletes a Traffic Ops extension.
-		:ref:`to-api-to_extensions-id`
+		:ref:`to-api-servercheck_extensions-id`
 		:param extension_id: The extension id to delete
 		:type extension_id: int
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
@@ -2130,17 +1874,6 @@ class TOSession(RestApiSession):
 		"""
 		Get Data Types.
 		:ref:`to-api-types`
-		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
-		:raises: Union[LoginError, OperationError]
-		"""
-
-	@api_request('get', 'types/{type_id:d}', ('2.0',))
-	def get_type_by_id(self, type_id=None):
-		"""
-		Get Data Type with the given type id
-		:ref:`to-api-types-id`
-		:param type_id: The ID of the type to retrieve
-		:type type_id: int
 		:rtype: Tuple[Union[Dict[str, Any], List[Dict[str, Any]]], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""
@@ -2251,13 +1984,13 @@ class TOSession(RestApiSession):
 		:raises: Union[LoginError, OperationError]
 		"""
 
-	@api_request('put', 'snapshot/{cdn_name}', ('2.0',))
-	def snapshot_crconfig(self, cdn_name=None):
+	@api_request('put', 'snapshot', ('2.0',))
+	def snapshot_crconfig(self, query_params=None):
 		"""
-		Snapshot CRConfig by CDN Name.
-		:ref:`to-api-snapshot-name`
-		:param cdn_name: The CDN name
-		:type cdn_name: str
+		Snapshot CRConfig by CDN Name or ID.
+		:ref:`to-api-snapshot`
+		:param query_params: The optional url query parameters for the call
+		:type query_params: Dict[str, Any]
 		:rtype: Tuple[Dict[str, Any], requests.Response]
 		:raises: Union[LoginError, OperationError]
 		"""

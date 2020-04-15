@@ -45,7 +45,7 @@ Guide
 		:caption: Example PostgreSQL Install Procedure
 
 		yum update -y
-		yum install -y https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-centos96-9.6-3.noarch.rpm
+		yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 		yum install -y postgresql96-server
 		su - postgres -c '/usr/pgsql-9.6/bin/initdb -A md5 -W' #-W forces the user to provide a superuser (postgres) password
 
@@ -69,7 +69,7 @@ Guide
 	.. code-block:: shell
 		:caption: Installing PostgreSQL Client from a Hosted Source
 
-		yum install -y https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-centos96-9.6-3.noarch.rpm
+		yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 
 #. Install the Traffic Ops RPM. The Traffic Ops RPM file should have been built in an earlier step.
 
@@ -421,6 +421,7 @@ This file deals with the configuration parameters of running Traffic Ops itself.
 	:proxy_tls_timeout: An optional field that sets the timeout in seconds for TLS handshakes from Traffic Ops to the `Legacy Perl Script`_. If set to zero, there is no timeout. The default if not specified is zero.
 	:read_header_timeout: An optional timeout in seconds before which Traffic Ops must be able to finish reading the headers of an incoming request or it will drop the connection. If set to zero, there is no timeout. Default if not specified is zero.
 	:read_timeout: An optional timeout in seconds before which Traffic Ops must be able to finish reading an entire incoming request (including body) or it will drop the connection. If set to zero, there is no timeout. Default if not specified is zero.
+	:request_timeout: An optional timeout in seconds that serves as the maximum time each Traffic Ops middleware can take to execute. If it is exceeded, the text "server timed out" is served in place of a response. If set to :code:`0`, :code:`60` is used instead. Default if not specified is :code:`60`.
 	:riak_port: An optional field that sets the port on which Traffic Ops will try to contact Traffic Vault for storage and retrieval of sensitive encryption keys.
 
 		.. impl-detail:: The name of this field is derived from the current database used in the implementation of Traffic Vault - `Riak KV <https://riak.com/products/riak-kv/index.html>`_.
@@ -431,6 +432,9 @@ This file deals with the configuration parameters of running Traffic Ops itself.
 		.. warning:: OAuth support in Traffic Ops is still in its infancy, so most users are advised to avoid defining this field without good cause.
 
 	:write_timeout: An optional timeout in seconds set on handlers. After reading a request's header, the server will have this long to send back a response. If set to zero, there is no timeout. Default if not specified is zero.
+
+	.. _admin-routing-blacklist:
+
 	:routing_blacklist: Optional configuration for explicitly routing requests to TO-Perl via ``perl_routes`` (only routes that are hardcoded to be able to bypass to TO-Perl -- not all Go routes can be bypassed to Perl) or explicitly disabling any routes via ``disabled_routes``.
 
 		.. versionadded:: 4.0
@@ -514,8 +518,11 @@ This file sets authentication options for connections to Traffic Vault. `traffic
 
 .. impl-detail:: The name of this file is derived from the current database used in the implementation of Traffic Vault - `Riak KV <https://riak.com/products/riak-kv/index.html>`_.
 
-:password: The password to use when authenticating with Traffic Vault
-:user:     The username to use when authenticating with Traffic Vault
+:password:      The password to use when authenticating with Traffic Vault
+:user:          The username to use when authenticating with Traffic Vault
+:MaxTLSVersion: Optional. This is the highest TLS version that Traffic Ops is allowed to use to connect to Traffic Vault. Valid values are "1.0", "1.1", "1.2", and "1.3". The default is "1.1".
+
+.. note:: Enabling TLS 1.1 in Traffic Vault itself is required for Traffic Ops to communicate with Traffic Vault. See :ref:`Enabling TLS 1.1 <tv-admin-enable-tlsv1.1>` for details.
 
 Example riak.conf
 '''''''''''''''''

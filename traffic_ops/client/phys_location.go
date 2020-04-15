@@ -78,9 +78,10 @@ func (to *Session) UpdatePhysLocationByID(id int, pl tc.PhysLocation) (tc.Alerts
 	return alerts, reqInf, nil
 }
 
-// Returns a list of PhysLocations
-func (to *Session) GetPhysLocations() ([]tc.PhysLocation, ReqInf, error) {
-	resp, remoteAddr, err := to.request(http.MethodGet, API_PHYS_LOCATIONS, nil)
+// Returns a list of PhysLocations with optional query parameters applied
+func (to *Session) GetPhysLocations(params map[string]string) ([]tc.PhysLocation, ReqInf, error) {
+	path := API_PHYS_LOCATIONS + mapToQueryParameters(params)
+	resp, remoteAddr, err := to.request(http.MethodGet, path, nil)
 	reqInf := ReqInf{CacheHitStatus: CacheHitStatusMiss, RemoteAddr: remoteAddr}
 	if err != nil {
 		return nil, reqInf, err
@@ -94,7 +95,7 @@ func (to *Session) GetPhysLocations() ([]tc.PhysLocation, ReqInf, error) {
 
 // GET a PhysLocation by the PhysLocation ID
 func (to *Session) GetPhysLocationByID(id int) ([]tc.PhysLocation, ReqInf, error) {
-	route := fmt.Sprintf("%s/%d", API_PHYS_LOCATIONS, id)
+	route := fmt.Sprintf("%s?id=%d", API_PHYS_LOCATIONS, id)
 	resp, remoteAddr, err := to.request(http.MethodGet, route, nil)
 	reqInf := ReqInf{CacheHitStatus: CacheHitStatusMiss, RemoteAddr: remoteAddr}
 	if err != nil {

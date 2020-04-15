@@ -73,7 +73,7 @@ Most dependencies are managed by `Carton 1.0.12 <http://search.cpan.org/~miyagaw
 
 Go Implementation Requirements
 ------------------------------
-- `Go 1.11 <http://golang.org/doc/install>`_
+- `Go 1.14 or later <http://golang.org/doc/install>`_
 - If the system's Go compiler doesn't provide it implicitly, also note that all Go code in the :abbr:`ATC (Apache Traffic Control)` repository should be formatted using `gofmt <https://golang.org/cmd/gofmt/>`_
 
 All Go code dependencies are managed through the :atc-file:`vendor/` directory and should thus be available without any extra work - and any new dependencies should be properly "vendored" into that same, top-level directory. Some dependencies have been "vendored" into :atc-file:`traffic_ops/vendor` and :atc-file:`traffic_ops/traffic_ops_golang/vendor` but the preferred location for new dependencies is under that top-level :atc-file:`vendor/` directory.
@@ -580,6 +580,8 @@ Both the Perl and Go implementation support different kinds of extensions.
 What's typically meant by "extension" in the context of Traffic Ops is a :ref:`to-check-ext` which provides data for server "checks" which can be viewed in Traffic Portal under :menuselection:`Monitor --> Cache Checks`. This type of extension need not know nor even care which implementation it is being used with, as it interacts with Traffic Ops through the :ref:`to-api`. These are described in `Legacy Perl Extensions`_ as their description remains rather Perl-centric, but in principle their operation is not limited to the context of the Perl Implementation.
 
 Both Perl and Go also support overrides or new definitions for non-standard :ref:`to-api` routes. It is strongly recommended that no Perl-based extensions of this type be written, but for posterity they are described in `Legacy Perl Extensions`_. The Go implementation refers to this type of "extension" as a "plugin," and they are described in `Go Plugins`_.
+
+.. _to_go_plugins:
 
 Go Plugins
 ----------

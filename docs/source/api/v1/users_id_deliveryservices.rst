@@ -20,6 +20,9 @@
 *********************************
 .. caution:: This endpoint has several issues related to tenancy and newer :term:`Delivery Service` fields. For these and other reasons, the assigning of :term:`Delivery Services` to users is strongly discouraged.
 
+.. deprecated:: ATCv4
+	Use the ``GET`` method of :ref:`to-api-deliveryservices` with the `accessibleTo` parameter instead.
+
 ``GET``
 =======
 Retrieves all :term:`Delivery Services` assigned to the user.
@@ -82,7 +85,7 @@ Response Structure
 :dscp:              A :ref:`ds-dscp` to be used within the :term:`Delivery Service`
 :ecsEnabled:        A boolean that defines the :ref:`ds-ecs` setting on this :term:`Delivery Service`
 
-	.. versionadded:: 1.4
+	.. versionadded:: 1.5
 
 :edgeHeaderRewrite: A set of :ref:`ds-edge-header-rw-rules`
 :exampleURLs:       An array of :ref:`ds-example-urls`
@@ -137,6 +140,10 @@ Response Structure
 
 	.. versionadded:: 1.3
 
+:rangeSliceBlockSize: An integer that defines the byte block size for the ATS Slice Plugin. It can only and must be set if ``rangeRequestHandling`` is set to 3.
+
+	.. versionadded:: 1.5
+
 :sslKeyVersion: This integer indicates the :ref:`ds-ssl-key-version`
 :tenantId:      The integral, unique identifier of the :ref:`ds-tenant` who owns this :term:`Delivery Service`
 
@@ -169,7 +176,10 @@ Response Structure
 	Date: Mon, 10 Jun 2019 16:50:25 GMT
 	Content-Length: 1348
 
-	{"response": [{
+	{"alerts": [{
+		"text": "This endpoint is deprecated, please use GET deliveryservices?accessibleTo={{tenantId}} instead",
+		"level": "warning"
+	}], "response": [{
 		"active": true,
 		"anonymousBlockingEnabled": false,
 		"cacheurl": null,
@@ -234,7 +244,8 @@ Response Structure
 		"consistentHashRegex": null,
 		"consistentHashQueryParams": null,
 		"maxOriginConnections": null,
-		"ecsEnabled": false
+		"ecsEnabled": false,
+		"rangeSliceBlockSize": null
 	}]}
 
 .. [#tenancy] While it is totally possible to assign a :term:`Delivery Service` to a user who's :term:`Tenant` does not have permission to own said :term:`Delivery Service`, users that request this endpoint will only see :term:`Delivery Services` that their :term:`Tenant` has permission to see. This means that there's no real guarantee that the output of this endpoint shows all of the :term:`Delivery Services` assigned to the user requested, even if the user is requesting their own assigned :term:`Delivery Services`.

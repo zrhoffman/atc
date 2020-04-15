@@ -127,6 +127,7 @@ Response Structure
 :protocol:		An integral, unique identifier that corresponds to the :ref:`ds-protocol` used by this :term:`Delivery Service`
 :qstringIgnore:		An integral, unique identifier that corresponds to the :ref:`ds-qstring-handling` setting on this :term:`Delivery Service`
 :rangeRequestHandling:	An integral, unique identifier that corresponds to the :ref:`ds-range-request-handling` setting on this :term:`Delivery Service`
+:rangeSliceBlockSize: An integer that defines the byte block size for the ATS Slice Plugin. It can only and must be set if ``rangeRequestHandling`` is set to 3.
 :regexRemap:		A :ref:`ds-regex-remap`
 :regionalGeoBlocking:	A boolean defining the :ref:`ds-regionalgeo` setting on this :term:`Delivery Service`
 :remapText:		:ref:`ds-raw-remap`
@@ -234,7 +235,8 @@ Response Structure
 			"zyx"
 		],
 		"maxOriginConnections": 0,
-		"ecsEnabled": false
+		"ecsEnabled": false,
+		"rangeSliceBlockSize": null
 	}]}
 
 

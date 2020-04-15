@@ -267,7 +267,7 @@ to-enroll() {
 
 # Tests that this server exists in Traffic Ops
 function testenrolled() {
-	local tmp="$(to-get	'api/'$TO_API_VERSION'/servers?name='$MY_HOSTNAME'')"
+	local tmp="$(to-get	'api/'$TO_API_VERSION'/servers?hostName='$MY_HOSTNAME'')"
 	tmp=$(echo $tmp | jq '.response[]|select(.hostName=="'"$MY_HOSTNAME"'")')
 	echo "$tmp"
 }
@@ -307,7 +307,7 @@ to-add-sslkeys() {
 		json_response=$(to-post 'api/'$TO_API_VERSION'/deliveryservices/sslkeys/add' "$json_request")
 		if [[ -n "$json_response" ]] ; then
 			sleep 3
-			cdn_sslkeys_response=$(to-get "api/$TO_API_VERSION/cdns/name/$1/sslkeys" | jq '.response[] | length')
+			cdn_sslkeys_response=$(to-get "api/$TO_API_VERSION/cdns/name/$1/sslkeys" | jq '.response | length')
 			if ((cdn_sslkeys_response>0)); then
 				break
 			else
@@ -349,7 +349,7 @@ to-auto-snapqueue() {
 			sleep $AUTO_SNAPQUEUE_ACTION_WAIT
 			echo "AUTO-SNAPQUEUE - Do automatic snapshot..."
 			cdn_id=$(to-get "api/$TO_API_VERSION/cdns?name=$2" |jq '.response[0].id')
-			to-put "api/$TO_API_VERSION/cdns/$cdn_id/snapshot"
+			to-put "api/$TO_API_VERSION/snapshot?cdnID=$cdn_id"
 			sleep $AUTO_SNAPQUEUE_ACTION_WAIT
 			echo "AUTO-SNAPQUEUE - Do queue updates..."
 			to-post "api/$TO_API_VERSION/cdns/$cdn_id/queue_update" '{"action":"queue"}'

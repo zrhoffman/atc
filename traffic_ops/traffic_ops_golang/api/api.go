@@ -94,7 +94,7 @@ func WriteRespRaw(w http.ResponseWriter, r *http.Request, v interface{}) {
 		tc.GetHandleErrorsFunc(w, r)(http.StatusInternalServerError, errors.New(http.StatusText(http.StatusInternalServerError)))
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set(rfc.ContentType, rfc.ApplicationJSON)
 	w.Write(append(bts, '\n'))
 }
 
@@ -136,6 +136,40 @@ func HandleErr(w http.ResponseWriter, r *http.Request, tx *sql.Tx, statusCode in
 		}
 	}
 	handleSimpleErr(w, r, statusCode, userErr, sysErr)
+}
+
+func HandleErrOptionalDeprecation(w http.ResponseWriter, r *http.Request, tx *sql.Tx, statusCode int, userErr error, sysErr error, deprecated bool, alternative *string) {
+	if deprecated {
+		HandleDeprecatedErr(w, r, tx, statusCode, userErr, sysErr, alternative)
+	} else {
+		HandleErr(w, r, tx, statusCode, userErr, sysErr)
+	}
+}
+
+// HandleDeprecatedErr handles an API error, adding a deprecation alert, rolling back the transaction, writing the given statusCode and userErr to the user, and logging the sysErr. If userErr is nil, the text of the HTTP statusCode is written.
+//
+// The alternative may be nil if there is no alternative and the deprecation message will be selected appropriately.
+//
+// The tx may be nil, if there is no transaction. Passing a nil tx is strongly discouraged if a transaction exists, because it will result in copy-paste errors for the common APIInfo use case.
+//
+// This is a helper for the common case; not using this in unusual cases is perfectly acceptable.
+func HandleDeprecatedErr(w http.ResponseWriter, r *http.Request, tx *sql.Tx, statusCode int, userErr error, sysErr error, alternative *string) {
+	if respWritten(r) {
+		log.Errorf("HandleDeprecatedErr called after a write already occurred! Attempting to write the error anyway! Path %s", r.URL.Path)
+		// Don't return, attempt to rollback and write the error anyway
+	}
+
+	if tx != nil {
+		if err := tx.Rollback(); err != nil && err != sql.ErrTxDone {
+			log.Errorln("rolling back transaction: " + err.Error())
+		}
+	}
+
+	alerts := CreateDeprecationAlerts(alternative)
+
+	userErr = LogErr(r, statusCode, userErr, sysErr)
+	alerts.AddAlerts(tc.CreateErrorAlerts(userErr))
+	WriteAlerts(w, r, statusCode, alerts)
 }
 
 // LogErr handles the logging of errors and setting up possibly nil errors without actually writing anything to a
@@ -252,7 +286,7 @@ func WriteRespAlertObj(w http.ResponseWriter, r *http.Request, level tc.AlertLev
 		return
 	}
 	w.Header().Set(rfc.ContentType, rfc.ApplicationJSON)
-	w.Write(append(respBts, '\n'))
+	_, _ = w.Write(append(respBts, '\n'))
 }
 
 func WriteAlerts(w http.ResponseWriter, r *http.Request, code int, alerts tc.Alerts) {
@@ -262,17 +296,24 @@ func WriteAlerts(w http.ResponseWriter, r *http.Request, code int, alerts tc.Ale
 	}
 	setRespWritten(r)
 
-	resp, err := json.Marshal(alerts)
-	if err != nil {
-		handleSimpleErr(w, r, http.StatusInternalServerError, nil, fmt.Errorf("marshalling JSON: %v", err))
-		return
-	}
 	w.Header().Set(rfc.ContentType, rfc.ApplicationJSON)
 	w.WriteHeader(code)
-	w.Write(append(resp, '\n'))
+	if alerts.HasAlerts() {
+		resp, err := json.Marshal(alerts)
+		if err != nil {
+			handleSimpleErr(w, r, http.StatusInternalServerError, nil, fmt.Errorf("marshalling JSON: %v", err))
+			return
+		}
+		_, _ = w.Write(append(resp, '\n'))
+	}
 }
 
 func WriteAlertsObj(w http.ResponseWriter, r *http.Request, code int, alerts tc.Alerts, obj interface{}) {
+	if !alerts.HasAlerts() {
+		WriteResp(w, r, obj)
+		w.WriteHeader(code)
+		return
+	}
 	if respWritten(r) {
 		log.Errorf("WriteAlertsObj called after a write already occurred! Not double-writing! Path %s", r.URL.Path)
 		return
@@ -384,15 +425,6 @@ type APIInfo struct {
 	Version   *Version
 	Tx        *sqlx.Tx
 	Config    *config.Config
-}
-
-// DeprecationWarning creates a deprecation warning with the proposed
-// alternative.
-func DeprecationWarning(alternative string) tc.Alert {
-	return tc.Alert{
-		Level: tc.WarnLevel.String(),
-		Text:  fmt.Sprintf("This request method of this endpoint is deprecated. You are advised to switch to '%s' at your earliest convenience", alternative),
-	}
 }
 
 // NewInfo get and returns the context info needed by handlers. It also returns any user error, any system error, and the status code which should be returned to the client if an error occurred.
@@ -923,4 +955,13 @@ func (a *loginAuth) Next(fromServer []byte, more bool) ([]byte, error) {
 		}
 	}
 	return nil, nil
+}
+
+// CreateDeprecationAlerts creates a deprecation notice with an optional alternative route suggestion.
+func CreateDeprecationAlerts(alternative *string) tc.Alerts {
+	if alternative != nil {
+		return tc.CreateAlerts(tc.WarnLevel, fmt.Sprintf("This endpoint is deprecated, please use %s instead", *alternative))
+	} else {
+		return tc.CreateAlerts(tc.WarnLevel, "This endpoint is deprecated, and will be removed in the future")
+	}
 }
