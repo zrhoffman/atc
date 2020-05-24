@@ -88,7 +88,12 @@ getVersion() {
 
 # ---------------------------------------
 getRhelVersion() {
-				echo el$(rpm -q --qf "%{VERSION}" $(rpm -q --whatprovides redhat-release))
+	local releasever
+	if ! releasever="$(rpm -q --qf '%{version}' -f /etc/redhat-release)"; then
+		releasever=7;
+	fi;
+
+	echo "el${releasever}"
 }
 
 # ---------------------------------------
