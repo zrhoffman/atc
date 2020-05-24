@@ -35,7 +35,9 @@ importFunctions() {
 # ---------------------------------------
 initBuildArea() {
 	echo "Initializing the build area."
-	mkdir -p "$RPMBUILD"/{SPECS,SOURCES,RPMS,SRPMS,BUILD,BUILDROOT} || { echo "Could not create $RPMBUILD: $?"; return 1; }
+	for dir in SPECS SOURCES RPMS SRPMS BUILD BUILDROOT; do
+		mkdir -p "${RPMBUILD}/${dir}" || { echo "Could not create $RPMBUILD: $?"; return 1; }
+	done
 
 	local to_dest
 	to_dest="$(createSourceDir traffic_ops)"
