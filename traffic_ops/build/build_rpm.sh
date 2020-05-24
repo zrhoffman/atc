@@ -55,28 +55,31 @@ initBuildArea() {
 
 	# compile traffic_ops_golang
 	cd traffic_ops_golang
-	go_build=(go build -v);
-	if [[ "$DEBUG_BUILD" == true ]]; then
+	gcflags=''
+	ldflags=''
+	{ set +o nounset;
+	if [ "$DEBUG_BUILD" = true ]; then
 		echo 'DEBUG_BUILD is enabled, building without optimization or inlining...';
-		go_build+=(-gcflags 'all=-N -l');
+		gcflags="${gcflags} all=-N -l";
 	fi;
-	"${go_build[@]}" -ldflags "-X main.version=traffic_ops-${TC_VERSION}-${BUILD_NUMBER}.${RHEL_VERSION} -B 0x$(git rev-parse HEAD)" || \
+	set -o nounset; }
+	go build -v "$@" -gcflags "$gcflags" -ldflags "${ldflags} -X main.version=traffic_ops-${TC_VERSION}-${BUILD_NUMBER}.${RHEL_VERSION} -B 0x$(git rev-parse HEAD)" || \
 								{ echo "Could not build traffic_ops_golang binary"; return 1; }
 	cd -
 
 	# compile db/admin
 	(cd app/db
-	"${go_build[@]}" -o admin || \
+	go build -v "$@" -o admin -gcflags "$gcflags" -ldflags "$ldflags" || \
 								{ echo "Could not build db/admin binary"; return 1;})
 
 	# compile TO profile converter
 	(cd install/bin/convert_profile
-	"${go_build[@]}" || \
+	go build -v "$@" -gcflags "$gcflags" -ldflags "$ldflags" || \
 								{ echo "Could not build convert_profile binary"; return 1; })
 
 	# compile atstccfg
 	(cd ort/atstccfg
-	"${go_build[@]}" -ldflags "-X main.GitRevision=`git rev-parse HEAD` -X main.BuildTimestamp=`date +'%Y-%M-%dT%H:%M:%s'` -X main.Version=${TC_VERSION}" || \
+	go build -v "$@" -gcflags "$gcflags" -ldflags "${ldflags} -X main.GitRevision=$(git rev-parse HEAD) -X main.BuildTimestamp=$(date +'%Y-%M-%dT%H:%M:%s') -X main.Version=${TC_VERSION}" || \
 								{ echo "Could not build atstccfg binary"; return 1; })
 
 	cp -av etc install "$to_dest"/ || \
