@@ -14,38 +14,28 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-FROM centos:7
-
-MAINTAINER dev@trafficcontrol.apache.org
+FROM        alpine:3.11
+MAINTAINER  dev@trafficcontrol.apache.org
 
 # top level of trafficcontrol directory must be mounted as a volume:
 # docker run --volume /trafficcontrol:$(pwd) ...
-VOLUME /trafficcontrol
+VOLUME  /trafficcontrol
 
-### Common for all sub-component builds
-RUN	rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && \
-	rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7 && \
-	yum -y update ca-certificates && \
-	yum -y install \
-		epel-release && \
-	yum -y clean all
+COPY    --from=golang:1.14.3-alpine /usr/local/go /usr/lib/go
 
-### traffic_monitor specific requirements
-RUN	yum -y install \
-		# gcc is necessary in case -gcflags 'all=-N -l' is passed to go build
-		gcc \
-		git \
-		rpm-build && \
-	yum -y clean all
+ENV     GOPATH=/go \
+		PATH="${GOPATH}/bin:/usr/lib/go/bin:${PATH}" \
+		# Lets binaries run on non-musl platforms
+		CGO_ENABLED=0
 
-RUN curl -LO https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz && \
-    tar -C /usr/local -xvzf go1.14.2.linux-amd64.tar.gz && \
-    ln -s /usr/local/go/bin/go /usr/bin/go && \
-    rm go1.14.2.linux-amd64.tar.gz
+RUN     mkdir -p "${GOPATH}/src" "${GOPATH}/bin"
 
-###
+RUN     apk add --no-cache \
+			# Required to generate special sauce
+			git \
+			# For building RPMs
+			rpm-dev
 
-ADD build/clean_build.sh /
-CMD /clean_build.sh traffic_monitor
-
+COPY    /build/clean_build.sh /clean_build.sh
+CMD     /clean_build.sh traffic_monitor
 # vi:syntax=Dockerfile
