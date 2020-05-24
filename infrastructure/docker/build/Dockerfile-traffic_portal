@@ -14,47 +14,43 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-FROM centos:7
+FROM        alpine:3.11 as gems
 
-MAINTAINER dev@trafficcontrol.apache.org
+RUN         apk add --no-cache \
+				# To build gems
+				make \
+				musl-dev \
+				ruby-dev \
+				gcc
 
+			# Traffic Portal build dependency
+RUN         gem install compass
+
+FROM        alpine:3.11
+MAINTAINER  dev@trafficcontrol.apache.org
 # top level of trafficcontrol directory must be mounted as a volume:
 # docker run --volume /trafficcontrol:$(pwd) ...
-VOLUME /trafficcontrol
+#
+VOLUME  /trafficcontrol
 
-### Common for all sub-component builds
-RUN	rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && \
-	rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7 && \
-	yum -y update ca-certificates && \
-	yum -y install \
-		epel-release && \
-	yum -y clean all
+COPY        --from=gems /usr/lib/ruby/gems /usr/lib/ruby/gems
+COPY        --from=gems /usr/bin/compass /usr/bin/
 
-# traffic_portal specific
-RUN	yum -y install \
-		gcc \
-		git \
-		libffi-devel \
-		make \
-		nodejs \
-		npm \
-		rpm-build \
-		ruby-devel \
-		rubygems
+RUN     apk add --no-cache \
+			# Required to generate special sauce
+			git \
+			# Traffic Portal build dependencies
+			npm \
+			ruby \
+			# For building RPMs
+			rpm \
+			# Used in clean_build.sh
+			rsync
 
-RUN	gem install \
-		# FFI 1.13 cannot be installed with Ruby 2.0
-		ffi:1.12.2 \
-		rb-inotify:0.9.10 \
-		compass && \
-	npm -g install bower grunt-cli
+RUN     npm -g install bower grunt-cli && \
+		# bower will disallow running as root by default
+		echo '{ "allow_root": true }' > /root/.bowerrc
 
-# bower will not run as root by default
-RUN	echo '{ "allow_root": true }' > /root/.bowerrc
-
-###
-
-ADD build/clean_build.sh /
-CMD /clean_build.sh traffic_portal
-
+COPY    /build/clean_build.sh /clean_build.sh
+CMD     /clean_build.sh traffic_portal
 # vi:syntax=Dockerfile
