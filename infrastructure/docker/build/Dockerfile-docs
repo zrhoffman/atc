@@ -14,37 +14,34 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-FROM centos:7
+FROM    alpine:3.11 as modules
+RUN     apk add --no-cache \
+			python3 \
+			py3-psutil && \
+		python3 -m pip install --upgrade setuptools
 
-MAINTAINER dev@trafficcontrol.apache.org
+### docs specific requirements
+COPY    docs/source/requirements.txt /docs.requirements.txt
+RUN     python3 -m pip install -r /docs.requirements.txt
+
+FROM    alpine:3.11
+MAINTAINER  dev@trafficcontrol.apache.org
+COPY    --from=modules /usr/lib/python3.8/site-packages /usr/lib/python3.8/site-packages
+COPY    --from=modules /usr/bin/sphinx-build /usr/bin/
 
 # top level of trafficcontrol directory must be mounted as a volume:
 # docker run --volume /trafficcontrol:$(pwd) ...
-VOLUME /trafficcontrol
+VOLUME  /trafficcontrol
 
-### Common for all sub-component builds
-RUN	rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && \
-	rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7 && \
-	yum -y update ca-certificates && \
-	yum -y install \
-		epel-release && \
-	yum -y clean all
+RUN     apk add --no-cache \
+			# Required to generate special sauce
+			git \
+			# To build docs
+			make \
+			python3 \
+			# Used in clean_build.sh
+			rsync
 
-### docs specific requirements
-ADD docs/source/requirements.txt /docs.requirements.txt
-RUN	yum -y install \
-		python36 \
-		python36-pip \
-		python36-psutil \
-		git \
-		rpm-build \
-		make && \
-	yum -y clean all
-RUN	python3 -m pip install --upgrade setuptools && \
-	python3 -m pip install -r /docs.requirements.txt
-###
-
-ADD build/clean_build.sh /
-CMD /clean_build.sh docs
-
+COPY    /build/clean_build.sh /clean_build.sh
+CMD     /clean_build.sh docs
 # vi:syntax=Dockerfile
