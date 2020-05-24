@@ -79,13 +79,17 @@ initBuildArea() {
 	"${go_build[@]}" -ldflags "-X main.GitRevision=`git rev-parse HEAD` -X main.BuildTimestamp=`date +'%Y-%M-%dT%H:%M:%s'` -X main.Version=${TC_VERSION}" || \
 								{ echo "Could not build atstccfg binary"; return 1; })
 
-	rsync -av etc install "$to_dest"/ || \
+	cp -av etc install "$to_dest"/ || \
 		 { echo "Could not copy to $to_dest: $?"; return 1; }
-	rsync -av app/{bin,conf,cpanfile,db,lib,public,script,templates} "$to_dest"/app/ || \
-		 { echo "Could not copy to $to_dest/app: $?"; return 1; }
+	mkdir -p "${to_dest}/app"; # Makes cp -a copy directories to "${to_dest}/app/x" instead of "${to_dest}/app"
+	for dir in bin conf cpanfile db lib public script templates; do
+		cp -av "app/${dir}" "${to_dest}/app" || \
+			 { echo "Could not copy app/${dir} to $to_dest/app: $?"; return 1; }
+		ls -ld "${to_dest}/app/${dir}"
+	done
 	tar -czvf "$to_dest".tgz -C "$RPMBUILD"/SOURCES "$(basename "$to_dest")" || \
 		 { echo "Could not create tar archive $to_dest.tgz: $?"; return 1; }
-	cp "$TO_DIR"/build/*.spec "$RPMBUILD"/SPECS/. || \
+	cp -av "$TO_DIR"/build/*.spec "$RPMBUILD"/SPECS/. || \
 		 { echo "Could not copy spec files: $?"; return 1; }
 
 	# Create traffic_ops_ort source area

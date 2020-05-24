@@ -45,9 +45,9 @@ initBuildArea() {
 	tp_dest="$(createSourceDir traffic_portal)"
 	cd "$TP_DIR" || \
 		 { echo "Could not cd to $TP_DIR: $?"; return 1; }
-	rsync -av ./ "$ts_dest"/ || \
-		 { echo "Could not copy to $to_dest: $?"; return 1; }
-	cp -r "$TP_DIR"/ "$ts_dest" || { echo "Could not copy $TP_DIR to $ts_dest: $?"; return 1; }
+	cp -av ./ "$tp_dest"/ || \
+		 { echo "Could not copy to ${tp_dest}: $?"; return 1; }
+	cp -r "$TP_DIR"/ "$tp_dest" || { echo "Could not copy $TP_DIR to $tp_dest: $?"; return 1; }
 
 	tar -czvf "$tp_dest".tgz -C "$RPMBUILD"/SOURCES "$(basename "$tp_dest")" || { echo "Could not create tar archive ${tp_dest}.tgz: $?"; return 1; }
 	cp "$TP_DIR"/build/*.spec "$RPMBUILD"/SPECS/. || { echo "Could not copy spec files: $?"; return 1; }

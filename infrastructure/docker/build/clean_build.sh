@@ -37,11 +37,10 @@ tc_dir=${GOPATH}/src/github.com/apache/trafficcontrol;
 for dir in src pkg bin; do
 	mkdir -p "${GOPATH}/${dir}";
 done
-mkdir -p  "$(dirname "$tc_dir")";
-( set -o errexit;
-	rsync -a /trafficcontrol/ "$tc_dir";
+mkdir -p  "$tc_dir";
+(cp -fa /trafficcontrol "$(dirname "$tc_dir")"
 	if ! [ -d ${tc_dir}/.git ]; then
-		rsync -a /trafficcontrol/.git $tc_dir; # Docker for Windows compatibility
+		cp -fa /trafficcontrol/.git $tc_dir # Docker for Windows compatibility
 	fi;
 	rm -rf "${tc_dir}/dist";
 	mkdir -p /trafficcontrol/dist;

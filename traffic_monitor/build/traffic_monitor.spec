@@ -39,7 +39,7 @@ Installs traffic_monitor
 godir=src/github.com/apache/trafficcontrol/traffic_monitor
 ( mkdir -p "$godir" && \
 	cd "$godir" && \
-	cp -r "$TC_DIR"/traffic_monitor/* .
+	cp -a "$TC_DIR"/traffic_monitor/* .
 ) || { echo "Could not copy go program at $(pwd): $!"; exit 1; }
 
 %install

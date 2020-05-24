@@ -65,7 +65,7 @@ initBuildArea() {
 	go build -v create/create_ts_databases.go || \
 								{ echo "Could not build create_ts_databases binary"; return 1; })
 
-	rsync -aLv ./ "$ts_dest"/ || \
+	cp -aLv ./ "$ts_dest"/ || \
 		 { echo "Could not copy to $ts_dest: $?"; return 1; }
 	cp "$TS_DIR"/build/*.spec "$RPMBUILD"/SPECS/. || \
 		 { echo "Could not copy spec files: $?"; return 1; }
