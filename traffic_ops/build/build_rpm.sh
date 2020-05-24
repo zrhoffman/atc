@@ -25,7 +25,7 @@ importFunctions() {
 	TC_DIR="$(dirname "$TO_DIR")"
 	export TO_DIR TC_DIR
 	functions_sh="$TC_DIR/build/functions.sh"
-	if [[ ! -r $functions_sh ]]; then
+	if [ ! -r "$functions_sh" ]; then
 		echo "error: can't find $functions_sh"
 		return 1
 	fi
@@ -49,7 +49,7 @@ initBuildArea() {
 
 	# get x/* packages (everything else should be properly vendored)
 	go get -v golang.org/x/crypto/ed25519 golang.org/x/crypto/scrypt golang.org/x/net/ipv4 golang.org/x/net/ipv6 golang.org/x/sys/unix || \
-								{ echo "Could not get go package dependencies"; return 1; }
+		{ echo "Could not get go package dependencies"; return 1; }
 
 	# compile traffic_ops_golang
 	pushd traffic_ops_golang
@@ -84,7 +84,7 @@ initBuildArea() {
 		 { echo "Could not copy to $to_dest: $?"; return 1; }
 	rsync -av app/{bin,conf,cpanfile,db,lib,public,script,templates} "$to_dest"/app/ || \
 		 { echo "Could not copy to $to_dest/app: $?"; return 1; }
-	tar -czvf "$to_dest".tgz -C "$RPMBUILD"/SOURCES $(basename "$to_dest") || \
+	tar -czvf "$to_dest".tgz -C "$RPMBUILD"/SOURCES "$(basename "$to_dest")" || \
 		 { echo "Could not create tar archive $to_dest.tgz: $?"; return 1; }
 	cp "$TO_DIR"/build/*.spec "$RPMBUILD"/SPECS/. || \
 		 { echo "Could not copy spec files: $?"; return 1; }
@@ -96,7 +96,7 @@ initBuildArea() {
 	mkdir -p "${to_ort_dest}/atstccfg"
 	cp -R -p ort/atstccfg/* "${to_ort_dest}/atstccfg"
 
-	tar -czvf "$to_ort_dest".tgz -C "$RPMBUILD"/SOURCES $(basename "$to_ort_dest") || \
+	tar -czvf "$to_ort_dest".tgz -C "$RPMBUILD"/SOURCES "$(basename "$to_ort_dest")" || \
 		 { echo "Could not create tar archive $to_ort_dest: $?"; return 1; }
 
 	PLUGINS=''
