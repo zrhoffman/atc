@@ -39,12 +39,17 @@ for dir in src pkg bin; do
 	mkdir -p "${GOPATH}/${dir}";
 done
 mkdir -p  "$tc_dir";
+# avoids macOS error: cp: /tmp/[..]/dist and [..]/trafficcontrol//dist are identical (not copied).
+[ -L "${tc_dir}/dist" ] && rm "${tc_dir}/dist"
 cp -fa "${tc_volume}" "$(dirname "$tc_dir")"
 if ! [ -d ${tc_dir}/.git ]; then
 	cp -fa "${tc_volume}/.git" $tc_dir # Docker for Windows compatibility
 fi
 
 cd "$tc_dir"
+# In case the mirrored repo already exists, remove gitignored files
+git clean -fX
+
 rm -rf "dist"
 mkdir -p "${tc_volume}/dist"
 ln -sf "${tc_volume}/dist" "dist"
