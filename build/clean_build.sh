@@ -31,10 +31,17 @@ cleanup() {
 
 set -o xtrace;
 
+if ! script_path="$(readlink "$0")"; then
+	script_path="$0";
+fi;
+cd "$(dirname "$script_path")";
+if ! tc_volume="$(git rev-parse --show-toplevel)"; then
+	tc_volume='/trafficcontrol'; # Default repo location for ATC builder Docker images
+fi;
+
 # set owner of dist dir -- cleans up existing dist permissions...
 export GOPATH=/tmp/go GOOS="${GOOS:-linux}";
 tc_dir=${GOPATH}/src/github.com/apache/trafficcontrol;
-tc_volume='/trafficcontrol'
 for dir in src pkg bin; do
 	mkdir -p "${GOPATH}/${dir}";
 done
@@ -53,6 +60,10 @@ git clean -fX
 rm -rf "dist"
 mkdir -p "${tc_volume}/dist"
 ln -sf "${tc_volume}/dist" "dist"
+
+if [ $# -eq 0 ]; then
+	set -- tarball traffic_monitor traffic_ops traffic_portal traffic_router traffic_stats grove grove/grovetccfg docs
+fi
 
 for project in "$@"; do
 	./build/build.sh "${project}" 2>&1 | tee "dist/build-${project//\//-}.log"
