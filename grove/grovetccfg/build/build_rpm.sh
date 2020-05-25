@@ -43,7 +43,9 @@ checkGroveEnvironment() {
 	RPMBUILD="${GROVE_DIR}/rpmbuild"
 	DIST="${TC_DIR}/dist"
 	RPM="${PACKAGE}-${GROVE_VERSION}-${BUILD_NUMBER}.x86_64.rpm"
-	export GROVETC_DIR GROVE_DIR GROVE_VERSION PACKAGE BUILD_NUMBER RPMBUILD DIST RPM
+	GOOS="${GOOS:-linux}"
+	RPM_TARGET_OS="${RPM_TARGET_OS:-$GOOS}"
+	export GROVETC_DIR GROVE_DIR GROVE_VERSION PACKAGE BUILD_NUMBER RPMBUILD DIST RPM GOOS RPM_TARGET_OS
 
 	# grovetccfg needs to be built with go 1.14 or greater
 	if ! verify_and_set_go_version; then
@@ -89,8 +91,8 @@ buildRpmGrove() {
 	# See: https://github.com/rpm-software-management/rpm/commit/916d528b0bfcb33747e81a57021e01586aa82139
 	# Takes ownership of the spec file.
 	spec=build/${PACKAGE}.spec
-	spec_owner=$(stat -c%u $spec)
-	spec_group=$(stat -c%g $spec)
+	spec_owner=$(stat -c%u $spec || stat -f%u $spec)
+	spec_group=$(stat -c%g $spec || stat -f%g $spec)
 	if ! id "$spec_owner" >/dev/null 2>&1; then
 		chown "$(id -u):$(id -g)" build/${PACKAGE}.spec
 
@@ -101,7 +103,13 @@ buildRpmGrove() {
 	fi
 
 	# build RPM
-	rpmbuild --define "_topdir $RPMBUILD" --define "version ${GROVE_VERSION}" --define "build_number ${BUILD_NUMBER}" -ba build/${PACKAGE}.spec || { echo "rpmbuild failed: $?" >&2; return 1; }
+	rpmbuild \
+		--define "_topdir $RPMBUILD" \
+		--define "version ${GROVE_VERSION}" \
+		--define "build_number ${BUILD_NUMBER}" \
+		--define "_target_os ${RPM_TARGET_OS}" \
+		-ba build/${PACKAGE}.spec ||
+		{ echo "rpmbuild failed: $?" >&2; return 1; }
 
 	# copy build RPM to .
 	[ -e "$DIST" ] || mkdir -p "$DIST"

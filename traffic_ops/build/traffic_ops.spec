@@ -57,7 +57,7 @@ Built: %(date) by %{getenv: USER}
 
 %build
 		# update version referenced in the source
-		sed -i 's/__VERSION__/%{version}-%{release}/g' app/lib/UI/Utils.pm
+		sed -i.bak 's/__VERSION__/%{version}-%{release}/g' app/lib/UI/Utils.pm
 
 		# copy traffic_ops_golang binary
 		godir=src/github.com/apache/trafficcontrol/traffic_ops/traffic_ops_golang

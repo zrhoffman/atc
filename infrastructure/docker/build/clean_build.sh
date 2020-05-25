@@ -32,7 +32,7 @@ cleanup() {
 set -o xtrace;
 
 # set owner of dist dir -- cleans up existing dist permissions...
-export GOPATH=/tmp/go;
+export GOPATH=/tmp/go GOOS="${GOOS:-linux}";
 tc_dir=${GOPATH}/src/github.com/apache/trafficcontrol;
 tc_volume='/trafficcontrol'
 for dir in src pkg bin; do
