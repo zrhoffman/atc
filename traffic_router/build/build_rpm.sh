@@ -124,7 +124,7 @@ buildRpmTomcat () {
 # ---------------------------------------
 
 importFunctions
-checkEnvironment
+checkEnvironment -i mvn
 adaptEnvironment
 initBuildArea
 buildRpmTrafficRouter

@@ -27,9 +27,6 @@ TC_DIR="$(dirname "$(dirname "$topscript")")"
 export TC_DIR
 ( [ -n "$TC_DIR" ] && cd "$TC_DIR" ) || { echo "Could not cd $TC_DIR"; exit 1; }
 
-checkEnvironment
-
-
 if [ $# -gt 0 ]; then
 	projects="$*"
 else
@@ -52,6 +49,7 @@ for p in ${projects}; do
 	if [ "$p" = tarball ]; then
 		if isInGitTree; then
 			echo "-----  Building tarball ..."
+			checkEnvironment -e rpmbuild
 			tarball="$(createTarball "$TC_DIR")"
 			ls -l "$tarball"
 		else
@@ -62,6 +60,7 @@ for p in ${projects}; do
 	if [ "$p" = docs ]; then
 		if isInGitTree; then
 			echo "-----  Building docs ..."
+			checkEnvironment -i python3,sphinx-build,make, -e rpmbuild
 			( cd docs
 			make html
 			)
