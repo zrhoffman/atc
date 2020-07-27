@@ -21,6 +21,39 @@
 version: '2.1'
 
 services:
+  edge:
+    build:
+      context: .
+      dockerfile: cache/Dockerfile-debug
+    image: cdn-in-a-box_cache-debug
+    environment:
+      CACHE_DEBUGGING_PORT: '2340'
+    ports:
+      - "2340:2340" #Delve debugging port
+    depends_on:
+      - cache-nondebug
+  mid-01:
+    build:
+      context: .
+      dockerfile: cache/Dockerfile-debug
+    image: cdn-in-a-box_cache-debug
+    environment:
+      CACHE_DEBUGGING_PORT: '2342'
+    ports:
+      - "2342:2342" #Delve debugging port
+    depends_on:
+      - cache-nondebug
+  mid-02:
+    build:
+      context: .
+      dockerfile: cache/Dockerfile-debug
+    image: cdn-in-a-box_cache-debug
+    environment:
+      CACHE_DEBUGGING_PORT: '2343'
+    ports:
+      - "2343:2343" #Delve debugging port
+    depends_on:
+      - cache-nondebug
   trafficmonitor:
     build:
       context: .
@@ -61,6 +94,14 @@ services:
     depends_on:
       - trafficstats-nondebug
 
+  # The cache-nondebug service exists to ensure that the cache base image exists
+  # before building cdn-in-a-box_cache-debug
+  cache-nondebug:
+    image: cdn-in-a-box_cache
+    build:
+      context: ../..
+      dockerfile: infrastructure/cdn-in-a-box/cache/Dockerfile
+    command: /usr/bin/true
   # The trafficmonitor-nondebug service exists to ensure that the trafficmonitor
   # base image exists before building trafficmonitor-debug.
   trafficmonitor-nondebug:

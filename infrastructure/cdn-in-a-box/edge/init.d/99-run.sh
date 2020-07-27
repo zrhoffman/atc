@@ -74,6 +74,15 @@ until [[ $(to-get api/2.0/cdns/name/$CDN_NAME/sslkeys | jq '.response | length')
 	sleep 3
 done
 
+(
+if [[ "$EDGE_ATSTCCFG_DEBUG_ENABLE" == true ]]; then
+	cd /opt/ort
+	mv atstccfg atstccfg-binary
+	ln -s debug-atstccfg.sh atstccfg
+	echo "export CACHE_DEBUGGING_PORT=${CACHE_DEBUGGING_PORT}" > /etc/profile.d/cache_debugging_port.sh
+fi
+)
+
 # Leaves the container hanging open in the event of a failure for debugging purposes
 PATH="$PATH:/opt/ort" traffic_ops_ort -kl ALL BADASS || { echo "Failed"; }
 

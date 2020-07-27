@@ -71,6 +71,15 @@ while [[ -z "$(testenrolled)" ]]; do
 	sleep 3
 done
 
+(
+debug_flag="MID_${mid_index}_ATSTCCFG_DEBUG_ENABLE"
+if [[ "${!debug_flag}" == true ]]; then
+	cd /opt/ort
+	mv atstccfg atstccfg-binary
+	ln -s debug-atstccfg.sh atstccfg
+fi
+)
+
 # Leaves the container hanging open in the event of a failure for debugging purposes
 PATH="$PATH:/opt/ort" traffic_ops_ort -k BADASS ALL "https://$TO_FQDN:$TO_PORT" "$TO_ADMIN_USER:$TO_ADMIN_PASSWORD" || { echo "Failed"; }
 
