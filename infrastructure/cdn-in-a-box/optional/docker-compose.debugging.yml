@@ -21,6 +21,15 @@
 version: '2.1'
 
 services:
+  enroller:
+    build:
+      context: .
+      dockerfile: enroller/Dockerfile-debug
+    image: cdn-in-a-box_enroller-debug
+    ports:
+      - "2343:2343" #Delve debugging port
+    depends_on:
+      - enroller-nondebug
   trafficmonitor:
     build:
       context: .
@@ -51,6 +60,16 @@ services:
   trafficrouter:
     ports:
       - "5005:5005" # JPDA debugging port
+  # The enroller-nondebug service exists to ensure that the enroller
+  # base image exists before building enroller-debug.
+  enroller-nondebug:
+    image: cdn-in-a-box_enroller
+    build:
+      context: ../..
+      dockerfile: infrastructure/cdn-in-a-box/enroller/Dockerfile
+      args:
+        ENROLLER_DEBUG_BUILD: 'true'
+    command: /bin/true
   # The trafficmonitor-nondebug service exists to ensure that the trafficmonitor
   # base image exists before building trafficmonitor-debug.
   trafficmonitor-nondebug:
@@ -72,7 +91,7 @@ services:
         TRAFFIC_OPS_RPM: traffic_ops/traffic_ops.rpm
     command: /usr/bin/true
   # The trafficops-perl-nondebug service exists to ensure that the trafficops-perl
-  # base image exists before building trafficmonitor-debug.
+  # base image exists before building trafficops-perl-debug.
   trafficops-perl-nondebug:
     image: trafficops-perl
     build:

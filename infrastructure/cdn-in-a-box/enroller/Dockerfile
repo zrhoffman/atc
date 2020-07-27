@@ -16,6 +16,7 @@
 # under the License.
 
 FROM golang:1.14.2 AS enroller-builder
+ARG ENROLLER_DEBUG_BUILD
 
 # enroller source and dependencies
 COPY ./lib/ /go/src/github.com/apache/trafficcontrol/lib/
@@ -25,9 +26,17 @@ COPY ./traffic_ops/vendor/ /go/src/github.com/apache/trafficcontrol/traffic_ops/
 COPY ./infrastructure/cdn-in-a-box/ /go/src/github.com/apache/trafficcontrol/infrastructure/cdn-in-a-box/
 
 WORKDIR /go/src/github.com/apache/trafficcontrol/infrastructure/cdn-in-a-box/enroller
-RUN go clean && go get -v && go build
-
-
+RUN go clean && \
+    go get -v && \
+    gcflags= ldflags= && \
+    if [ "$ENROLLER_DEBUG_BUILD" = true ]; then \
+        echo 'Building Enroller without optimization or inlining' && \
+        gcflags='all=-N -l'; \
+    else \
+        echo 'Optimizing Enroller build' && \
+        ldflags='-s -w'; \
+    fi && \
+    go build -ldflags "$ldflags" -gcflags "$gcflags"
 
 FROM debian:stretch
 

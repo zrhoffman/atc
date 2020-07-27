@@ -64,7 +64,16 @@ fi
 # clear out the enroller dir first so no files left from previous run
 rm -rf ${ENROLLER_DIR}/*
 
-/enroller -dir "$ENROLLER_DIR" &
+enroller_command=(/enroller -dir "$ENROLLER_DIR");
+
+{
+if [[ "$ENROLLER_DEBUG_ENABLE" == true ]]; then
+  enroller_command=(dlv '--continue' '--listen=:2343' '--accept-multiclient=true' '--headless=true' '--api-version=2' exec \
+  "${enroller_command[0]}" -- "${enroller_command[@]:1}")
+fi;
+}
+
+"${enroller_command[@]}" &
 
 source /to-access.sh
 # Enroll with traffic ops
