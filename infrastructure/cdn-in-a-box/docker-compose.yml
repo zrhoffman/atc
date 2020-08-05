@@ -229,8 +229,8 @@ services:
       - ./edge/run.sh:/opt/init.d/99-run.sh
       - shared:/shared
 
-  # mid cache
-  mid:
+  # mid cache 1
+  mid-01:
     privileged: True
     build:
       context: ../..
@@ -238,7 +238,23 @@ services:
     domainname: infra.ciab.test
     env_file:
       - variables.env
-    hostname: mid
+    hostname: mid-01
+    volumes:
+      - ./dns/set-dns.sh:/usr/local/sbin/set-dns.sh
+      - ./dns/insert-self-into-dns.sh:/usr/local/sbin/insert-self-into-dns.sh
+      - ./mid/run.sh:/opt/init.d/99-run.sh
+      - shared:/shared
+
+  # mid cache 2
+  mid-02:
+    privileged: True
+    build:
+      context: ../..
+      dockerfile: infrastructure/cdn-in-a-box/cache/Dockerfile
+    domainname: infra.ciab.test
+    env_file:
+      - variables.env
+    hostname: mid-02
     volumes:
       - ./dns/set-dns.sh:/usr/local/sbin/set-dns.sh
       - ./dns/insert-self-into-dns.sh:/usr/local/sbin/insert-self-into-dns.sh
