@@ -43,8 +43,11 @@ var TableDeliveryServiceServersController = function(deliveryService, servers, $
 	$scope.contextMenuItems.splice(2, 0,
 		{
 			text: 'Unlink Server from Delivery Service',
+			displayed: function () {
+				return !deliveryService.topology;
+			},
 			hasBottomDivider: function() {
-				return true;
+				return !deliveryService.topology;
 			},
 			click: function ($itemScope, evt) {
 				$scope.confirmRemoveServer($itemScope.s, evt);
