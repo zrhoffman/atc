@@ -25,7 +25,7 @@ under the License.
             <li class="active">Servers</li>
         </ol>
         <div class="pull-right">
-            <button ng-if="!deliveryService.topology" name="selectServersBtn" class="btn btn-primary" title="Link Servers to Delivery Service" ng-click="selectServers()"><i class="fa fa-link"></i></button>
+            <button ng-disabled="deliveryService.topology" name="selectServersBtn" class="btn btn-primary" title="{{(!deliveryService.topology) ? 'Link Servers to Delivery Service' : 'Disabled: Delivery service topology determines server assignments'}}" ng-click="selectServers()"><i class="fa fa-link"></i></button>
             <button class="btn btn-default" title="Refresh" ng-click="refresh()"><i class="fa fa-refresh"></i></button>
             <div id="toggleColumns" class="btn-group" role="group" title="Select Table Columns" uib-dropdown is-open="columnSettings.isopen">
                 <button type="button" class="btn btn-default dropdown-toggle" uib-dropdown-toggle aria-haspopup="true" aria-expanded="false">
