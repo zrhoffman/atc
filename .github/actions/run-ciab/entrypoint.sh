@@ -23,7 +23,7 @@ STARTING_POINT="$PWD";
 cd infrastructure/cdn-in-a-box;
 make traffic_ops/traffic_ops.rpm traffic_stats/traffic_stats.rpm traffic_monitor/traffic_monitor.rpm traffic_router/tomcat.rpm traffic_router/traffic_router.rpm;
 
-time docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml -f ./docker-compose.traffic-ops-test.yml build integration edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
+time docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml -f ./docker-compose.traffic-ops-test.yml build --parallel integration edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
 time docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml up -d edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
 
 ret=$(timeout 10m docker wait cdn-in-a-box_readiness_1)
