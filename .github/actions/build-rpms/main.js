@@ -43,7 +43,7 @@ for (const component of components) {
 	const proc = child_process.spawnSync(
 		"docker",
 		dockerArgs.concat([
-			`apache/${component}_builder`,
+			`apache/${component}_builder:master`,
 			`build/build.sh`,
 			component
 		]),
