@@ -34,7 +34,7 @@ const dockerArgs = [
 	srcDir
 ];
 
-const spawnArgs = {stdio: "inherit"};
+const spawnArgs = {stdio: "inherit", stderr: "inherit"};
 
 const timers = new Map();
 
