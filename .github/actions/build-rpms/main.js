@@ -20,7 +20,8 @@ const components = [
 	"traffic_monitor",
 	"traffic_ops",
 	"traffic_router",
-	"traffic_stats"
+	"traffic_stats",
+	"traffic_ops_ort"
 ];
 
 const dockerArgs = [
