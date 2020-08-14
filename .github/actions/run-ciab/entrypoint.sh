@@ -25,6 +25,7 @@ make; # All RPMs should have already been built
 
 time docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml -f ./docker-compose.traffic-ops-test.yml build --parallel integration edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
 time docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml up -d edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
+docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml logs -f edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor &
 
 ret=$(timeout 10m docker wait cdn-in-a-box_readiness_1)
 if [[ "$ret" -ne 0 ]]; then
