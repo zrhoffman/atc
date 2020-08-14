@@ -27,6 +27,8 @@ time docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml -f
 time docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml up -d edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
 docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml logs -f edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor &
 
+docker ps
+
 ret=$(timeout 10m docker wait cdn-in-a-box_readiness_1)
 if [[ "$ret" -ne 0 ]]; then
 	echo "CDN in a Box didn't become ready within 10 minutes - exiting" >&2;
