@@ -13,24 +13,11 @@
 */
 
 const child_process = require("child_process");
-
-const dockerComposeArgs = [
-	"-f",
-	`${process.env.GITHUB_WORKSPACE}/infrastructure/docker/build/docker-compose.yml`,
-	"up"
-];
-
 const spawnArgs = {stdio: "inherit", stderr: "inherit"};
 
 const proc = child_process.spawnSync(
-	'docker-compose',
-	dockerComposeArgs,
+	`${process.env.GITHUB_WORKSPACE}/infrastructure/docker/build/build-rpms.py`,
+	[],
 	spawnArgs
 );
-
-if (proc.status !== 0) {
-	console.error(`Building the RPMs failed`);
-} else {
-	console.log(`Finished building RPMS`);
-}
 process.exit(proc.status);
