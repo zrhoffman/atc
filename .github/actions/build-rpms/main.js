@@ -15,6 +15,26 @@
 const child_process = require("child_process");
 const spawnArgs = {stdio: "inherit", stderr: "inherit"};
 
+const installSetupTools = child_process.spawnSync(
+	'python3',
+	['-m', 'pip', 'install', '--upgrade', 'setuptools'],
+	spawnArgs
+);
+if (installSetupTools.status !== 0) {
+	console.error('Unable to install pip');
+	process.exit(installSetupTools.status);
+}
+
+const installPip = child_process.spawnSync(
+	'python3',
+	['-m', 'pip', 'install', '--upgrade', 'docker-compose'],
+	spawnArgs
+);
+if (installPip.status !== 0) {
+	console.error('Unable to install pip');
+	process.exit(installPip.status);
+}
+
 const proc = child_process.spawnSync(
 	`${process.env.GITHUB_WORKSPACE}/infrastructure/docker/build/build-rpms.py`,
 	[],
