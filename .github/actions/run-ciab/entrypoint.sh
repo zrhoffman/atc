@@ -24,14 +24,15 @@ STARTING_POINT="$PWD";
 cd infrastructure/cdn-in-a-box;
 make; # All RPMs should have already been built
 
-time docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml -f ./docker-compose.traffic-ops-test.yml build --parallel integration edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
-time docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml up -d edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
-docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml logs -f edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor &
+docker_compose='docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml';
+time $docker_compose -f ./docker-compose.traffic-ops-test.yml build --parallel integration edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
+time $docker_compose up -d edge mid origin trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
+$docker_compose logs -f edge mid origin trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor &
 
-if ! timeout 10m docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml logs -f readiness; then
+if ! timeout 10m $docker_compose up --exit-code-from=readiness readiness; then
 	echo "CDN in a Box didn't become ready within 10 minutes - exiting" >&2;
 	docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml down -v --remove-orphans;
-	exit "$ret";
+	exit 1;
 fi
 
 docker-compose -f ./docker-compose.traffic-ops-test.yml up;
