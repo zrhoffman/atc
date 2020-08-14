@@ -29,10 +29,8 @@ docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml logs -f
 
 docker ps
 
-ret=$(timeout 10m docker wait cdn-in-a-box_readiness_1)
-if [[ "$ret" -ne 0 ]]; then
+if ! timeout 10m docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml logs -f readiness; then
 	echo "CDN in a Box didn't become ready within 10 minutes - exiting" >&2;
-	docker-compose -f ./docker-compose.readiness.yml logs;
 	docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml down -v --remove-orphans;
 	exit "$ret";
 fi
