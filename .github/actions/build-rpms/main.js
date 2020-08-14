@@ -13,7 +13,12 @@
 */
 
 const child_process = require("child_process");
-const spawnArgs = {stdio: "inherit", stderr: "inherit"};
+const spawnArgs = {
+	stdio: "inherit",
+	stderr: "inherit",
+	/* Use Docker BuildKit for better performance */
+	env: Object.assign({DOCKER_BUILDKIT: "1", COMPOSE_DOCKER_CLI_BUILD: "1"}, process.env),
+};
 
 const installSetupTools = child_process.spawnSync(
 	'python3',

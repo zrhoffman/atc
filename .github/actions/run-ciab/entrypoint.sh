@@ -17,6 +17,7 @@
 # under the License.
 
 set -ex
+export COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 # use Docker BuildKit for better performance
 
 docker-compose --version;
 STARTING_POINT="$PWD";
