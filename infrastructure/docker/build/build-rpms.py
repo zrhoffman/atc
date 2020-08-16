@@ -3,14 +3,17 @@ from compose.cli.main import TopLevelCommand, project_from_options
 from compose.container import Container
 from compose.project import Project
 from compose.service import Service
-import os
+import os, sys
 
 buildDirectory = os.path.dirname(os.path.realpath(__file__))
 dockerCompose = TopLevelCommand(project_from_options(buildDirectory, {}))
 project: Project
 project = dockerCompose.project
 service: Service
-services = [service.name for service in project.services if service.name != 'weasel']
+if len(sys.argv) > 1:
+    services = sys.argv[1:]
+else:
+    services = [service.name for service in project.services if service.name != 'weasel']
 
 dockerCompose.up({'SERVICE': services,
                   '--attach-dependencies': False,

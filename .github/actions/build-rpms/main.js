@@ -20,29 +20,20 @@ const spawnArgs = {
 	env: Object.assign({DOCKER_BUILDKIT: "1", COMPOSE_DOCKER_CLI_BUILD: "1"}, process.env),
 };
 
-const installSetupTools = child_process.spawnSync(
-	'python3',
-	['-m', 'pip', 'install', '--upgrade', 'setuptools'],
-	spawnArgs
-);
-if (installSetupTools.status !== 0) {
-	console.error('Unable to install pip');
-	process.exit(installSetupTools.status);
+let atcComponent = process.env.ATC_COMPONENT;
+const dockerComposeArgs = ["-f", `${process.env.GITHUB_WORKSPACE}/infrastructure/docker/build/docker-compose.yml`, "run", "--rm"];
+if (typeof atcComponent !== "string" || atcComponent.length === 0) {
+	console.error("Missing environment variable ATC_COMPONENT");
+	process.exit(1);
 }
-
-const installPip = child_process.spawnSync(
-	'python3',
-	['-m', 'pip', 'install', '--upgrade', 'docker-compose'],
-	spawnArgs
-);
-if (installPip.status !== 0) {
-	console.error('Unable to install pip');
-	process.exit(installPip.status);
+const nonRpmComponents = ["source", "weasel", "docs"];
+if (nonRpmComponents.indexOf(atcComponent) === -1) {
+	atcComponent += "_build";
 }
-
+dockerComposeArgs.push(atcComponent);
 const proc = child_process.spawnSync(
-	`${process.env.GITHUB_WORKSPACE}/infrastructure/docker/build/build-rpms.py`,
-	[],
+	"docker-compose",
+	dockerComposeArgs,
 	spawnArgs
 );
 process.exit(proc.status);
