@@ -15,8 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-name: 'run-ciab'
-description: 'Runs CDN-in-a-Box'
+name: 'test-ds'
+description: 'Tests an HTTP delivery service in CDN-in-a-Box'
 runs:
   using: 'docker'
   image: 'Dockerfile'

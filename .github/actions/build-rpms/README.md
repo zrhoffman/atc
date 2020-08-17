@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# build-rpms Docker action
+# build-rpms JavaScript action
 
 This action runs the builds RPMs for the various Traffic Control components.
 
