@@ -18,5 +18,5 @@
 name: 'test-ds'
 description: 'Tests an HTTP delivery service in CDN-in-a-Box'
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'node12'
+  main: 'run-ciab.js'

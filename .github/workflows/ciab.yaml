@@ -23,202 +23,218 @@ jobs:
   source:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Build RPM
-      uses: ./.github/actions/build-rpms
-      env:
-        ATC_COMPONENT: ${{ github.job }}
-    - name: Upload RPM
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}
-        path: ${{ github.workspace }}/dist/apache-trafficcontrol-*.tar.gz
-    - name: Upload build log
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}-tarball-log
-        path: ${{ github.workspace }}/dist/build-tarball.log
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build RPM
+        uses: ./.github/actions/build-rpms
+        env:
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}
+          path: ${{ github.workspace }}/dist/apache-trafficcontrol-*.tar.gz
 
   traffic_monitor:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Build RPM
-      uses: ./.github/actions/build-rpms
-      env:
-        ATC_COMPONENT: ${{ github.job }}
-    - name: Upload RPM
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}
-        path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
-    - name: Upload build log
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}-build-log
-        path: ${{ github.workspace }}/dist/build-${{ github.job }}.log
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build RPM
+        uses: ./.github/actions/build-rpms
+        env:
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}
+          path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
+      - name: Build ${{ github.job }} CDN-in-a-Box image
+        uses: ./.github/actions/ciab-image
+        env:
+          RPM_PATHS: ${{ github.job }}/${{ github.job }}.rpm
+          CIAB_IMAGES: ${{ github.job }} # Underscores are stripped
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
 
   traffic_ops:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Build RPM
-      uses: ./.github/actions/build-rpms
-      env:
-        ATC_COMPONENT: ${{ github.job }}
-    - name: Upload RPM
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}
-        path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
-    - name: Upload build log
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}-build-log
-        path: ${{ github.workspace }}/dist/build-${{ github.job }}.log
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build RPM
+        uses: ./.github/actions/build-rpms
+        env:
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}
+          path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
+      - name: Build ${{ github.job }} CDN-in-a-Box image
+        uses: ./.github/actions/ciab-image
+        env:
+          RPM_PATHS: ${{ github.job }}/${{ github.job }}.rpm
+          CIAB_IMAGES: ${{ github.job }},${{ github.job }}-perl # Underscores are stripped
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
 
   traffic_ops_ort:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Build RPM
-      uses: ./.github/actions/build-rpms
-      env:
-        ATC_COMPONENT: ${{ github.job }}
-    - name: Upload RPM
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}
-        path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
-    - name: Upload build log
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}-build-log
-        path: ${{ github.workspace }}/dist/build-${{ github.job }}.log
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build RPM
+        uses: ./.github/actions/build-rpms
+        env:
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}
+          path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
+      - name: Build ${{ github.job }} CDN-in-a-Box image
+        uses: ./.github/actions/ciab-image
+        env:
+          RPM_PATHS: cache/${{ github.job }}.rpm
+          CIAB_IMAGES: edge,mid # Underscores are stripped
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
 
   traffic_portal:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Build RPM
-      uses: ./.github/actions/build-rpms
-      env:
-        ATC_COMPONENT: ${{ github.job }}
-    - name: Upload RPM
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}
-        path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
-    - name: Upload build log
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}-build-log
-        path: ${{ github.workspace }}/dist/build-${{ github.job }}.log
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build RPM
+        uses: ./.github/actions/build-rpms
+        env:
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}
+          path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
+      - name: Build ${{ github.job }} CDN-in-a-Box image
+        uses: ./.github/actions/ciab-image
+        env:
+          RPM_PATHS: ${{ github.job }}/${{ github.job }}.rpm
+          CIAB_IMAGES: ${{ github.job }} # Underscores are stripped
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
 
   traffic_router:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Build RPM
-      uses: ./.github/actions/build-rpms
-      env:
-        ATC_COMPONENT: ${{ github.job }}
-    - name: Upload RPM
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}
-        path: ${{ github.workspace }}/dist/*.rpm
-    - name: Upload build log
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}-build-log
-        path: ${{ github.workspace }}/dist/build-${{ github.job }}.log
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build RPM
+        uses: ./.github/actions/build-rpms
+        env:
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}
+          path: ${{ github.workspace }}/dist/*.rpm
+      - name: Build ${{ github.job }} CDN-in-a-Box image
+        uses: ./.github/actions/ciab-image
+        env:
+          RPM_PATHS: ${{ github.job }}/${{ github.job }}.rpm,${{ github.job }}/tomcat.rpm
+          CIAB_IMAGES: ${{ github.job }} # Underscores are stripped
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
 
   traffic_stats:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Build RPM
-      uses: ./.github/actions/build-rpms
-      env:
-        ATC_COMPONENT: ${{ github.job }}
-    - name: Upload RPM
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}
-        path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
-    - name: Upload build log
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}-build-log
-        path: ${{ github.workspace }}/dist/build-${{ github.job }}.log
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build RPM
+        uses: ./.github/actions/build-rpms
+        env:
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}
+          path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
+      - name: Build ${{ github.job }} CDN-in-a-Box image
+        uses: ./.github/actions/ciab-image
+        env:
+          RPM_PATHS: ${{ github.job }}/${{ github.job }}.rpm
+          CIAB_IMAGES: ${{ github.job }} # Underscores are stripped
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
 
   grove:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Build RPM
-      uses: ./.github/actions/build-rpms
-      env:
-        ATC_COMPONENT: ${{ github.job }}
-    - name: Upload RPM
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}
-        path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
-    - name: Upload build log
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}-build-log
-        path: ${{ github.workspace }}/dist/build-${{ github.job }}.log
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build RPM
+        uses: ./.github/actions/build-rpms
+        env:
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}
+          path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
 
   grovetccfg:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Build RPM
-      uses: ./.github/actions/build-rpms
-      env:
-        ATC_COMPONENT: ${{ github.job }}
-    - name: Upload RPM
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}
-        path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
-    - name: Upload build log
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}-build-log
-        path: ${{ github.workspace }}/dist/build-grove-${{ github.job }}.log
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build RPM
+        uses: ./.github/actions/build-rpms
+        env:
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}
+          path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
 
   docs:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Build ${{ github.job }}
-      uses: ./.github/actions/build-rpms
-      env:
-        ATC_COMPONENT: ${{ github.job }}
-    - name: Upload archive
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}
-        path: ${{ github.workspace }}/dist/apache-trafficcontrol-*-docs.tar.gz
-    - name: Upload build log
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.job }}-build-log
-        path: ${{ github.workspace }}/dist/build-${{ github.job }}.log
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build ${{ github.job }}
+        uses: ./.github/actions/build-rpms
+        env:
+          ATC_COMPONENT: ${{ github.job }}
+      - name: Upload archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}
+          path: ${{ github.workspace }}/dist/apache-trafficcontrol-*-docs.tar.gz
 
   ciab-build:
     runs-on: ubuntu-latest
@@ -230,11 +246,17 @@ jobs:
       - traffic_router
       - traffic_stats
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Download RPMs
-      uses: actions/download-artifact@v2
-      with:
-        path: ${{ github.workspace }}/dist/
-    - name: Start CDN-in-a-Box
-      uses: ./.github/actions/run-ciab
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Download CDN-in-a-Box images
+        uses: actions/download-artifact@v2
+        with:
+          path: ${{ github.workspace }}/ciab-images/
+      - name: Start CDN-in-a-Box
+        uses: ./.github/actions/run-ciab
+      - name: Delete CDN-in-a-Box image artifacts
+        uses: geekyeggo/delete-artifact@1-glob-support
+        if: ${{ always() }}
+        with:
+          name: '*-images'
+          useGlob: true

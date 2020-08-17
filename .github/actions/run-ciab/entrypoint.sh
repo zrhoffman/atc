@@ -1,4 +1,4 @@
-#!/bin/sh -l
+#!/usr/bin/env bash
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,19 +17,43 @@
 # under the License.
 
 set -ex
+
 export COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 # use Docker BuildKit for better performance
-(
-cd dist;
-mv -- */*.rpm .;
-)
+
+get_docker_images() {
+  set -ex;
+	cd ciab-images;
+	for image_set in *-images; do
+		tarball="$(realpath "${image_set}/docker-"*.tar.xz)";
+		( cd /var/lib/docker;
+			tar xf "$tarball";
+			rm "$tarball";
+			cd image/overlay2;
+			mv repositories.json "repositories-${image_set}.json";
+		);
+	done;
+	# Assemble the list of Docker images that we have
+	cd /var/lib/docker;
+	echo before:;
+	cat image/overlay2/repositories-*.json;
+	cat image/overlay2/repositories-*.json | jq -s '[.[][]] | add as $repos | {"Repositories": $repos}' >image/overlay2/repositories.json;
+	echo after:;
+	cat image/overlay2/repositories.json;
+	echo ok;
+	rm image/overlay2/repositories-*.json;
+}
+
+<<SU_COMMANDS sudo su;
+  $(type get_docker_images | tail -n+2);
+  get_docker_images;
+SU_COMMANDS
 
 docker-compose --version;
 STARTING_POINT="$PWD";
 cd infrastructure/cdn-in-a-box;
-make; # All RPMs should have already been built
 
+docker images;
 docker_compose='docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml';
-time $docker_compose build --parallel edge mid origin readiness trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
 time $docker_compose up -d edge mid origin trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
 $docker_compose logs -f edge mid origin trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor &
 
