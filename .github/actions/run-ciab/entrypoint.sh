@@ -19,7 +19,7 @@
 set -ex
 
 export COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 # use Docker BuildKit for better performance
-
+jq --version
 get_docker_images() {
   set -ex;
 	cd ciab-images;
