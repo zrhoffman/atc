@@ -20,11 +20,13 @@ set -ex
 
 export COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 # use Docker BuildKit for better performance
 
+(
 # Load CDN-in-a-Box docker images from GitHub Actions artifacts
 cd ciab-images;
 for image_set in *-images; do
   docker image load -i "${image_set}/docker-"*.tar.gz;
 done;
+)
 
 docker-compose --version;
 STARTING_POINT="$PWD";
