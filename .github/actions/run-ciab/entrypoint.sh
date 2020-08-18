@@ -31,20 +31,19 @@ for image_set in *-images; do
 	) &
 done;
 while fg; do
-	echo 'Foreground a background `docker image load` process...';
+	echo 'Foreground a background docker image loading process...';
 done;
 )
 
 docker-compose --version;
-STARTING_POINT="$PWD";
 cd infrastructure/cdn-in-a-box;
 
 docker images;
 docker_compose='docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml';
-time $docker_compose up -d edge mid origin trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
-$docker_compose logs -f trafficrouter &
+time $docker_compose up -d edge mid origin trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor readiness;
+$docker_compose logs -f trafficrouter readiness &
 
-if ! timeout 10m $docker_compose up --exit-code-from=readiness readiness; then
+if ! exit_code="$(timeout 10m docker wait "$($docker_compose ps -q readiness)")" || [[ "$exit_code" -ne 0 ]]; then
 	echo "CDN in a Box didn't become ready within 10 minutes - exiting" >&2;
   $docker_compose --no-ansi logs --no-color edge mid origin trafficops trafficops-perl dns enroller trafficstats trafficvault trafficmonitor
 	docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml down -v --remove-orphans;
