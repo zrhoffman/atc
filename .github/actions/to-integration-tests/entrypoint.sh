@@ -86,9 +86,11 @@ A22D22wvfs7CE3cUz/8UnvLM3kbTTu1WbbBbrHjAV47sAHjW/ckTqeo=
 envsubst </cdn.json >cdn.conf
 mv /database.json ./database.conf
 
+touch /var/log/traffic_ops/error.log /var/log/traffic_ops/warning.log /var/log/traffic_ops/info.log /var/log/traffic_ops/debug.log /var/log/traffic_ops/event.log
+tail -f /var/log/traffic_ops/error.log /var/log/traffic_ops/warning.log /var/log/traffic_ops/info.log /var/log/traffic_ops/debug.log /var/log/traffic_ops/event.log >log.log 2>&1
 #Enable job control
 set -o monitor;
-./traffic_ops_golang --cfg ./cdn.conf --dbcfg ./database.conf >out.log 2>err.log &
+./traffic_ops_golang --cfg ./cdn.conf --dbcfg ./database.conf >out.log 2>&1 &
 
 if [ -z "$INPUT_VERSION" ]; then
 	INPUT_VERSION="3";
@@ -106,17 +108,12 @@ kill %;
 fg;
 
 # TODO - make these build artifacts
-if [ -f ../../../traffic_ops_golang/out.log ]; then
-	ls -lh ../../../traffic_ops_golang/out.log
-	cat ../../../traffic_ops_golang/out.log
-	rm ../.../../traffic_ops_golang/out.log
+if [ -f ../../../traffic_ops_golang/log.log ]; then
+	ls -lh ../../../traffic_ops_golang/log.log
+	cat ../../../traffic_ops_golang/log.log
+	rm ../.../../traffic_ops_golang/log.log
 else
-	echo did not find ../.../../traffic_ops_golang/out.log
-fi
-
-if [ -f ../../../traffic_ops_golang/err.log ]; then
-	cat ../../../traffic_ops_golang/err.log >&2
-	rm ../../../traffic_ops_golang/err.log
+	echo did not find ../.../../traffic_ops_golang/log.log
 fi
 
 exit "$CODE"
