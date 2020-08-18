@@ -86,6 +86,8 @@ A22D22wvfs7CE3cUz/8UnvLM3kbTTu1WbbBbrHjAV47sAHjW/ckTqeo=
 envsubst </cdn.json >cdn.conf
 mv /database.json ./database.conf
 
+#Enable job control
+set -o monitor;
 ./traffic_ops_golang --cfg ./cdn.conf --dbcfg ./database.conf >out.log 2>err.log &
 
 if [ -z "$INPUT_VERSION" ]; then
