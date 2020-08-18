@@ -24,7 +24,7 @@ get_docker_images() {
   set -ex;
 	cd ciab-images;
 	for image_set in *-images; do
-		tarball="$(realpath "${image_set}/docker-"*.tar.xz)";
+		tarball="$(realpath "${image_set}/docker-"*.tar.gz)";
 		( cd /var/lib/docker;
 			tar xf "$tarball";
 			rm "$tarball";

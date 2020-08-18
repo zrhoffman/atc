@@ -97,7 +97,7 @@ const atcComponent = splitEnvironmentVariable("ATC_COMPONENT")[0];
 console.log("Tarring the CDN-in-a-Box Docker image...");
 const tarProc = child_process.spawnSync(
 	"sudo",
-	["tar", "cJf", `${process.env.GITHUB_WORKSPACE}/ciab-images/docker-${atcComponent}.tar.xz`, "-C", "/var/lib/docker", "."],
+	["tar", "czf", `${process.env.GITHUB_WORKSPACE}/ciab-images/docker-${atcComponent}.tar.gz`, "-C", "/var/lib/docker", "."],
 	spawnArgs
 );
 if (tarProc.status !== 0) {

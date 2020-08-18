@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ github.job }}-images
-          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   traffic_ops:
     runs-on: ubuntu-latest
@@ -85,7 +85,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ github.job }}-images
-          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   traffic_ops_ort:
     runs-on: ubuntu-latest
@@ -111,7 +111,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ github.job }}-images
-          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   traffic_portal:
     runs-on: ubuntu-latest
@@ -137,7 +137,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ github.job }}-images
-          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   traffic_router:
     runs-on: ubuntu-latest
@@ -163,7 +163,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ github.job }}-images
-          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   traffic_stats:
     runs-on: ubuntu-latest
@@ -189,7 +189,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ github.job }}-images
-          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.xz
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   grove:
     runs-on: ubuntu-latest
