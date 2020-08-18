@@ -35,10 +35,11 @@ cd infrastructure/cdn-in-a-box;
 docker images;
 docker_compose='docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml';
 time $docker_compose up -d edge mid origin trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor;
+$docker_compose logs -f trafficrouter &
 
 if ! timeout 10m $docker_compose up --exit-code-from=readiness readiness; then
 	echo "CDN in a Box didn't become ready within 10 minutes - exiting" >&2;
-  $docker_compose --no-ansi logs --no-color edge mid origin trafficops trafficops-perl dns enroller trafficrouter trafficstats trafficvault trafficmonitor
+  $docker_compose --no-ansi logs --no-color edge mid origin trafficops trafficops-perl dns enroller trafficstats trafficvault trafficmonitor
 	docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml down -v --remove-orphans;
 	exit 1;
 fi
