@@ -99,6 +99,10 @@ cp /traffic-ops-test.json ./traffic-ops-test.conf
 CODE="$?"
 rm traffic-ops-test.conf
 
+#Stop Traffic Ops Golang
+kill %;
+fg;
+
 # TODO - make these build artifacts
 if [ -f ../../../traffic_ops_golang/out.log ]; then
 	ls -lh ../../../traffic_ops_golang/out.log

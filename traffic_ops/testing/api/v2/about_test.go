@@ -22,7 +22,7 @@ import (
 func TestAbout(t *testing.T) {
 	m, _, err := TOSession.GetAbout()
 	if err != nil {
-		t.Errorf("error from GetAbout(): %v", err)
+		t.Errorf("eerror from GetAbout(): %v", err)
 	}
 	t.Logf("about: %v", m)
 
