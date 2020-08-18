@@ -16,6 +16,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+set -x
+
 GOPATH="$(mktemp -d)"
 SRCDIR="$GOPATH/src/github.com/apache"
 mkdir -p "$SRCDIR"
@@ -99,8 +101,11 @@ rm traffic-ops-test.conf
 
 # TODO - make these build artifacts
 if [ -f ../../../traffic_ops_golang/out.log ]; then
+	ls -lh ../../../traffic_ops_golang/out.log
 	cat ../../../traffic_ops_golang/out.log
 	rm ../.../../traffic_ops_golang/out.log
+else
+	echo did not find ../.../../traffic_ops_golang/out.log
 fi
 
 if [ -f ../../../traffic_ops_golang/err.log ]; then
