@@ -88,16 +88,13 @@ if (pruneProc.status !== 0) {
 	process.exit(pruneProc.status);
 }
 
-/* Change the ownership of the Docker data root directory so actions/upload-artifact
- * can access it
- */
 const atcComponent = splitEnvironmentVariable("ATC_COMPONENT")[0];
 
-/* Copy the overlayfs files for the docker image. */
-console.log("Tarring the CDN-in-a-Box Docker image...");
+/* Make a gzipped tar of the docker images */
+console.log("Tarring the CDN-in-a-Box Docker images...");
 const tarProc = child_process.spawnSync(
-	"sudo",
-	["tar", "czf", `${process.env.GITHUB_WORKSPACE}/ciab-images/docker-${atcComponent}.tar.gz`, "-C", "/var/lib/docker", "."],
+	"sh",
+	["-c", `docker image ls --format={{.Repository}} | xargs docker image save -o ${process.env.GITHUB_WORKSPACE}/ciab-images/docker-${atcComponent}.tar.gz`],
 	spawnArgs
 );
 if (tarProc.status !== 0) {

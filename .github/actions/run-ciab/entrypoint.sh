@@ -19,38 +19,12 @@
 set -ex
 
 export COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 # use Docker BuildKit for better performance
-get_docker_images() {
-  set -ex;
-	cd ciab-images;
-	for image_set in *-images; do
-		tarball="$(realpath "${image_set}/docker-"*.tar.gz)";
-		( cd /var/lib/docker;
-			tar xf "$tarball";
-			rm "$tarball";
-			cd image/overlay2;
-			mv repositories.json "repositories-${image_set}.json";
-		);
-	done;
-	# Assemble the list of Docker images that we have
-	cd /var/lib/docker;
 
-# jq 1.5 (given version) has different behavior for the filters we use
-jq --version
-sudo curl --compressed \
-	-Lo "$(which jq)" \
-	https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64;
-
-	cat image/overlay2/repositories-*.json | jq -s '[.[][]] | add as $repos | {"Repositories": $repos}' >image/overlay2/repositories.json;
-	<image/overlay2/repositories.json jq;
-	rm image/overlay2/repositories-*.json;
-	systemctl status docker || true;
-	systemctl restart docker;
-}
-
-<<SU_COMMANDS sudo su;
-  $(type get_docker_images | tail -n+2);
-  get_docker_images;
-SU_COMMANDS
+# Load CDN-in-a-Box docker images from GitHub Actions artifacts
+cd ciab-images;
+for image_set in *-images; do
+  docker image load -i "${image_set}/docker-"*.tar.gz;
+done;
 
 docker-compose --version;
 STARTING_POINT="$PWD";
