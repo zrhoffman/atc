@@ -19,7 +19,6 @@
 set -ex
 
 export COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 # use Docker BuildKit for better performance
-jq --version
 get_docker_images() {
   set -ex;
 	cd ciab-images;
@@ -34,13 +33,18 @@ get_docker_images() {
 	done;
 	# Assemble the list of Docker images that we have
 	cd /var/lib/docker;
-	echo before:;
-	cat image/overlay2/repositories-*.json;
+
+# jq 1.5 (given version) has different behavior for the filters we use
+jq --version
+sudo curl --compressed \
+	-Lo "$(which jq)" \
+	https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64;
+
 	cat image/overlay2/repositories-*.json | jq -s '[.[][]] | add as $repos | {"Repositories": $repos}' >image/overlay2/repositories.json;
-	echo after:;
-	cat image/overlay2/repositories.json;
-	echo ok;
+	<image/overlay2/repositories.json jq;
 	rm image/overlay2/repositories-*.json;
+	systemctl status docker || true;
+	systemctl restart docker;
 }
 
 <<SU_COMMANDS sudo su;
