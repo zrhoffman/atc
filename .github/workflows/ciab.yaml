@@ -324,7 +324,7 @@ jobs:
       - name: Build ${{ github.job }} CDN-in-a-Box image
         uses: ./.github/actions/ciab-image
         env:
-          CIAB_IMAGES: ${{ github.job }} # Underscores are stripped
+          CIAB_IMAGES: ${{ github.job }},readiness # Underscores are stripped
           ATC_COMPONENT: ${{ github.job }}
       - name: Upload Docker images
         uses: actions/upload-artifact@v2

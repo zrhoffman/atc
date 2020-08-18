@@ -68,7 +68,7 @@ if (rpmPaths instanceof Array) {
 const ciabImages = splitEnvironmentVariable("CIAB_IMAGES").map(service => service.replace(/_/g, ''));
 const dockerComposeBuild = child_process.spawnSync(
 	"docker-compose",
-	["build", "--parallel", ...ciabImages],
+	["-f", "docker-compose.yml", "-f", "docker-compose.readiness.yml", "build", "--parallel", ...ciabImages],
 	spawnArgs
 );
 if (dockerComposeBuild.status !== 0) {
