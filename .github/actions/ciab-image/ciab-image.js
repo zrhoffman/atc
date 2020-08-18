@@ -76,18 +76,6 @@ if (dockerComposeBuild.status !== 0) {
 	process.exit(dockerComposeBuild.status);
 }
 
-console.info("Pruning builder layers to cut down on artifact size...");
-/* Remove unnecessary layers */
-pruneProc = child_process.spawnSync(
-	"docker",
-	["builder", "prune", "--force"],
-	spawnArgs
-);
-if (pruneProc.status !== 0) {
-	console.error("Unable to prune docker images");
-	process.exit(pruneProc.status);
-}
-
 const atcComponent = splitEnvironmentVariable("ATC_COMPONENT")[0];
 
 /* Make a gzipped tar of the docker images */
