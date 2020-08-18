@@ -45,9 +45,8 @@ $docker_compose logs -f trafficrouter readiness &
 
 if ! exit_code="$(timeout 10m docker wait "$($docker_compose ps -q readiness)")" || [[ "$exit_code" -ne 0 ]]; then
 	echo "CDN in a Box didn't become ready within 10 minutes - exiting" >&2;
-  $docker_compose --no-ansi logs --no-color edge mid origin trafficops trafficops-perl dns enroller trafficstats trafficvault trafficmonitor
-	docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml down -v --remove-orphans;
-	exit 1;
-fi
+  $docker_compose --no-ansi logs --no-color edge mid origin trafficops trafficops-perl dns enroller trafficstats trafficvault trafficmonitor;
+fi;
 
-docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml down -v --remove-orphans;
+exit "$exit_code";
+
