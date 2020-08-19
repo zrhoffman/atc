@@ -16,8 +16,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-set -ex
+set -ex;
 export COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 # use Docker BuildKit for better image building performance
+(
+cd dist;
+mv -- */*.rpm .;
+);
 
 docker-compose --version;
 cd infrastructure/cdn-in-a-box;
@@ -27,7 +31,7 @@ docker images;
 logged_services='trafficrouter readiness';
 other_services='dns edge enroller mid origin trafficmonitor trafficops trafficops-perl trafficstats trafficvault';
 docker_compose='docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml';
-time $docker_compose build --parallel $logged_services $other_services;
+time $docker_compose build $logged_services $other_services;
 $docker_compose up -d $logged_services $other_services;
 $docker_compose logs -f $logged_services &
 
