@@ -73,6 +73,7 @@ elif x509v3_init; then
 		echo "X509_GENERATION_COMPLETE=\"YES\"" >> "$X509_CA_ENV_FILE"
 		x509v3_dump_env
     # Save newly generated certs for future restarts.
+    find "$X509_CA_DIR" -type f -exec sed -i 's/$/'"$(printf '\r')"'/g' {} ';'
     rsync -av "$X509_CA_DIR/" "$X509_CA_PERSIST_DIR/"
     chmod 777 "$X509_CA_PERSIST_DIR"
     sync
