@@ -26,21 +26,23 @@ store_ciab_logs() {
 	done;
 }
 
-export COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 # use Docker BuildKit for better image building performance
 (
-cd dist;
-mv -- */*.rpm .;
+# Load CDN-in-a-Box docker images from GitHub Actions artifacts
+cd ciab-images;
+for image_set in *-images; do
+	docker image load -i "${image_set}/docker-"*.tar.gz;
+	rm -rf "$image_set";
+done;
 );
+echo 'Imported CDN-in-a-Box Docker images';
 
 docker-compose --version;
 cd infrastructure/cdn-in-a-box;
-make; # All RPMs should have already been built
 
 docker images;
 logged_services='trafficrouter readiness';
 other_services='dns edge enroller mid-01 mid-02 origin trafficmonitor trafficops trafficops-perl trafficstats trafficvault';
 docker_compose='docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml';
-time $docker_compose build --parallel $logged_services $other_services;
 $docker_compose up -d $logged_services $other_services;
 $docker_compose logs -f $logged_services &
 
