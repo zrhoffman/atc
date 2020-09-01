@@ -60,7 +60,7 @@ async function waitForConclusion() {
 			break;
 		}
 		job = jobs.reduce((result, job) => job.name === jobName ? job : result, null);
-		console.log(`Job status: ${job.status}`);
+		console.log(`Status of job ${jobName}: ${job.status}`);
 		conclusion = job.conclusion;
 	} while (typeof conclusion !== "string");
 	console.log(`${jobName} conclusion: ${conclusion}`);
