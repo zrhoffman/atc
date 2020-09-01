@@ -45,7 +45,7 @@ on:
       - 'misc/**'
       - 'NOTICE'
       - 'traffic_control/java'
-    types: [opened, reopened, edited, synchronize]
+    types: [ opened, reopened, edited, synchronize ]
 
 jobs:
   traffic_monitor:
@@ -77,6 +77,29 @@ jobs:
         with:
           name: ${{ github.job }}
           path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
+
+  traffic_ops_perl_image:
+    runs-on: ubuntu-latest
+    needs:
+      - traffic_ops
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Download RPMs
+        uses: actions/download-artifact@v2
+        with:
+          path: ${{ github.workspace }}/dist/
+      - name: Build trafficops-perl CDN-in-a-Box image
+        uses: ./.github/actions/ciab-image
+        env:
+          RPM_PATHS: traffic_ops/traffic_ops.rpm
+          CIAB_IMAGES: trafficops-perl
+          SAVE_IMAGES: true
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   traffic_ops_ort:
     runs-on: ubuntu-latest
@@ -184,6 +207,19 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: ${{ github.workspace }}/dist/
+      - name: Build CDN-in-a-Box images
+        uses: ./.github/actions/ciab-image
+        env:
+          RPM_PATHS: cache/traffic_ops_ort.rpm,traffic_monitor/traffic_monitor.rpm,traffic_ops/traffic_ops.rpm,traffic_portal/traffic_portal.rpm,traffic_router/traffic_router.rpm,traffic_router/tomcat.rpm,traffic_stats/traffic_stats.rpm
+          CIAB_IMAGES: db,dns,edge,enroller,influxdb,mid,origin,readiness,smtp,trafficmonitor,trafficops,trafficportal,trafficrouter,trafficstats,trafficvault
+      - name: Wait for Traffic Ops CDN-in-a-Box images to finish builing
+        uses: ./.github/actions/wait-for-job
+        env:
+          JOB_NAME: traffic_ops_perl_image
+      - name: Download CDN-in-a-Box images
+        uses: actions/download-artifact@v2
+        with:
+          path: ${{ github.workspace }}/ciab-images/
       - name: Start CDN-in-a-Box
         uses: ./.github/actions/run-ciab
       - name: Upload CDN-in-a-Box logs
