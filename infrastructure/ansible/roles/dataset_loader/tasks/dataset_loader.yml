@@ -31,7 +31,7 @@
 
 - name: Convert CDN Delegation facts to more usable list
   set_fact:
-    cdnDelegationList: "{{ tmp_cdnDelegation_result.results | map(attribute='ansible_facts.tmp_cdnDelegation') | difference(excluded_cdn) | list | unique }}"
+    cdnDelegationList: "{{ tmp_cdnDelegation_result.results | map(attribute='ansible_facts.tmp_cdnDelegation') | difference(excluded_cdn | lower) | map('lower') | list | unique }}"
   vars:
     excluded_cdn: ALL
 
@@ -70,7 +70,7 @@
     url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/cdns"
     method: POST
     body: "{{ lookup('template', 'cdn.j2') }}"
-  with_items: "{{ cdnDelegationList | difference(cdnDelegationPrimary) | intersect(dl_ds_merged_cdns | list) + cdnDelegationList | difference(dl_ds_merged_cdns | list)}}"
+  with_items: "{{ cdnDelegationList | difference(cdnDelegationPrimary) | intersect(dl_ds_merged_cdns | map('lower') | list) + cdnDelegationList | difference(dl_ds_merged_cdns | map('lower') | list)}}"
   vars:
     name: "{{ item.name | default(item) }}"
     domainName: "{{ item }}.{{ (dl_hosts_to | first).split('.')[1:] | join('.') }}"
@@ -568,7 +568,7 @@
         cdn: "{{ get_all_cdns.json | to_json | from_json | json_query(cdn_query) }}"
         type: "{{ item.type }}"
         routingDisabled: "{{ (item.routingDisabled | default(false)) | lower }}"
-        cdn_query: "response[?starts_with(domainName,`{{ item.cdn | default(ALL) | lower }}`) == `true` || name == `{{ item.cdn | default(ALL) }}`].id | [0]"
+        cdn_query: "response[?starts_with(domainName,`{{ item.cdn | default(all) }}`) == `true` || name == `{{ item.cdn | default(all) }}`].id | [0]"
         error_query: "alerts[?level=='error'].text[?!contains(@,'already exists')]"
       register: create_profiles_out
       failed_when: (create_profiles_out.status == 400 and create_profiles_out.json | to_json | from_json | json_query(error_query) | length != 0) or (create_profiles_out.status > 400 and create_profiles_out.status < 600)
@@ -596,11 +596,11 @@
     - name: Handle Profile & Parameter CDN Templates
       include_tasks: parameter_loader.yml
       vars:
-        Target_cdn_delegation_fqdn: "{{ Target_cdn_delegation | default(MKGA) }}.{{ (dl_hosts_to | first).split('.')[1:] | join('.') | lower }}"
+        Target_cdn_delegation_fqdn: "{{ Target_cdn_delegation | default(mkga) }}.{{ (dl_hosts_to | first).split('.')[1:] | join('.') | lower }}"
         Target_cdn_name: "{{ get_all_cdns.json | to_json | from_json | json_query(cdnName_query) }}"
         Target_cdn_id: "{{ get_all_cdns.json | to_json | from_json | json_query(cdn_query) }}"
-        cdnName_query: "response[?starts_with(domainName,`{{ Target_cdn_delegation | lower }}`) == `true`].name | [0]"
-        cdn_query: "response[?starts_with(domainName,`{{ Target_cdn_delegation | lower }}`) == `true`].id | [0]"
+        cdnName_query: "response[?starts_with(domainName,`{{ Target_cdn_delegation }}`) == `true`].name | [0]"
+        cdn_query: "response[?starts_with(domainName,`{{ Target_cdn_delegation }}`) == `true`].id | [0]"
       with_items: "{{ cdnDelegationList }}"
       loop_control:
         loop_var: Target_cdn_delegation
@@ -870,11 +870,11 @@
 - name: Handle Delivery Service CDN Templates
   include_tasks: ds_loader.yml
   vars:
-    Target_cdn_delegation_fqdn: "{{ Target_cdn_delegation | default(MKGA) }}.{{ (dl_hosts_to | first).split('.')[1:] | join('.') | lower }}"
+    Target_cdn_delegation_fqdn: "{{ Target_cdn_delegation | default(mkga) }}.{{ (dl_hosts_to | first).split('.')[1:] | join('.') | lower }}"
     Target_cdn_name: "{{ get_all_cdns.json | to_json | from_json | json_query(cdnName_query) }}"
     Target_cdn_id: "{{ get_all_cdns.json | to_json | from_json | json_query(cdn_query) }}"
-    cdnName_query: "response[?starts_with(domainName,`{{ Target_cdn_delegation | lower }}`) == `true`].name | [0]"
-    cdn_query: "response[?starts_with(domainName,`{{ Target_cdn_delegation | lower }}`) == `true`].id | [0]"
+    cdnName_query: "response[?starts_with(domainName,`{{ Target_cdn_delegation }}`) == `true`].name | [0]"
+    cdn_query: "response[?starts_with(domainName,`{{ Target_cdn_delegation }}`) == `true`].id | [0]"
   with_items: "{{ cdnDelegationList }}"
   loop_control:
     loop_var: Target_cdn_delegation
