@@ -71,4 +71,4 @@ trap - ERR
 mvn verify \
 	-DforkCount=1 -DreuseForks=true \
 	-Djava.library.path=/usr/share/java:/opt/tomcat/lib -DfailIfNoTests=false -DoutputDirectory=/junit 2>&1
-mv core/target/surefire-reports/* /junit
+mv core/target/surefire-reports/* core/target/failsafe-reports/* /junit
