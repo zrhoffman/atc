@@ -38,9 +38,9 @@ do
   source "$X509_CA_ENV_FILE"
 done
 
-debug_properties=();
+mvn_command=(mvn);
 if [[ "$TR_TEST_DEBUG_ENABLE" == true ]]; then
-		debug_properties+=(
+		mvn_command+=(
 		'-Dmaven.surefire.debug=-agentlib:jdwp=transport=dt_socket,server=n,suspend=n,address=host.docker.internal:8000 -DforkCount=0 -DreuseForks=false' # debug properties for surefire (unit) tests
 		'-Dmaven.failsafe.debug=-agentlib:jdwp=transport=dt_socket,server=n,suspend=n,address=host.docker.internal:8000' # debug properties for failsafe (integration and external) tests
 	)
@@ -72,6 +72,6 @@ sed -i "s|traffic_monitor\\.bootstrap\\.hosts|${TM_FQDN}:${TM_PORT}|g" core/src/
 set +o nounset
 trap - ERR
 
-mvn "${debug_properties[@]}" verify \
+"${mvn_command[@]}" verify \
 	-Djava.library.path=/usr/share/java:/opt/tomcat/lib -DfailIfNoTests=false -DoutputDirectory=/junit 2>&1
 mv core/target/surefire-reports/* core/target/failsafe-reports/* /junit
