@@ -48,13 +48,13 @@ import static org.springframework.util.SocketUtils.findAvailableUdpPort;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	SteeringTest.class,
-	ConsistentHashTest.class,
-	CoverageZoneTest.class,
-	DeliveryServicesTest.class,
-	LocationsTest.class,
+	//ConsistentHashTest.class,
+	//CoverageZoneTest.class,
+	//DeliveryServicesTest.class,
+	//LocationsTest.class,
 	//RouterTest.class,
-	StatsTest.class,
-	ZonesTest.class
+	//StatsTest.class,
+	//ZonesTest.class
 })
 public class ExternalTestSuite {
 	public static final String TRAFFIC_MONITOR_BOOTSTRAP_LOCAL = "TRAFFIC_MONITOR_BOOTSTRAP_LOCAL";
