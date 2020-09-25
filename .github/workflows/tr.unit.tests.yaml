@@ -47,4 +47,9 @@ jobs:
         if: ${{ failure() }}
         with:
           name: surefire-reports
-          path: ${{ github.workspace }}/traffic_router/core/target/surefire-reports/*
+          path: ${{ github.workspace }}/traffic_router/core/target/surefire-reports/TEST-*.xml
+      - uses: zrhoffman/junit-report-annotations-action@master
+        with:
+          path: ${{ github.workspace }}/traffic_router/core/target/surefire-reports/TEST-*.xml
+          cwd: ${{ github.workspace }}/traffic_router
+        if: always()
