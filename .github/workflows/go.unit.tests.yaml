@@ -24,6 +24,7 @@ on:
       - grove/**.go
       - lib/**.go
       - traffic_monitor/**.go
+      - '!traffic_monitor/tests/_integration/**.go'
       - traffic_ops/traffic_ops_golang/**.go
       - traffic_ops_ort/atstccfg/**.go
       - traffic_stats/**.go
