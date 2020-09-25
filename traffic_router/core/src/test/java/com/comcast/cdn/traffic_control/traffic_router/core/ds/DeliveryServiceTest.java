@@ -37,6 +37,7 @@ public class DeliveryServiceTest {
         final JsonNode jsonConfiguration = mapper.readTree(jsonStr);
         DeliveryService deliveryService = new DeliveryService("a-delivery-service", jsonConfiguration);
         assertThat(deliveryService.getRequestHeaders().size(), equalTo(0));
+        assertThat("yes", equalTo("no"));
     }
 
     @Test
