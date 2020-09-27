@@ -76,14 +76,14 @@ services:
       - variables.env
     hostname: trafficmonitor
     image: trafficmonitor
-    ports:
-      - "80:80"
+    #ports:
+    #  - "80:80"
     volumes:
       - shared:/shared
 
   tmintegrationtest:
     build:
-      context: ./tests/integration
+      context: ./tests/_integration
       dockerfile: ./Dockerfile
     depends_on:
       - testto
