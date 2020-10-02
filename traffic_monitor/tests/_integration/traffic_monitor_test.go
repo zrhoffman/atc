@@ -27,7 +27,7 @@ import (
 
 	"github.com/apache/trafficcontrol/lib/go-log"
 	"github.com/apache/trafficcontrol/traffic_monitor/tests/_integration/config"
-	"github.com/apache/trafficcontrol/traffic_monitor/tmclient"
+	"github.com/apache/trafficcontrol/traffic_monitor/_tmclient"
 )
 
 var Config config.Config
