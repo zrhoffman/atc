@@ -133,6 +133,12 @@
 		},
 		{
 			"configFile": "rascal.properties",
+			"name": "health.polling.format",
+			"secure": false,
+			"value": "stats_over_http"
+		},
+		{
+			"configFile": "rascal.properties",
 			"name": "health.threshold.loadavg",
 			"secure": false,
 			"value": "25.0"
@@ -159,7 +165,7 @@
 			"configFile": "rascal.properties",
 			"name": "health.polling.url",
 			"secure": false,
-			"value": "http://${hostname}/_astats?application=&inf.name=${interface_name}"
+			"value": "http://${hostname}/_stats/pathy/path"
 		},
 		{
 			"configFile": "storage.config",
@@ -199,7 +205,13 @@
 		},
 		{
 			"configFile": "plugin.config",
-			"name": "astats_over_http.so",
+			"name": "stats_over_http.so",
+			"secure": false,
+			"value": "_stats/pathy/path"
+		},
+		{
+			"configFile": "plugin.config",
+			"name": "system_stats.so",
 			"secure": false,
 			"value": ""
 		},
