@@ -29,7 +29,7 @@ EXPOSE 80
 ADD https://ci.trafficserver.apache.org/RPMS/CentOS7/trafficserver-7.1.4-2.el7.x86_64.rpm /trafficserver.rpm
 ADD https://ci.trafficserver.apache.org/RPMS/CentOS7/trafficserver-devel-7.1.4-2.el7.x86_64.rpm /trafficserver-devel.rpm
 
-RUN yum install -y bind-utils kyotocabinet-libs epel-release initscripts iproute net-tools nmap-ncat gettext autoconf automake libtool gcc-c++ cronie glibc-devel openssl-devel
+RUN yum install -y bind-utils kyotocabinet-libs epel-release initscripts iproute net-tools nmap-ncat gettext autoconf automake libtool gcc-c++ cronie glibc-devel openssl-devel perl-JSON
 RUN yum install -y /trafficserver.rpm /trafficserver-devel.rpm jq python36-psutil python36-typing python36-setuptools python36-pip logrotate && yum clean all
 RUN python3 -m pip install --upgrade pip && python3 -m pip install requests urllib3 distro
 
