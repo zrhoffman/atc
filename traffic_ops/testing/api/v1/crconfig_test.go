@@ -30,6 +30,7 @@ func TestCRConfig(t *testing.T) {
 		SnapshotTestCDNbyInvalidName(t)
 		SnapshotTestCDNbyID(t)
 		SnapshotTestCDNbyInvalidID(t)
+		t.Fatalf("fail TestCRConfig")
 	})
 }
 

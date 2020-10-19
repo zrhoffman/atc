@@ -44,7 +44,6 @@ func TestDeliveryServiceRequests(t *testing.T) {
 		header.Set(rfc.IfModifiedSince, time)
 		UpdateTestDeliveryServiceRequests(t)
 		GetTestDeliveryServiceRequestsIMSAfterChange(t, header)
-		t.Fatalf("fail TestDeliveryServiceRequests")
 	})
 }
 
