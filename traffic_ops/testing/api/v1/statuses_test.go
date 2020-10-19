@@ -25,6 +25,7 @@ func TestStatuses(t *testing.T) {
 	WithObjs(t, []TCObj{Parameters, Statuses}, func() {
 		UpdateTestStatuses(t)
 		GetTestStatuses(t)
+		t.Fatalf("fail TestStatuses")
 	})
 }
 

@@ -23,7 +23,6 @@ import (
 
 func TestCacheGroupsDeliveryServices(t *testing.T) {
 	WithObjs(t, []TCObj{CDNs, Types, Tenants, Parameters, Profiles, Statuses, Divisions, Regions, PhysLocations, CacheGroups, Servers, Topologies, DeliveryServices, CacheGroupsDeliveryServices}, func() {
-		t.Fatalf("fail TestCacheGroupsDeliveryServices")
 	})
 }
 

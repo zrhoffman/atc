@@ -37,6 +37,7 @@ func TestStatuses(t *testing.T) {
 		UpdateTestStatuses(t)
 		GetTestStatuses(t)
 		GetTestStatusesIMSAfterChange(t, header)
+		t.Fatalf("fail TestStatuses")
 	})
 }
 
