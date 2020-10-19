@@ -33,7 +33,6 @@ func TestFederations(t *testing.T) {
 		GetTestFederationsIMS(t)
 		AddFederationResolversForCurrentUserTest(t)
 		RemoveFederationResolversForCurrentUserTest(t)
-		t.Fatalf("federation fail")
 	})
 }
 

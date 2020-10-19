@@ -58,6 +58,7 @@ var staticCapabilities = []tc.Capability{
 func TestCapabilities(t *testing.T) {
 	CreateTestCapabilities(t)
 	GetTestCapabilities(t)
+	t.Fatalf("faily capabilities")
 }
 
 func CreateTestCapabilities(t *testing.T) {

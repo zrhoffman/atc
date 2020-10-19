@@ -62,6 +62,7 @@ func TestCapabilities(t *testing.T) {
 	CreateTestCapabilities(t)
 	GetTestCapabilitiesIMS(t)
 	GetTestCapabilities(t)
+	t.Fatalf("faily capabilities")
 }
 
 func CreateTestCapabilities(t *testing.T) {
