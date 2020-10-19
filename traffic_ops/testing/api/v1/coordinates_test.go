@@ -25,6 +25,7 @@ func TestCoordinates(t *testing.T) {
 	WithObjs(t, []TCObj{Parameters, Coordinates}, func() {
 		GetTestCoordinates(t)
 		UpdateTestCoordinates(t)
+		t.Fatalf("fail TestCoordinates")
 	})
 }
 

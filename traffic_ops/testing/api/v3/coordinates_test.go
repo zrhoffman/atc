@@ -37,6 +37,7 @@ func TestCoordinates(t *testing.T) {
 		SortTestCoordinates(t)
 		UpdateTestCoordinates(t)
 		GetTestCoordinatesIMSAfterChange(t, header)
+		t.Fatalf("fail TestCoordinates")
 	})
 }
 
