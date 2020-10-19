@@ -141,6 +141,7 @@ func TestDeliveryServiceRequestTypeFields(t *testing.T) {
 		if err != nil {
 			t.Errorf("cannot DELETE DeliveryServiceRequest by id: %d - %v - %v", dsrs[0].ID, err, alert)
 		}
+		t.Fatalf("fail TestDeliveryServiceRequestTypeFields")
 	})
 }
 
