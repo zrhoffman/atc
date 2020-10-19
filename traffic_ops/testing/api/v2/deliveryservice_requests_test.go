@@ -34,6 +34,7 @@ func TestDeliveryServiceRequests(t *testing.T) {
 	WithObjs(t, []TCObj{CDNs, Types, Parameters, Tenants, DeliveryServiceRequests}, func() {
 		GetTestDeliveryServiceRequests(t)
 		UpdateTestDeliveryServiceRequests(t)
+		t.Fatalf("fail TestDeliveryServiceRequests")
 	})
 }
 
