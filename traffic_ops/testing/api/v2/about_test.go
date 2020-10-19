@@ -30,4 +30,7 @@ func TestAbout(t *testing.T) {
 	if err == nil {
 		t.Error("expected error from GetAbout() when unauthenticated")
 	}
+	WithObjs(t, []TCObj{Parameters, Types}, func() {
+		t.Fatalf("fail about test with types")
+	})
 }
