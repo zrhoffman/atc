@@ -19,4 +19,4 @@ name: 'build-rpms'
 description: 'Builds RPMs for a single ATC component'
 runs:
   using: 'node12'
-  main: 'main.js'
+  main: 'dist/build-rpms.js'
