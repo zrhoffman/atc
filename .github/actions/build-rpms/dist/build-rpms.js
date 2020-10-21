@@ -26,6 +26,25 @@ if (!atcComponent) {
     console.error("Missing environment variable ATC_COMPONENT");
     process.exit(1);
 }
-dockerComposeArgs.push(atcComponent + "_build");
-const proc = child_process_1.default.spawnSync("docker-compose", dockerComposeArgs, spawnOptions);
-process.exit(proc.status || 1);
+const subprocesses = atcComponent
+    .split(",")
+    .map(component => component + "_build")
+    .map(service => child_process_1.default.spawn("docker-compose", [...dockerComposeArgs, service], spawnOptions));
+let completedCount = 0;
+function countCompleted() {
+    completedCount++;
+    if (completedCount !== subprocesses.length) {
+        return;
+    }
+    console.log("All components built successfully!");
+    process.exit(0);
+}
+subprocesses.forEach(subprocess => subprocess.on("exit", exitCode => {
+    const component = subprocess.spawnargs.pop();
+    if (exitCode !== 0) {
+        console.error(component, "failed with exit code ", exitCode);
+        process.exit(exitCode || 1);
+    }
+    console.log("Finished building", component);
+    countCompleted();
+}));

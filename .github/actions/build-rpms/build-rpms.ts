@@ -12,24 +12,47 @@
 * limitations under the License.
 */
 
-"use strict";
-const child_process = require("child_process");
-const spawnOptions = {
-	stdio: "inherit",
-	stderr: "inherit",
-};
+"use strict"
+import child_process, {SpawnSyncOptions} from "child_process"
 
-let atcComponent = process.env.ATC_COMPONENT;
-const dockerComposeArgs = ["-f", `${process.env.GITHUB_WORKSPACE}/infrastructure/docker/build/docker-compose.yml`, "run", "--rm"];
-if (typeof atcComponent !== "string" || atcComponent.length === 0) {
-	console.error("Missing environment variable ATC_COMPONENT");
-	process.exit(1);
+let spawnOptions: SpawnSyncOptions = {
+    stdio: "inherit",
 }
-atcComponent += "_build";
-dockerComposeArgs.push(atcComponent);
-const proc = child_process.spawnSync(
-	"docker-compose",
-	dockerComposeArgs,
-	spawnOptions
-);
-process.exit(proc.status);
+
+const atcComponent = process.env.ATC_COMPONENT
+const dockerComposeArgs = ["-f", `${process.env.GITHUB_WORKSPACE}/infrastructure/docker/build/docker-compose.yml`, "run", "--rm"]
+if (!atcComponent) {
+    console.error("Missing environment variable ATC_COMPONENT")
+    process.exit(1)
+}
+
+const subprocesses = atcComponent
+    .split(",")
+    .map(component => component + "_build")
+    .map(service => child_process.spawn(
+        "docker-compose",
+        [...dockerComposeArgs, service],
+        spawnOptions
+    ))
+
+let completedCount = 0
+
+function countCompleted(): void {
+    completedCount++
+    if (completedCount !== subprocesses.length) {
+        return
+    }
+    console.log("All components built successfully!")
+    process.exit(0)
+}
+
+subprocesses.forEach(subprocess => subprocess.on("exit", exitCode => {
+        const component = subprocess.spawnargs.pop()
+        if (exitCode !== 0) {
+            console.error(component, "failed with exit code ", exitCode)
+            process.exit(exitCode || 1)
+        }
+        console.log("Finished building", component)
+        countCompleted()
+    }
+))
