@@ -109,7 +109,7 @@ ln -s "$PWD" "$srcdir/trafficcontrol"
 cd "$srcdir/trafficcontrol/traffic_ops/traffic_ops_golang"
 
 
-go get ./...
+go mod vendor -v
 go build .
 
 echo "
