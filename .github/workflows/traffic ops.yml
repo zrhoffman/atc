@@ -20,6 +20,8 @@ name: Traffic Ops Go client/API integration tests
 on:
   push:
     paths:
+      - .github/actions/to-integration-tests/**
+      - '.github/workflows/traffic ops.yml'
       - go.mod
       - go.sum
       - GO_VERSION
@@ -31,6 +33,8 @@ on:
   create:
   pull_request:
     paths:
+      - .github/actions/to-integration-tests/**
+      - '.github/workflows/traffic ops.yml'
       - go.mod
       - go.sum
       - GO_VERSION
