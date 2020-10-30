@@ -22,33 +22,33 @@ go 1.15
 replace github.com/fsnotify/fsnotify v1.4.7 => gopkg.in/fsnotify.v1 v1.4.7
 
 require (
-	code.cloudfoundry.org/bytefmt v0.0.0-20200131002437-cf55d5288a48
-	github.com/GehirnInc/crypt v0.0.0-20200316065508-bb7000b8a962
-	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef
+	code.cloudfoundry.org/bytefmt v0.0.0-20180108190415-b31f603f5e1e
+	github.com/GehirnInc/crypt v0.0.0-20190301055215-6c0105aabd46
+	github.com/asaskevich/govalidator v0.0.0-20180319081651-7d2e70ef918f
 	github.com/basho/backoff v0.0.0-20150307023525-2ff7c4694083 // indirect
 	github.com/basho/riak-go-client v1.7.1-0.20170327205844-5587c16e0b8b
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
-	github.com/cihub/seelog v0.0.0-20170130134532-f561c5e57575
-	github.com/dchest/siphash v1.2.2
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/cihub/seelog v0.0.0-20170110094445-7bfb7937d106
+	github.com/dchest/siphash v1.1.0
+	github.com/dgrijalva/jwt-go v3.2.1-0.20190620180102-5e25c22bd5d6+incompatible
 	github.com/go-acme/lego v2.7.2+incompatible
-	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
-	github.com/gofrs/flock v0.8.0
+	github.com/go-ozzo/ozzo-validation v3.0.3-0.20180119232150-44af65fe9adf+incompatible
+	github.com/gofrs/flock v0.7.2-0.20190320160742-5135e617513b
 	github.com/google/uuid v1.1.2
-	github.com/hydrogen18/stoppableListener v0.0.0-20161101122645-827d760f0663
+	github.com/hydrogen18/stoppableListener v0.0.0-20151210151943-dadc9ccc400c
 	github.com/influxdata/influxdb v1.8.3
-	github.com/jmoiron/sqlx v1.2.0
-	github.com/json-iterator/go v1.1.10
-	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/lestrrat-go/jwx v0.9.2
+	github.com/jmoiron/sqlx v0.0.0-20170430194603-d9bd385d68c0
+	github.com/json-iterator/go v1.1.6
+	github.com/kelseyhightower/envconfig v1.3.1-0.20180308190516-b2c5c876e265
+	github.com/lestrrat-go/jwx v0.9.1-0.20190702045520-e35178ac2b1f
 	github.com/lestrrat/go-jwx v0.0.0-20171104074836-2857e17763b6
-	github.com/lib/pq v1.8.0
-	github.com/miekg/dns v1.1.35
-	github.com/ogier/pflag v0.0.1
+	github.com/lib/pq v1.0.0
+	github.com/miekg/dns v1.0.6-0.20180406150955-01d59357d468
+	github.com/ogier/pflag v0.0.2-0.20201025181535-73e519546fc0
 	github.com/onsi/ginkgo v1.14.2
 	github.com/onsi/gomega v1.10.3
 	github.com/pborman/getopt/v2 v2.1.0
-	github.com/pkg/errors v0.9.1
+	github.com/pkg/errors v0.8.2-0.20190227000051-27936f6d90f9
 	go.etcd.io/bbolt v1.3.5
 	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897
 	golang.org/x/net v0.0.0-20201029221708-28c70e62bb1d
