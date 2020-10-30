@@ -310,6 +310,14 @@ For the fsnotify component:
 @vendor/gopkg.in/fsnotify.v1/*
 ./vendor/gopkg.in/fsnotify.v1/LICENSE
 
+For the fsnotify/fsnotify component:
+@vendor/github.com/fsnotify/fsnotify/*
+./vendor/github.com/fsnotify/fsnotify/LICENSE
+
+For the vendor/gopkg.in/tomb.v1 component:
+@vendor/gopkg.in/tomb.v1/*
+@vendor/gopkg.in/tomb.v1/LICENSE
+
 For the yaml component:
 @vendor/gopkg.in/yaml.v2/*
 ./vendor/gopkg.in/yaml.v2/LICENSE
@@ -433,6 +441,18 @@ The modern-go/reflect2 component is used under the Apache 2.0 license:
 @vendor/github.com/modern-go/reflect2/*
 ./vendor/github.com/modern-go/reflect2/LICENSE
 
+The nxadm/tail component is used under the MIT license:
+@vendor/github.com/nxadm/tail/*
+./vendor/github.com/nxadm/tail/LICENSE
+
+The onsi/gomega component is used under the MIT license:
+@vendor/github.com/onsi/gomega/*
+./vendor/github.com/onsi/gomega/LICENSE
+
+The onsi/ginkgo component is used under the MIT license:
+@vendor/github.com/onsi/ginkgo/*
+./vendor/github.com/onsi/ginkgo/LICENSE
+
 For the lestrrat-go/jwx (commit e35178a) component:
 @vendor/github.com/lestrrat-go/jwx/*
 ./vendor/github.com/lestrrat-go/jwx/LICENSE
@@ -468,6 +488,10 @@ For the gofrs/flock component:
 For the pborman/getopt/v2 component:
 @vendor/github.com/pborman/getopt/v2/*
 ./vendor/github.com/pborman/getopt/v2/LICENSE
+
+For the google.golang.org/protobuf component:
+@vendor/google.golang.org/protobuf/*
+@vendor/google.golang.org/protobuf/LICENSE
 
 For the gopkg.in/square/go-jose.v2/json component:
 @vendor/gopkg.in/square/go-jose.v2/json/*
