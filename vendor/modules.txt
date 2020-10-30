@@ -1,13 +1,13 @@
-# code.cloudfoundry.org/bytefmt v0.0.0-20200131002437-cf55d5288a48
+# code.cloudfoundry.org/bytefmt v0.0.0-20180108190415-b31f603f5e1e
 ## explicit
 code.cloudfoundry.org/bytefmt
-# github.com/GehirnInc/crypt v0.0.0-20200316065508-bb7000b8a962
+# github.com/GehirnInc/crypt v0.0.0-20190301055215-6c0105aabd46
 ## explicit
 github.com/GehirnInc/crypt
 github.com/GehirnInc/crypt/common
 github.com/GehirnInc/crypt/internal
 github.com/GehirnInc/crypt/md5_crypt
-# github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef
+# github.com/asaskevich/govalidator v0.0.0-20180319081651-7d2e70ef918f
 ## explicit
 github.com/asaskevich/govalidator
 # github.com/basho/backoff v0.0.0-20150307023525-2ff7c4694083
@@ -25,17 +25,17 @@ github.com/basho/riak-go-client/rpb/riak_yokozuna
 # github.com/cenkalti/backoff v2.2.1+incompatible
 ## explicit
 github.com/cenkalti/backoff
-# github.com/cihub/seelog v0.0.0-20170130134532-f561c5e57575
+# github.com/cihub/seelog v0.0.0-20170110094445-7bfb7937d106
 ## explicit
 github.com/cihub/seelog
 github.com/cihub/seelog/archive
 github.com/cihub/seelog/archive/gzip
 github.com/cihub/seelog/archive/tar
 github.com/cihub/seelog/archive/zip
-# github.com/dchest/siphash v1.2.2
+# github.com/dchest/siphash v1.1.0
 ## explicit
 github.com/dchest/siphash
-# github.com/dgrijalva/jwt-go v3.2.0+incompatible
+# github.com/dgrijalva/jwt-go v3.2.1-0.20190620180102-5e25c22bd5d6+incompatible
 ## explicit
 github.com/dgrijalva/jwt-go
 # github.com/fsnotify/fsnotify v1.4.9
@@ -58,11 +58,11 @@ github.com/go-acme/lego/lego
 github.com/go-acme/lego/log
 github.com/go-acme/lego/platform/wait
 github.com/go-acme/lego/registration
-# github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
+# github.com/go-ozzo/ozzo-validation v3.0.3-0.20180119232150-44af65fe9adf+incompatible
 ## explicit
 github.com/go-ozzo/ozzo-validation
 github.com/go-ozzo/ozzo-validation/is
-# github.com/gofrs/flock v0.8.0
+# github.com/gofrs/flock v0.7.2-0.20190320160742-5135e617513b
 ## explicit
 github.com/gofrs/flock
 # github.com/golang/protobuf v1.4.2
@@ -70,7 +70,7 @@ github.com/golang/protobuf/proto
 # github.com/google/uuid v1.1.2
 ## explicit
 github.com/google/uuid
-# github.com/hydrogen18/stoppableListener v0.0.0-20161101122645-827d760f0663
+# github.com/hydrogen18/stoppableListener v0.0.0-20151210151943-dadc9ccc400c
 ## explicit
 github.com/hydrogen18/stoppableListener
 # github.com/influxdata/influxdb v1.8.3
@@ -78,17 +78,17 @@ github.com/hydrogen18/stoppableListener
 github.com/influxdata/influxdb/client/v2
 github.com/influxdata/influxdb/models
 github.com/influxdata/influxdb/pkg/escape
-# github.com/jmoiron/sqlx v1.2.0
+# github.com/jmoiron/sqlx v0.0.0-20170430194603-d9bd385d68c0
 ## explicit
 github.com/jmoiron/sqlx
 github.com/jmoiron/sqlx/reflectx
-# github.com/json-iterator/go v1.1.10
+# github.com/json-iterator/go v1.1.6
 ## explicit
 github.com/json-iterator/go
-# github.com/kelseyhightower/envconfig v1.4.0
+# github.com/kelseyhightower/envconfig v1.3.1-0.20180308190516-b2c5c876e265
 ## explicit
 github.com/kelseyhightower/envconfig
-# github.com/lestrrat-go/jwx v0.9.2
+# github.com/lestrrat-go/jwx v0.9.1-0.20190702045520-e35178ac2b1f
 ## explicit
 github.com/lestrrat-go/jwx/internal/base64
 github.com/lestrrat-go/jwx/internal/option
@@ -100,12 +100,11 @@ github.com/lestrrat/go-jwx/buffer
 github.com/lestrrat/go-jwx/internal/emap
 github.com/lestrrat/go-jwx/jwa
 github.com/lestrrat/go-jwx/jwk
-# github.com/lib/pq v1.8.0
+# github.com/lib/pq v1.0.0
 ## explicit
 github.com/lib/pq
 github.com/lib/pq/oid
-github.com/lib/pq/scram
-# github.com/miekg/dns v1.1.35
+# github.com/miekg/dns v1.0.6-0.20180406150955-01d59357d468
 ## explicit
 github.com/miekg/dns
 # github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
@@ -118,7 +117,7 @@ github.com/nxadm/tail/ratelimiter
 github.com/nxadm/tail/util
 github.com/nxadm/tail/watch
 github.com/nxadm/tail/winfile
-# github.com/ogier/pflag v0.0.1
+# github.com/ogier/pflag v0.0.2-0.20201025181535-73e519546fc0
 ## explicit
 github.com/ogier/pflag
 # github.com/onsi/ginkgo v1.14.2
@@ -159,7 +158,7 @@ github.com/onsi/gomega/types
 # github.com/pborman/getopt/v2 v2.1.0
 ## explicit
 github.com/pborman/getopt/v2
-# github.com/pkg/errors v0.9.1
+# github.com/pkg/errors v0.8.2-0.20190227000051-27936f6d90f9
 ## explicit
 github.com/pkg/errors
 # go.etcd.io/bbolt v1.3.5
