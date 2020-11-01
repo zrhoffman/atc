@@ -29,11 +29,11 @@ download_go() {
 	<<-'SUDO_COMMANDS' sudo sh
 		set -o errexit
 		go_dir="$(
-			dirname "$(
-				dirname "$(
-					realpath "$(
-						which go
-						)")")")"
+			which go |
+				xargs realpath |
+				xargs dirname |
+				xargs dirname
+		)"
 		mv "$go_dir" "${go_dir}.unused"
 		tar -C /usr/local -xzf go.tar.gz
 	SUDO_COMMANDS
