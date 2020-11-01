@@ -42,17 +42,12 @@ download_go() {
 	go version
 }
 
-GOROOT=/usr/local/go
-export GOROOT PATH="${PATH}:${GOROOT}/bin"
-download_go
-
 if [ -z "$INPUT_DIR" ]; then
 	# There's a bug in "defaults" for inputs
 	INPUT_DIR="./lib/..."
 fi
 
-GOROOT=/usr/local/go
-export GOROOT PATH="${PATH}:${GOROOT}/bin"
+export GOROOT=/usr/local/go
 download_go
 export GOPATH="${HOME}/go"
 org_dir="$GOPATH/src/github.com/apache"
