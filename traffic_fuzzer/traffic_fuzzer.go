@@ -20,8 +20,47 @@ package main
  */
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"github.com/apache/trafficcontrol/lib/go-tc"
+	client "github.com/apache/trafficcontrol/traffic_ops/v3-client"
 	"github.com/ffuf/ffuf/pkg/ffuf"
+	"github.com/ffuf/ffuf/pkg/filter"
+	"github.com/ffuf/ffuf/pkg/input"
+	"github.com/ffuf/ffuf/pkg/output"
+	"github.com/ffuf/ffuf/pkg/runner"
+	"io/ioutil"
+	"net/url"
+	"os"
+	"time"
 )
 
+
 func main() {
+	_, cookies := logIn()
+}
+
+func logIn() (*client.Session, []string) {
+	toUrl := os.Getenv("TO_URL")
+	toUser := os.Getenv("TO_USER")
+	toPassword := os.Getenv("TO_PASSWORD")
+
+	toSession, _, err := client.LoginWithAgent(toUrl, toUser, toPassword, true, "Traffic Fuzzer", false, 10*time.Second)
+	if err != nil {
+		fmt.Printf("Logging into Traffic Ops: %s", err.Error())
+		os.Exit(1)
+	}
+
+	cookieURL, err := url.Parse(toUrl)
+	if err != nil {
+		fmt.Printf("Parsing Traffic Ops host: %s", err.Error())
+		os.Exit(1)
+	}
+	cookies := toSession.Client.Jar.Cookies(cookieURL)
+	cookieStrings := make([]string, len(cookies))
+	for index, cookie := range cookies {
+		cookieStrings[index] = cookie.String()
+	}
+	return toSession, cookieStrings
 }
