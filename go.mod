@@ -22,6 +22,7 @@ go 1.15
 replace github.com/fsnotify/fsnotify v1.4.7 => gopkg.in/fsnotify.v1 v1.4.7
 
 require (
+	github.com/ffuf/ffuf v1.1.1-0.20201026214309-c6a629349967
 	code.cloudfoundry.org/bytefmt v0.0.0-20180108190415-b31f603f5e1e
 	github.com/GehirnInc/crypt v0.0.0-20190301055215-6c0105aabd46
 	github.com/asaskevich/govalidator v0.0.0-20180319081651-7d2e70ef918f
