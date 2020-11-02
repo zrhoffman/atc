@@ -36,8 +36,51 @@ import (
 	"time"
 )
 
+type EntityType struct {
+	Route     string
+	Structure interface{}
+	Indirect  bool
+}
+
+func getEntity(typeName string) EntityType {
+	entityTypes := map[string]EntityType{
+		"cachegroup": {
+			Route:     client.API_CACHEGROUPS,
+			Structure: tc.CacheGroupNullable{},
+			Indirect:  true,
+		},
+		"parameter": {
+			Route:     client.API_PARAMETERS,
+			Structure: tc.ParameterNullable{},
+			Indirect:  true,
+		},
+	}
+
+	entityType, exists := entityTypes[typeName]
+	if !exists {
+		fmt.Printf("Could not find entity type %s!", typeName)
+		os.Exit(1)
+	}
+	return entityType
+}
+
 
 func main() {
+	fixtureType := "parameter"
+	filename := "fixtures/" + fixtureType + ".json"
+	bytes, err := ioutil.ReadFile(filename)
+	entityType := getEntity(fixtureType)
+	structure := entityType.Structure
+	if err != nil {
+		fmt.Printf("Reading fixture data from file `%s`: %s\n", filename, err.Error())
+		os.Exit(1)
+	}
+	err = json.Unmarshal(bytes, &structure)
+	if err != nil {
+		fmt.Printf("Unmarshalling fixture data to struct: %s\n", err.Error())
+		os.Exit(1)
+	}
+
 	_, cookies := logIn()
 }
 
