@@ -89,6 +89,10 @@ func main() {
 
 	_, cookies := logIn()
 	opts := newConfig(cookies, structure, entityType.Route)
+	job, cancel := makeJob(opts)
+
+	job.Start()
+	cancel()
 }
 
 func logIn() (*client.Session, []string) {
@@ -190,4 +194,37 @@ func newConfig(cookies []string, entity interface{}, route string) *ffuf.ConfigO
 	}
 
 	return opts
+}
+
+func makeJob(opts *ffuf.ConfigOptions) (*ffuf.Job, context.CancelFunc) {
+	ctx, cancel := context.WithCancel(context.Background())
+	// Sets conf.Delay since ffuf.optRange is a private struct
+	conf, err := ffuf.ConfigFromOptions(opts, ctx, cancel)
+	if err != nil {
+		fmt.Printf("Making config from options: %s\n", err.Error())
+		os.Exit(1)
+	}
+	if err = filter.SetupFilters(opts, conf); err != nil {
+		fmt.Printf("Setting up filters: %s\n", err.Error())
+		os.Exit(1)
+	}
+
+	inputProvider, errs := input.NewInputProvider(conf)
+	if err := errs.ErrorOrNil(); err != nil {
+		fmt.Printf("Making input provider: %s\n", err.Error())
+		os.Exit(1)
+	}
+	job := &ffuf.Job{
+		Config: conf,
+		Input:  inputProvider,
+		Runner: runner.NewRunnerByName("http", conf, false),
+		Output: output.NewOutputProviderByName("stdout", conf),
+		Rate:   ffuf.NewRateThrottle(conf),
+	}
+	if err = filter.CalibrateIfNeeded(job); err != nil {
+		fmt.Printf("Calibtrating job: %s\n", err.Error())
+		os.Exit(1)
+	}
+
+	return job, cancel
 }
