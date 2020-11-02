@@ -64,6 +64,10 @@ func getEntity(typeName string) EntityType {
 	return entityType
 }
 
+func setField(fixtureType string, structure interface{}, fieldName string) {
+	fieldMap := structure.(map[string]interface{})
+	fieldMap[fieldName] = "LIST1"
+}
 
 func main() {
 	fixtureType := "parameter"
@@ -80,6 +84,8 @@ func main() {
 		fmt.Printf("Unmarshalling fixture data to struct: %s\n", err.Error())
 		os.Exit(1)
 	}
+	setField("parameter", structure, "configFile")
+	//setField(fixtureType, structure, "shortName")
 
 	_, cookies := logIn()
 }
