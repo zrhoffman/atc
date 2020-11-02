@@ -1,0 +1,12 @@
+{
+  "localizationMethods": [
+    "CZ",
+    "GEO"
+  ],
+  "fallbackToClosest": true,
+  "name": "my-cachegroup-nameINDEX",
+  "shortName": "my-short-nameINDEX",
+  "typeId": 23,
+  "latitude": -1,
+  "longitude": -1
+}
