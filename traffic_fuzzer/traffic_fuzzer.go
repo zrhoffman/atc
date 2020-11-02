@@ -88,6 +88,7 @@ func main() {
 	//setField(fixtureType, structure, "shortName")
 
 	_, cookies := logIn()
+	opts := newConfig(cookies, structure, entityType.Route)
 }
 
 func logIn() (*client.Session, []string) {
@@ -112,4 +113,81 @@ func logIn() (*client.Session, []string) {
 		cookieStrings[index] = cookie.String()
 	}
 	return toSession, cookieStrings
+}
+
+func newConfig(cookies []string, entity interface{}, route string) *ffuf.ConfigOptions {
+	data, err := json.Marshal(entity)
+	if err != nil {
+		fmt.Printf("Marshalling entity: %s", err.Error())
+		os.Exit(1)
+	}
+	opts := &ffuf.ConfigOptions{
+		Filter: ffuf.FilterOptions{
+			Lines:  "",
+			Regexp: "",
+			Size:   "",
+			Status: "",
+			Words:  "",
+		},
+		General: ffuf.GeneralOptions{
+			AutoCalibration:        false,
+			AutoCalibrationStrings: nil,
+			Colors:                 true,
+			ConfigFile:             "",
+			Delay:                  "",
+			MaxTime:                0,
+			MaxTimeJob:             0,
+			Quiet:                  false,
+			Rate:                   0,
+			ShowVersion:            false,
+			StopOn403:              false,
+			StopOnAll:              false,
+			StopOnErrors:           false,
+			Threads:                40,
+			Verbose:                true,
+		},
+		HTTP: ffuf.HTTPOptions{
+			Cookies:         cookies,
+			Data:            string(data),
+			FollowRedirects: false,
+			Headers:         nil,
+			IgnoreBody:      false,
+			Method:          "",
+			ProxyURL:        "",
+			Recursion:       false,
+			RecursionDepth:  0,
+			ReplayProxyURL:  "",
+			Timeout:         10,
+			URL:             os.Getenv("TO_URL") + route,
+		},
+		Input: ffuf.InputOptions{
+			DirSearchCompat:        false,
+			Extensions:             "",
+			IgnoreWordlistComments: false,
+			InputMode:              "pitchfork",
+			InputNum:               100,
+			Inputcommands:          nil,
+			Request:                "",
+			RequestProto:           "https",
+			Wordlists: []string{
+				0: "lists/list1:LIST1",
+				1: "lists/index:INDEX",
+			},
+		},
+		Matcher: ffuf.MatcherOptions{
+			Lines:  "",
+			Regexp: "",
+			Size:   "",
+			Status: "200,500",
+			Words:  "",
+		},
+		Output: ffuf.OutputOptions{
+			DebugLog:        "",
+			OutputDirectory: "responses",
+			OutputFile:      "",
+			OutputFormat:    "json",
+		},
+	}
+
+	return opts
 }
