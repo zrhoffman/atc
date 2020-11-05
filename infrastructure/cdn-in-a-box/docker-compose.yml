@@ -81,7 +81,7 @@ services:
       context: ../..
       dockerfile: infrastructure/cdn-in-a-box/traffic_ops/Dockerfile
       args:
-        CENTOS_VERSION: 8
+        CENTOS_VERSION: 7
         TRAFFIC_OPS_RPM: infrastructure/cdn-in-a-box/traffic_ops/traffic_ops.rpm
     depends_on:
       - db
