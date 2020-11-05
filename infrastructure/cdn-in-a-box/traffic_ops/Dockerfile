@@ -54,6 +54,7 @@ RUN set -o nounset -o errexit && \
         nmap-ncat       \
         openssl         \
         # Used to copy certs in "Shared SSL certificate generation" step
+        rsync;          \
     dnf clean all
 
 FROM trafficops-common-deps as trafficops-perl-deps
@@ -72,7 +73,6 @@ RUN if [[ "${CENTOS_VERSION:0:1}" -ge 8 ]]; then \
         golang              \
         iproute             \
         jq                  \
-        libcurl             \
         libcurl-devel       \
         libidn-devel        \
         libpcap-devel       \
@@ -85,6 +85,7 @@ RUN if [[ "${CENTOS_VERSION:0:1}" -ge 8 ]]; then \
         perl-Digest-SHA1    \
         perl-JSON           \
         perl-libwww-perl    \
+        perl-Net-Pcap       \
         perl-TermReadKey    \
         perl-Test-CPAN-Meta \
         perl-WWW-Curl       \
