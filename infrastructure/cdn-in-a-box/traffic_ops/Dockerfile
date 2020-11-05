@@ -17,33 +17,18 @@
 
 ############################################################
 # Dockerfile to build Traffic Ops container images
-# Based on CentOS 8
+# Based on CentOS 7.2
 ############################################################
 
 # Keep the trafficops-common-deps in Dockerfile the same as
 # trafficops-common-deps in Dockerfile-go to cache the same
 # layer.
-ARG CENTOS_VERSION=8
-FROM centos:${CENTOS_VERSION} as trafficops-common-deps
-ARG CENTOS_VERSION=8
-# Makes CENTOS_VERSION available in later layers without needing to specify it again
-ENV CENTOS_VERSION=$CENTOS_VERSION
+FROM centos:7 as trafficops-common-deps
 
-RUN if [[ "$CENTOS_VERSION" == 7* ]]; then \
-        yum -y install dnf || exit 1; \
-    fi
-
-RUN set -o nounset -o errexit && \
-    mkdir -p /etc/cron.d; \
-    if [[ "$CENTOS_VERSION" == 7* ]]; then \
-        use_repo=''; \
-    else \
-        use_repo='--repo=pgdg96'; \
-    fi; \
-    dnf -y install "https://download.postgresql.org/pub/repos/yum/reporpms/EL-${CENTOS_VERSION}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"; \
-    dnf -y $use_repo -- install postgresql96; \
-    dnf -y install epel-release; \
-    dnf -y install      \
+RUN mkdir /etc/cron.d && \
+    yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
+    yum -y install epel-release && \
+    yum -y install      \
         jq              \
         bind-utils      \
         net-tools       \
@@ -53,19 +38,15 @@ RUN set -o nounset -o errexit && \
         isomd5sum       \
         nmap-ncat       \
         openssl         \
-        # Used to copy certs in "Shared SSL certificate generation" step
-        rsync;          \
-    dnf clean all
+        postgresql96 && \
+    yum clean all
 
 FROM trafficops-common-deps as trafficops-perl-deps
 
 EXPOSE 443
 ENV MOJO_MODE production
 
-RUN if [[ "${CENTOS_VERSION:0:1}" -ge 8 ]]; then \
-        enable_repo='--enablerepo=PowerTools' || exit 1; \
-    fi && \
-    dnf -y $enable_repo install \
+RUN yum install -y          \
         cpanminus           \
         expat-devel         \
         gcc-c++             \
@@ -73,6 +54,7 @@ RUN if [[ "${CENTOS_VERSION:0:1}" -ge 8 ]]; then \
         golang              \
         iproute             \
         jq                  \
+        libcurl             \
         libcurl-devel       \
         libidn-devel        \
         libpcap-devel       \
@@ -85,14 +67,13 @@ RUN if [[ "${CENTOS_VERSION:0:1}" -ge 8 ]]; then \
         perl-Digest-SHA1    \
         perl-JSON           \
         perl-libwww-perl    \
-        perl-Net-Pcap       \
         perl-TermReadKey    \
         perl-Test-CPAN-Meta \
         perl-WWW-Curl       \
         postgresql96-devel  \
+        postgresql96-libs   \
         tar &&              \
-    dnf -y clean all && \
-    mkdir -p /opt/traffic_ops/app/public
+    yum -y clean all && mkdir -p /opt/traffic_ops/app/public
 
 ADD traffic_router/core/src/test/resources/geo/GeoLite2-City.mmdb.gz /opt/traffic_ops/app/public/
 
