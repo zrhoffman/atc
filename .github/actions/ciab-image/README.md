@@ -17,19 +17,22 @@
     under the License.
 -->
 
-# build-ciab JavaScript action
+# ciab-image JavaScript action
 
-This action builds one or more CDN-in-a-Box images. It assumes the RPMs are already built and exist in artifacts in the `dist/` directory.
+This action builds the CDN-in-a-Box images corresponding to a single Traffic Control component.
 
 ## Inputs
 None
 
+## Environment variables:
+- RPM_PATHS: Optional. A comma-separated list of RPM paths to pass to `make`.
+
 ## Outputs
 ### `exit-code`
 
-Exit code from building the images
+0 on success, non-zero otherwise
 
 ## Example usage
 ```yaml
-uses: .github/actions/build-ciab
+uses: actions/ciab-image@master
 ```

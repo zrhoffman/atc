@@ -13,27 +13,26 @@
 */
 
 "use strict";
-const child_process = require("child_process");
-const fs = require("fs");
-const path = require("path");
-const spawnOptions = {
-	stdio: "inherit",
-	stderr: "inherit"
-};
-const dockerCompose = ["docker-compose", "-f", "docker-compose.yml", "-f", "docker-compose.readiness.yml"];
-process.env.DOCKER_BUILDKIT = 1;
-process.env.COMPOSE_DOCKER_CLI_BUILD = 1;
+import child_process, { SpawnSyncOptions } from "child_process";
+import fs from "fs";
+import path from "path";
 
-function moveRPMs() {
+const spawnOptions: SpawnSyncOptions = {stdio: "inherit"};
+const dockerCompose = ["docker-compose", "-f", "docker-compose.yml", "-f", "docker-compose.readiness.yml"];
+process.env.DOCKER_BUILDKIT = "1";
+process.env.COMPOSE_DOCKER_CLI_BUILD = "1";
+
+function moveRPMs(): void {
 	process.chdir(`${process.env.GITHUB_WORKSPACE}/dist`);
 	fs.readdirSync(".") // read contents of the dist directory
 		.filter(item => fs.lstatSync(item).isDirectory()) // get a list of directories within dist
-		.flatMap(directory => fs.readdirSync(directory).map(item => path.join(directory, item))) // list files within those directories
-		.filter(item => /\.rpm$/.test(item)) // get a list of RPMs
-		.forEach(rpm => fs.renameSync(rpm, path.basename(rpm))); // move the RPMs to the dist folder
+		.flatMap((directory: string) =>
+			fs.readdirSync(directory).map(item => path.join(directory, item))) // list files within those directories
+		.filter((item: string) => /\.rpm$/.test(item)) // get a list of RPMs
+		.forEach((rpm: string) => fs.renameSync(rpm, path.basename(rpm))); // move the RPMs to the dist folder
 }
 
-function runProcess(...commandArguments) {
+function runProcess(...commandArguments: string[]): void {
 	console.info(...commandArguments);
 	const proc = child_process.spawnSync(
 		commandArguments[0],
@@ -44,7 +43,7 @@ function runProcess(...commandArguments) {
 		return;
 	}
 	console.error("Child process", ...commandArguments, "exited with status code", proc.status, "!");
-	process.exit(proc.status);
+	process.exit(proc.status ?? 1);
 }
 
 moveRPMs();
