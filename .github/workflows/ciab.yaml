@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-name: CDN-in-a-Box CI
+name: CDN in a Box CI
 
 on:
   push:
@@ -73,6 +73,19 @@ jobs:
         with:
           name: ${{ github.job }}
           path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
+      - name: Build trafficmonitor CDN in a Box images
+        uses: ./.github/actions/build-ciab
+        env:
+          CENTOS_VERSION: 8
+        with:
+          rpm_paths: traffic_monitor/traffic_monitor.rpm
+          ciab_images: trafficmonitor
+          save_images: true
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   traffic_ops:
     if: github.event.pull_request.draft == false
@@ -89,6 +102,30 @@ jobs:
         with:
           name: ${{ github.job }}
           path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
+      - name: Cache Perl modules
+        env:
+          CENTOS_VERSION: 8
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/infrastructure/cdn-in-a-box/traffic_ops/local
+          key: ${{ runner.os }}-cpan-centos-${{ env.CENTOS_VERSION }}-${{ hashFiles('cache/**.tar.gz') }}-${{ hashFiles('**/perllocal.pod') }}
+          restore-keys: |
+            ${{ runner.os }}-cpan-centos-${{ env.CENTOS_VERSION }}-${{ hashFiles('cache/**.tar.gz') }}-${{ hashFiles('**/perllocal.pod') }}
+            ${{ runner.os }}-cpan-centos-${{ env.CENTOS_VERSION }}-${{ hashFiles('cache/**.tar.gz') }}-
+            ${{ runner.os }}-cpan-centos-${{ env.CENTOS_VERSION }}-
+      - name: Build trafficops and trafficops CDN in a Box images
+        uses: ./.github/actions/build-ciab
+        env:
+          CENTOS_VERSION: 8
+        with:
+          rpm_paths: traffic_ops/traffic_ops.rpm
+          ciab_images: trafficops,trafficops-perl
+          save_images: true
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   traffic_ops_ort:
     if: github.event.pull_request.draft == false
@@ -105,6 +142,19 @@ jobs:
         with:
           name: ${{ github.job }}
           path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
+      - name: Build edge, mid-01 and mid-02 CDN in a Box images
+        uses: ./.github/actions/build-ciab
+        env:
+          CENTOS_VERSION: 8
+        with:
+          rpm_paths: cache/traffic_ops_ort.rpm
+          ciab_images: edge,mid-01,mid-02
+          save_images: true
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   traffic_portal:
     if: github.event.pull_request.draft == false
@@ -144,6 +194,19 @@ jobs:
         with:
           name: ${{ github.job }}
           path: ${{ github.workspace }}/dist/*.rpm
+      - name: Build trafficrouter CDN in a Box image
+        uses: ./.github/actions/build-ciab
+        env:
+          CENTOS_VERSION: 8
+        with:
+          rpm_paths: traffic_router/tomcat.rpm,traffic_router/traffic_router.rpm
+          ciab_images: trafficrouter
+          save_images: true
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   traffic_stats:
     if: github.event.pull_request.draft == false
@@ -160,6 +223,19 @@ jobs:
         with:
           name: ${{ github.job }}
           path: ${{ github.workspace }}/dist/${{ github.job }}-*.rpm
+      - name: Build trafficstats CDN in a Box image
+        uses: ./.github/actions/build-ciab
+        env:
+          CENTOS_VERSION: 8
+        with:
+          rpm_paths: traffic_stats/traffic_stats.rpm
+          ciab_images: trafficstats
+          save_images: true
+      - name: Upload Docker images
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-images
+          path: ${{ github.workspace }}/ciab-images/docker-${{ github.job }}.tar.gz
 
   grove:
     if: github.event.pull_request.draft == false
@@ -206,28 +282,29 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
-      - name: Download RPMs
+      - name: Download CDN in a Box images
         uses: actions/download-artifact@v2
         with:
-          path: ${{ github.workspace }}/dist/
-      - name: Cache Perl modules
-        env:
-          CENTOS_VERSION: 8
-        uses: actions/cache@v2
-        with:
-          path: ${{ github.workspace }}/infrastructure/cdn-in-a-box/traffic_ops/local
-          key: ${{ runner.os }}-cpan-centos-${{ env.CENTOS_VERSION }}-${{ hashFiles('cache/**.tar.gz') }}-${{ hashFiles('**/perllocal.pod') }}
-          restore-keys: |
-            ${{ runner.os }}-cpan-centos-${{ env.CENTOS_VERSION }}-${{ hashFiles('cache/**.tar.gz') }}-${{ hashFiles('**/perllocal.pod') }}
-            ${{ runner.os }}-cpan-centos-${{ env.CENTOS_VERSION }}-${{ hashFiles('cache/**.tar.gz') }}-
-            ${{ runner.os }}-cpan-centos-${{ env.CENTOS_VERSION }}-
-      - name: Build CDN-in-a-Box images
-        env:
-          CENTOS_VERSION: 8
+          path: ${{ github.workspace }}/ciab-images/
+      - name: Build CDN in a Box images
         uses: ./.github/actions/build-ciab
-      - name: Start CDN-in-a-Box
+        env:
+          CENTOS_VERSION: 8
+        with:
+          ciab_images: dns,enroller,origin,trafficvault
+      - name: Start CDN in a Box
         uses: ./.github/actions/run-ciab
-      - name: Upload CDN-in-a-Box logs
+      - name: Delete CDN in a Box images
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: |
+            traffic_monitor-images
+            traffic_ops-images
+            traffic_ops_ort-images
+            traffic_router-images
+            traffic_stats-images
+        if: ${{ always() }}
+      - name: Upload CDN in a Box logs
         uses: actions/upload-artifact@v2
         with:
           name: ciab-logs

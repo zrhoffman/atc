@@ -26,14 +26,24 @@ store_ciab_logs() {
 	done;
 }
 
+(
+# Load CDN-in-a-Box docker images from GitHub Actions artifacts
+cd ciab-images;
+for image_set in *-images; do
+	(
+	docker image load -i "${image_set}/docker-"*.tar.gz;
+	rm -rf "$image_set";
+	) &
+done;
+echo 'Imported CDN-in-a-Box Docker images';
+);
+
 cd infrastructure/cdn-in-a-box;
 logged_services='trafficrouter readiness';
 other_services='dns edge enroller mid-01 mid-02 origin trafficmonitor trafficops trafficops-perl trafficstats trafficvault';
 docker_compose='docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml';
 $docker_compose up -d $logged_services $other_services;
 $docker_compose logs -f $logged_services &
-# Copy built Perl modules for caching
-docker cp "$(docker-compose ps -q trafficops-perl):/opt/traffic_ops/app/local" "${GITHUB_WORKSPACE}/infrastructure/cdn-in-a-box/traffic_ops" &
 
 echo 'Waiting for the readiness container to exit...';
 if ! timeout 12m $docker_compose logs -f readiness >/dev/null; then
