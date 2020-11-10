@@ -21,13 +21,15 @@ ARG DIR=github.com/apache/trafficcontrol
 RUN set -o errexit;\
     yum -y update;\
     yum -y install \
-        java-1.8.0-openjdk-headless \
-        java-1.8.0-openjdk-devel \
-        maven \
-        epel-release \
-        net-tools \
         bind-utils \
-        iproute;\
+        epel-release \
+        iproute\
+        java-1.8.0-openjdk-devel \
+        java-1.8.0-openjdk-headless \
+        maven \
+        nc \
+        net-tools \
+        rpm-build;\
     yum -y install tomcat-native
 
 COPY traffic_router /go/src/$DIR/traffic_router
