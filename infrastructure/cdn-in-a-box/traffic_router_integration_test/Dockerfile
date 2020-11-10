@@ -34,6 +34,7 @@ RUN set -o errexit;\
         java-11-openjdk-devel \
         java-11-openjdk-headless \
         maven \
+        nc \
         net-tools \
         rpm-build;\
     dnf -y install tomcat-native
