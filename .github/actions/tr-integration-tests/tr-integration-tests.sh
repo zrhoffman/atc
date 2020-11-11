@@ -18,31 +18,21 @@
 
 set -ex;
 
-store_ciab_logs() {
-	echo 'Storing CDN-in-a-Box logs...';
-	mkdir logs;
-	for service in $($docker_compose ps --services); do
-		$docker_compose logs --no-color --timestamps "$service" >"logs/${service}.log";
-	done;
-}
-
 cd infrastructure/cdn-in-a-box;
-logged_services='trafficrouter readiness';
-other_services='dns edge enroller mid-01 mid-02 origin trafficmonitor trafficops trafficops-perl trafficstats trafficvault';
-docker_compose='docker-compose -f ./docker-compose.yml -f ./docker-compose.readiness.yml';
-$docker_compose up -d $logged_services $other_services;
-$docker_compose logs -f $logged_services &
+tests_service='tr-integration-test';
+other_services='dns edge enroller mid-01 mid-02 origin trafficmonitor trafficops trafficops-perl trafficrouter trafficvault';
+docker_compose='docker-compose -f ./docker-compose.yml -f ./docker-compose.traffic-router-test.yml';
+$docker_compose up -d $tests_service $other_services;
 # Copy built Perl modules for caching
 docker cp "$(docker-compose ps -q trafficops-perl):/opt/traffic_ops/app/local" "${GITHUB_WORKSPACE}/infrastructure/cdn-in-a-box/traffic_ops" &
 
-echo 'Waiting for the readiness container to exit...';
-if ! timeout 12m $docker_compose logs -f readiness >/dev/null; then
-	echo "CDN-in-a-Box didn't become ready within 12 minutes - exiting" >&2;
+echo "Waiting for the ${tests_service} container to exit...";
+if ! timeout 15m $docker_compose logs -f $tests_service; then
+	echo "Traffic Router Integration and External tests did not complete within 15m minutes - exiting" >&2;
 	exit_code=1;
 	store_ciab_logs;
-elif exit_code="$(docker inspect --format='{{.State.ExitCode}}' "$($docker_compose ps -q readiness)")"; [ "$exit_code" -ne 0 ]; then
-	echo 'Readiness container exited with an error' >&2;
-	store_ciab_logs;
+elif exit_code="$(docker inspect --format='{{.State.ExitCode}}' "$($docker_compose ps -q $tests_service)")"; [ "$exit_code" -ne 0 ]; then
+	echo 'Traffic Router Integration Tests container exited with an error' >&2;
 fi;
 
 $docker_compose kill;
