@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Script for running the Dockerfile for Traffic Ops.
+# The Dockerfile sets up a Docker image which can be used for any new Traffic Ops container;
+# This script, which should be run when the container is run (it's the ENTRYPOINT), will configure the container.
+#
+# The following environment variables must be set, ordinarily by `docker run -e` arguments:
+# DB_SERVER
+# DB_PORT
+# DB_ROOT_PASS
+# DB_USER
+# DB_USER_PASS
+# DB_NAME
+# ADMIN_USER
+# ADMIN_PASS
+# TO_HOST
+# TO_PORT
+# TO_PERL_HOST
+# TO_PERL_PORT
+# TP_HOST
+#
+# Check that env vars are set
+envvars=( DB_SERVER DB_PORT DB_ROOT_PASS DB_USER DB_USER_PASS ADMIN_USER ADMIN_PASS DOMAIN TO_PERL_HOST TO_PERL_PORT TO_PERL_SCHEME TO_HOST TO_PORT TP_HOST)
+for v in $envvars
+do
+	if [[ -z $$v ]]; then echo "$v is unset"; exit 1; fi
+done
+
+until [[ -f "$X509_CA_ENV_FILE" ]]
+do
+  echo "Waiting on SSL certificate generation."
+  sleep 2
+done
+
+# these expected to be stored in $X509_CA_ENV_FILE, but a race condition could render the contents
+# blank until it gets sync'd.  Ensure vars defined before writing cdn.conf.
+until [[ -n "$X509_GENERATION_COMPLETE" ]]
+do
+  echo "Waiting on X509 vars to be defined"
+  sleep 1
+  source "$X509_CA_ENV_FILE"
+done
+
+# Add the CA certificate to sysem TLS trust store
+cp $X509_CA_CERT_FULL_CHAIN_FILE /etc/pki/ca-trust/source/anchors
+update-ca-trust extract
+
+crt="$X509_INFRA_CERT_FILE"
+key="$X509_INFRA_KEY_FILE"
+
+echo "crt=$crt"
+echo "key=$key"
+
+if [[ "$TO_DEBUG_ENABLE" == true ]]; then
+  DEBUGGING_TIMEOUT=$(( 60 * 60 * 24 )); # Timing out debugging after 1 day seems fair
+fi;
+
+
+echo "$(<postinstall.json envsubst)" > postinstall.json
+/opt/traffic_ops/install/bin/_postinstall -a --cfile postinstall.json
+
+cdn_conf=/opt/traffic_ops/app/conf/cdn.conf
+>"$cdn_conf" echo "$(jq -s '.[0] * .[1]' "$cdn_conf" <(cat <<-EOF
+{
+    "hypnotoad" : {
+        "listen" : [
+            "$TO_PERL_SCHEME://$TO_PERL_FQDN:$TO_PERL_PORT?cert=$crt&key=$key&verify=0x00&ciphers=AES128-GCM-SHA256:HIGH:!RC4:!MD5:!aNULL:!EDH:!ED"
+        ]
+    },
+    "use_ims": true,
+    "traffic_ops_golang" : {
+        "insecure": true,
+        "port" : "$TO_PORT",
+        "proxy_timeout" : ${DEBUGGING_TIMEOUT:-60},
+        "proxy_tls_timeout" : ${DEBUGGING_TIMEOUT:-60},
+        "proxy_read_header_timeout" : ${DEBUGGING_TIMEOUT:-60},
+        "read_timeout" : ${DEBUGGING_TIMEOUT:-60},
+        "read_header_timeout" : ${DEBUGGING_TIMEOUT:-60},
+        "request_timeout" : ${DEBUGGING_TIMEOUT:-60},
+        "write_timeout" : ${DEBUGGING_TIMEOUT:-60},
+        "idle_timeout" : ${DEBUGGING_TIMEOUT:-60},
+        "log_location_error": "$TO_LOG_ERROR",
+        "log_location_warning": "$TO_LOG_WARNING",
+        "log_location_info": "$TO_LOG_INFO",
+        "log_location_debug": "$TO_LOG_DEBUG",
+        "log_location_event": "$TO_LOG_EVENT",
+        "db_conn_max_lifetime_seconds": ${DEBUGGING_TIMEOUT:-60},
+        "db_query_timeout_seconds": ${DEBUGGING_TIMEOUT:-20}
+    },
+    "to" : {
+        "email_from" : "no-reply@$INFRA_SUBDOMAIN.$TLD_DOMAIN"
+    },
+    "portal" : {
+        "base_url" : "https://$TP_HOST.$INFRA_SUBDOMAIN.$TLD_DOMAIN/#!/",
+        "email_from" : "no-reply@$INFRA_SUBDOMAIN.$TLD_DOMAIN"
+    },
+    "secrets" : [
+        "$TO_SECRET"
+    ],
+    "smtp" : {
+        "enabled" : true,
+        "address" : "${SMTP_FQDN}:${SMTP_PORT}"
+    },
+    "InfluxEnabled": true,
+    "influxdb_conf_path": "/opt/traffic_ops/app/conf/production/influx.conf",
+    "lets_encrypt" : {
+        "environment": "staging"
+    }
+}
+EOF
+))"

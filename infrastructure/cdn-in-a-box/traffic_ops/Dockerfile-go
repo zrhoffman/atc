@@ -75,6 +75,8 @@ COPY dns/set-dns.sh \
      /usr/local/sbin/
 
 WORKDIR /opt/traffic_ops/app
+ADD traffic_ops/postinstall.json .
+
 EXPOSE  443
 CMD     /run-go.sh
 HEALTHCHECK --interval=10s --timeout=1s \
