@@ -85,8 +85,8 @@ chmod -R a+r "$X509_CA_PERSIST_DIR"
 
 # Write config files
 set -x
-if [[ -r /config.sh ]]; then
-	. /config.sh
+if [[ -r /config-perl.sh ]]; then
+	. /config-perl.sh
 fi
 
 pg_isready=$(rpm -ql postgresql96 | grep bin/pg_isready)
@@ -106,10 +106,6 @@ cat conf/production/database.conf
 export PERL5LIB=$TO_DIR/lib:$TO_DIR/local/lib/perl5
 export PATH=/usr/local/go/bin:/opt/traffic_ops/go/bin:$PATH
 export GOPATH=/opt/traffic_ops/go
-
-cd $TO_DIR && \
-	./db/admin --env=production reset && \
-	./db/admin --env=production upgrade || { echo "db upgrade failed!"; exit 1; }
 
 # Add admin user -- all other users should be created using API
 /adduser.pl $TO_ADMIN_USER $TO_ADMIN_PASSWORD admin | psql -v ON_ERROR_STOP=1 -U$DB_USER -h$DB_SERVER $DB_NAME || { echo "adding traffic_ops admin user failed!"; exit 1; }
