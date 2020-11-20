@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - Updated CDN in a Box to CentOS 8 and added `RHEL_VERSION` Docker build arg so CDN in a Box can be built for CentOS 7, if desired
+- Updated builder Docker images to CentOS 8
 
 ## [5.0.0] - 2020-10-20
 ### Added
