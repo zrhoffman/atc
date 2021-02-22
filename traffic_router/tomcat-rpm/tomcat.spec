@@ -20,6 +20,7 @@ License:    Apache Software License
 URL:        https://github.com/apache/trafficcontrol/
 Source:     %{_sourcedir}/apache-tomcat-%{version}.tar.gz
 Requires:   java >= 1.8
+BuildArch:  noarch
 
 %define tomcat_home /opt/tomcat
 
