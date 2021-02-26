@@ -310,7 +310,7 @@ class AbstractResourceWatcherTest {
                 Files.exists(Paths.get(TestBase.monitorPropertiesPath)),
                 Matchers.equalTo(true)
             )
-            context = TestBase.getContext()
+            context = TestBase.context
         }
     }
 }

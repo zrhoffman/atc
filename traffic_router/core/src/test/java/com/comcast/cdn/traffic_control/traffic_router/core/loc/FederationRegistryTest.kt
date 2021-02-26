@@ -236,7 +236,7 @@ class FederationRegistryTest {
         federationMappings.add(federationMapping)
         val federation = Federation("kable-town-01", federationMappings)
         federations = ArrayList()
-        federations.add(federation)
+        federations!!.add(federation)
     }
 
     @Test

@@ -216,7 +216,7 @@ import java.io.*
 import java.util.ArrayList
 
 class NetworkNodeTest {
-    private val netMap: Map<String, MutableList<String>> = HashMap()
+    private val netMap: MutableMap<String, MutableList<String>> = HashMap()
     private val deepNetMap: MutableMap<String, MutableList<String>> = HashMap()
     private var root: NetworkNode? = null
     private var deepRoot: NetworkNode? = null

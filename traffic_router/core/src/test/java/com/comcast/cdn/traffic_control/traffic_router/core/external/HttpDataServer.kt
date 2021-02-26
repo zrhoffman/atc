@@ -234,8 +234,8 @@ class HttpDataServer(private val testHttpServerPort: Int) : HttpHandler {
     @Throws(IOException::class)
     fun start(port: Int) {
         httpServer = HttpServer.create(InetSocketAddress(InetAddress.getLoopbackAddress(), port), 10)
-        httpServer.createContext("/", this)
-        httpServer.start()
+        httpServer!!.createContext("/", this)
+        httpServer!!.start()
         println(">>>>>>>>>>>>> Started Fake Http Data Server at $port")
     }
 

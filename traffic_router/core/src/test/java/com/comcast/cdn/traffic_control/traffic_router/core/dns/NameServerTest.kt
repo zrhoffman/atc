@@ -225,7 +225,7 @@ class NameServerTest {
         trafficRouterManager = Mockito.mock(TrafficRouterManager::class.java)
         trafficRouter = Mockito.mock(TrafficRouter::class.java)
         val cacheRegister = Mockito.mock(CacheRegister::class.java)
-        Mockito.doReturn(cacheRegister).`when`(trafficRouter).cacheRegister
+        Mockito.doReturn(cacheRegister).`when`(trafficRouter)!!.cacheRegister
         val js: JsonNode = JsonNodeFactory.instance.objectNode().put("ecsEnable", true)
         PowerMockito.`when`(cacheRegister.config).thenReturn(js)
         val m_an: Name
@@ -293,8 +293,7 @@ class NameServerTest {
 
         //Verification of response
         val qopt = res.opt!!
-        var list: List<EDNSOption?> = Collections.EMPTY_LIST
-        list = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET)
+        val list: MutableList<EDNSOption?> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET) as MutableList<EDNSOption?>
         assert(list !== Collections.EMPTY_LIST)
         val option = list[0] as ClientSubnetOption?
         MatcherAssert.assertThat(nmask, org.hamcrest.Matchers.equalTo(option!!.sourceNetmask))
@@ -358,8 +357,7 @@ class NameServerTest {
 
         //Verification of response
         val qopt = res.opt!!
-        var list: List<EDNSOption?> = Collections.EMPTY_LIST
-        list = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET)
+        val list: MutableList<EDNSOption?> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET) as MutableList<EDNSOption?>
         assert(list !== Collections.EMPTY_LIST)
         val option = list[0] as ClientSubnetOption?
         MatcherAssert.assertThat(1, org.hamcrest.Matchers.equalTo(list.size))
@@ -373,7 +371,7 @@ class NameServerTest {
     @Throws(Exception::class)
     fun TestDeliveryServiceARecordQueryWithClientSubnetOption() {
         val cacheRegister = Mockito.mock(CacheRegister::class.java)
-        Mockito.doReturn(cacheRegister).`when`(trafficRouter).cacheRegister
+        Mockito.doReturn(cacheRegister).`when`(trafficRouter)!!.cacheRegister
         val js: JsonNode = JsonNodeFactory.instance.objectNode().put("ecsEnable", false)
         PowerMockito.`when`(cacheRegister.config).thenReturn(js)
         val node = JsonNodeFactory.instance.objectNode()
@@ -382,7 +380,7 @@ class NameServerTest {
         node.put("routingName", "edge")
         node.put("coverageZoneOnly", false)
         val ds1 = DeliveryService("ds1", node)
-        val dses: MutableSet<*> = HashSet<Any?>()
+        val dses: MutableSet<DeliveryService> = HashSet<DeliveryService>()
         dses.add(ds1)
         nameServer!!.setEcsEnabledDses(dses)
         val name = Name.fromString("host1.example.com.")
@@ -433,8 +431,7 @@ class NameServerTest {
 
         //Verification of response
         val qopt = res.opt!!
-        var list: List<EDNSOption?> = Collections.EMPTY_LIST
-        list = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET)
+        val list: MutableList<EDNSOption?> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET) as MutableList<EDNSOption?>
         assert(list !== Collections.EMPTY_LIST)
         val option = list[0] as ClientSubnetOption?
         MatcherAssert.assertThat(nmask, org.hamcrest.Matchers.equalTo(option!!.sourceNetmask))
@@ -447,7 +444,7 @@ class NameServerTest {
     @Throws(Exception::class)
     fun TestDeliveryServiceARecordQueryWithMultipleClientSubnetOption() {
         val cacheRegister = Mockito.mock(CacheRegister::class.java)
-        Mockito.doReturn(cacheRegister).`when`(trafficRouter).cacheRegister
+        Mockito.doReturn(cacheRegister).`when`(trafficRouter)!!.cacheRegister
         val js: JsonNode = JsonNodeFactory.instance.objectNode().put("ecsEnable", false)
         PowerMockito.`when`(cacheRegister.config).thenReturn(js)
         val name = Name.fromString("host1.example.com.")
@@ -459,7 +456,7 @@ class NameServerTest {
         node.put("routingName", "edge")
         node.put("coverageZoneOnly", false)
         val ds1 = DeliveryService("ds1", node)
-        val dses: MutableSet<*> = HashSet<Any?>()
+        val dses: MutableSet<DeliveryService> = HashSet<DeliveryService>()
         dses.add(ds1)
         nameServer!!.setEcsEnabledDses(dses)
 
@@ -512,8 +509,7 @@ class NameServerTest {
 
         //Verification of response
         val qopt = res.opt!!
-        var list: List<EDNSOption?> = Collections.EMPTY_LIST
-        list = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET)
+        val list: MutableList<EDNSOption?> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET) as MutableList<EDNSOption?>
         assert(list !== Collections.EMPTY_LIST)
         val option = list[0] as ClientSubnetOption?
         MatcherAssert.assertThat(1, org.hamcrest.Matchers.equalTo(list.size))

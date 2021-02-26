@@ -178,6 +178,7 @@ import com.comcast.cdn.traffic_control.traffic_router.core.external.StatsTest
 import com.comcast.cdn.traffic_control.traffic_router.core.external.ZonesTest
 import com.comcast.cdn.traffic_control.traffic_router.core.CatalinaTrafficRouter
 import com.comcast.cdn.traffic_control.traffic_router.core.edge.Cache
+import com.comcast.cdn.traffic_control.traffic_router.core.edge.Location
 import com.comcast.cdn.traffic_control.traffic_router.core.external.HttpDataServer
 import com.comcast.cdn.traffic_control.traffic_router.core.external.ExternalTestSuite
 import com.comcast.cdn.traffic_control.traffic_router.core.request.Request
@@ -212,21 +213,22 @@ class TrafficRouterTest {
     private var trafficRouter: TrafficRouter? = null
     private var deliveryService: DeliveryService? = null
     private var federationRegistry: FederationRegistry? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {
         deliveryService = Mockito.mock(DeliveryService::class.java)
-        Mockito.`when`(deliveryService.isAvailable()).thenReturn(true)
-        Mockito.`when`(deliveryService.isCoverageZoneOnly()).thenReturn(false)
-        Mockito.`when`(deliveryService.getDispersion()).thenReturn(
+        Mockito.`when`(deliveryService!!.isAvailable()).thenReturn(true)
+        Mockito.`when`(deliveryService!!.isCoverageZoneOnly()).thenReturn(false)
+        Mockito.`when`(deliveryService!!.getDispersion()).thenReturn(
             Mockito.mock(
                 Dispersion::class.java
             )
         )
-        Mockito.`when`(deliveryService.isAcceptHttp()).thenReturn(true)
+        Mockito.`when`(deliveryService!!.isAcceptHttp()).thenReturn(true)
         consistentHasher = Mockito.mock(ConsistentHasher::class.java)
         Mockito.`when`(
-            deliveryService.createURIString(
+            deliveryService!!.createURIString(
                 Matchers.any(
                     HTTPRequest::class.java
                 ), Matchers.any(
@@ -239,7 +241,7 @@ class TrafficRouterTest {
         inetRecords.add(inetRecord)
         federationRegistry = Mockito.mock(FederationRegistry::class.java)
         Mockito.`when`(
-            federationRegistry.findInetRecords(
+            federationRegistry!!.findInetRecords(
                 Matchers.anyString(), Matchers.any(
                     CidrAddress::class.java
                 )
@@ -263,35 +265,35 @@ class TrafficRouterTest {
             )
         )
         Mockito.`when`(
-            trafficRouter.route(
+            trafficRouter!!.route(
                 Matchers.any(DNSRequest::class.java), Matchers.any(
                     StatTracker.Track::class.java
                 )
             )
         ).thenCallRealMethod()
         Mockito.`when`(
-            trafficRouter.route(
+            trafficRouter!!.route(
                 Matchers.any(
                     HTTPRequest::class.java
                 ), Matchers.any(StatTracker.Track::class.java)
             )
         ).thenCallRealMethod()
         Mockito.`when`(
-            trafficRouter.singleRoute(
+            trafficRouter!!.singleRoute(
                 Matchers.any(
                     HTTPRequest::class.java
                 ), Matchers.any(StatTracker.Track::class.java)
             )
         ).thenCallRealMethod()
         Mockito.`when`(
-            trafficRouter.selectDeliveryService(
+            trafficRouter!!.selectDeliveryService(
                 Matchers.any(
                     Request::class.java
                 )
             )
         ).thenReturn(deliveryService)
         Mockito.`when`(
-            trafficRouter.consistentHashDeliveryService(
+            trafficRouter!!.consistentHashDeliveryService(
                 Matchers.any(
                     DeliveryService::class.java
                 ), Matchers.any(HTTPRequest::class.java), Matchers.anyString()
@@ -328,18 +330,14 @@ class TrafficRouterTest {
             Cache::class.java
         )
         Mockito.`when`(cache.hasDeliveryService(Matchers.anyString())).thenReturn(true)
-        val cacheLocation = CacheLocation("", Geolocation(50, 50))
+        val cacheLocation = CacheLocation("", Geolocation(50.0, 50.0))
         cacheLocation.addCache(cache)
         val cacheLocationCollection: MutableSet<CacheLocation> = HashSet()
         cacheLocationCollection.add(cacheLocation)
         val cacheRegister = Mockito.mock(CacheRegister::class.java)
         Mockito.`when`(cacheRegister.cacheLocations).thenReturn(cacheLocationCollection)
         Mockito.`when`<List<*>>(
-            deliveryService!!.filterAvailableLocations(
-                Matchers.any<Collection<*>>(
-                    MutableCollection::class.java
-                )
-            )
+            deliveryService!!.filterAvailableLocations(Matchers.any<Collection<CacheLocation>>())
         ).thenCallRealMethod()
         Mockito.`when`(deliveryService!!.isLocationAvailable(cacheLocation)).thenReturn(true)
         val caches: MutableList<Cache> = ArrayList()
@@ -370,7 +368,7 @@ class TrafficRouterTest {
                     StatTracker.Track::class.java
                 )
             )
-        ).thenReturn(Geolocation(40, -100))
+        ).thenReturn(Geolocation(40.0, -100.0))
         Mockito.`when`(
             trafficRouter!!.getCachesByGeo(
                 Matchers.any(
@@ -383,9 +381,7 @@ class TrafficRouterTest {
         Mockito.`when`(trafficRouter!!.cacheRegister).thenReturn(cacheRegister)
         Mockito.`when`<List<*>>(
             trafficRouter!!.orderLocations(
-                Matchers.any<List<*>>(
-                    MutableList::class.java
-                ), Matchers.any(Geolocation::class.java)
+                Matchers.any<List<Location>>(), Matchers.any(Geolocation::class.java)
             )
         ).thenCallRealMethod()
         val httpRouteResult = trafficRouter!!.route(httpRequest, track)
@@ -426,9 +422,7 @@ class TrafficRouterTest {
         caches.add(cacheIPv6)
         Mockito.`when`<List<*>>(
             trafficRouter!!.getSupportingCaches(
-                Matchers.any<List<*>>(
-                    MutableList::class.java
-                ), Matchers.any(DeliveryService::class.java), Matchers.any(
+                Matchers.any<List<Cache>>(), Matchers.any(DeliveryService::class.java), Matchers.any(
                     IPVersions::class.java
                 )
             )
@@ -475,7 +469,7 @@ class TrafficRouterTest {
         ).thenCallRealMethod()
         Mockito.`when`(trafficRouter!!.isValidMissLocation(deliveryService)).thenCallRealMethod()
         val result = trafficRouter!!.selectCachesByGeo(ip, deliveryService, null, track, IPVersions.IPV4ONLY)
-        Mockito.verify(trafficRouter)
+        Mockito.verify(trafficRouter)!!
             .getCachesByGeo(deliveryService, deliveryService!!.missLocation, track, IPVersions.IPV4ONLY)
         MatcherAssert.assertThat(result.size, org.hamcrest.Matchers.equalTo(1))
         MatcherAssert.assertThat(result[0], org.hamcrest.Matchers.equalTo(cache))
@@ -490,7 +484,7 @@ class TrafficRouterTest {
         Mockito.`when`(trafficRouter!!.isValidMissLocation(deliveryService)).thenCallRealMethod()
         var result = trafficRouter!!.isValidMissLocation(deliveryService)
         MatcherAssert.assertThat(result, org.hamcrest.Matchers.equalTo(true))
-        defaultUSLocation = Geolocation(0, 0)
+        defaultUSLocation = Geolocation(0.0, 0.0)
         Mockito.`when`(deliveryService!!.missLocation).thenReturn(defaultUSLocation)
         result = trafficRouter!!.isValidMissLocation(deliveryService)
         MatcherAssert.assertThat(result, org.hamcrest.Matchers.equalTo(false))
@@ -503,7 +497,7 @@ class TrafficRouterTest {
             Cache::class.java
         )
         Mockito.`when`(cache.hasDeliveryService(Matchers.anyString())).thenReturn(true)
-        val cacheLocation = CacheLocation("", Geolocation(50, 50))
+        val cacheLocation = CacheLocation("", Geolocation(50.0, 50.0))
         cacheLocation.addCache(cache)
         val cacheLocationCollection: MutableSet<CacheLocation> = HashSet()
         cacheLocationCollection.add(cacheLocation)
@@ -512,11 +506,7 @@ class TrafficRouterTest {
         Mockito.`when`(trafficRouter!!.cacheRegister).thenReturn(cacheRegister)
         Mockito.`when`(deliveryService!!.isLocationAvailable(cacheLocation)).thenReturn(true)
         Mockito.`when`<List<*>>(
-            deliveryService!!.filterAvailableLocations(
-                Matchers.any<Collection<*>>(
-                    MutableCollection::class.java
-                )
-            )
+            deliveryService!!.filterAvailableLocations(Matchers.any<Collection<CacheLocation>>())
         ).thenCallRealMethod()
         Mockito.`when`(
             trafficRouter!!.selectCaches(
@@ -545,7 +535,7 @@ class TrafficRouterTest {
                 ), Matchers.any(IPVersions::class.java)
             )
         ).thenCallRealMethod()
-        val clientLocation = Geolocation(40, -100)
+        val clientLocation = Geolocation(40.0, -100.0)
         Mockito.`when`(
             trafficRouter!!.getClientLocation(
                 Matchers.anyString(), Matchers.any(
@@ -566,23 +556,18 @@ class TrafficRouterTest {
         ).thenCallRealMethod()
         Mockito.`when`<List<*>>(
             trafficRouter!!.filterEnabledLocations(
-                Matchers.any<List<*>>(
-                    MutableList::class.java
-                ), Matchers.any(LocalizationMethod::class.java)
+                Matchers.any<List<CacheLocation>>(),
+                Matchers.any(LocalizationMethod::class.java)
             )
         ).thenCallRealMethod()
         Mockito.`when`<List<*>>(
             trafficRouter!!.orderLocations(
-                Matchers.any<List<*>>(
-                    MutableList::class.java
-                ), Matchers.any(Geolocation::class.java)
+                Matchers.any<List<Location>>(), Matchers.any(Geolocation::class.java)
             )
         ).thenCallRealMethod()
         Mockito.`when`<List<*>>(
             trafficRouter!!.getSupportingCaches(
-                Matchers.any<List<*>>(
-                    MutableList::class.java
-                ), Matchers.any(DeliveryService::class.java), Matchers.any(
+                Matchers.any<List<Cache>>(), Matchers.any(DeliveryService::class.java), Matchers.any(
                     IPVersions::class.java
                 )
             )
@@ -594,7 +579,7 @@ class TrafficRouterTest {
         var track = Mockito.spy(StatTracker.getTrack())
         trafficRouter!!.route(httpRequest, track)
         MatcherAssert.assertThat(track.getResult(), org.hamcrest.Matchers.equalTo(ResultType.GEO))
-        MatcherAssert.assertThat(track.getResultLocation(), org.hamcrest.Matchers.equalTo(Geolocation(50, 50)))
+        MatcherAssert.assertThat(track.getResultLocation(), org.hamcrest.Matchers.equalTo(Geolocation(50.0, 50.0)))
         Mockito.`when`(
             federationRegistry!!.findInetRecords(
                 Matchers.anyString(), Matchers.any(
@@ -611,7 +596,7 @@ class TrafficRouterTest {
         track = StatTracker.getTrack()
         trafficRouter!!.route(dnsRequest, track)
         MatcherAssert.assertThat(track.getResult(), org.hamcrest.Matchers.equalTo(ResultType.GEO))
-        MatcherAssert.assertThat(track.getResultLocation(), org.hamcrest.Matchers.equalTo(Geolocation(50, 50)))
+        MatcherAssert.assertThat(track.getResultLocation(), org.hamcrest.Matchers.equalTo(Geolocation(50.0, 50.0)))
     }
 
     @Test
@@ -639,9 +624,9 @@ class TrafficRouterTest {
             "/782-93d215fcd88b/6b6ce2889-ae4c20a1584.ism;urlsig=O0U9MTQ1Ojhx74tjchm8yzfdanshdafHMNhv8vNA/manifest(format=m3u8-aapl).m3u8"
         val dest = StringBuilder()
         dest.append("http://")
-        dest.append(cache.fqdn.split("\\.", 2.toBoolean()).toTypedArray()[0])
+        dest.append(cache.fqdn.split("\\.".toRegex(), 2).toTypedArray()[0])
         dest.append(".")
-        dest.append(httpRequest.hostname.split("\\.", 2.toBoolean()).toTypedArray()[1])
+        dest.append(httpRequest.hostname.split("\\.".toRegex(), 2).toTypedArray()[1])
         dest.append(httpRequest.uri)
         MatcherAssert.assertThat(
             deliveryService!!.createURIString(httpRequest, cache),

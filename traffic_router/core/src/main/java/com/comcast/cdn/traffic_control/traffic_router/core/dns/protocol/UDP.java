@@ -83,7 +83,7 @@ public class UDP extends AbstractProtocol {
     /**
      * This class is package private for unit testing purposes.
      */
-    class UDPPacketHandler implements SocketHandler {
+    public class UDPPacketHandler implements SocketHandler {
         private final DatagramPacket packet;
         private boolean cancel;
 

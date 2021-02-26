@@ -242,7 +242,7 @@ class StatsTest {
             val objectMapper = ObjectMapper()
             val data: Map<String, Any> = objectMapper.readValue<HashMap<String, Any>>(
                 responseContent,
-                object : TypeReference<HashMap<String?, Any?>?>() {})
+                object : TypeReference<HashMap<String, Any>?>() {})
             MatcherAssert.assertThat(data.keys, Matchers.containsInAnyOrder("app", "stats"))
             val appData = data["app"] as Map<String, Any>?
             MatcherAssert.assertThat(
@@ -306,7 +306,7 @@ class StatsTest {
             val actual = EntityUtils.toString(response.entity)
             val data: Map<String, Any> = ObjectMapper().readValue<HashMap<String, Any>>(
                 actual,
-                object : TypeReference<HashMap<String?, Any?>?>() {})
+                object : TypeReference<HashMap<String, Any>?>() {})
             MatcherAssert.assertThat(data["requestIp"], Matchers.equalTo("8.8.8.8"))
             MatcherAssert.assertThat(data["locationByFederation"], Matchers.equalTo("not found"))
             MatcherAssert.assertThat(data["locationByCoverageZone"], Matchers.equalTo("not found"))

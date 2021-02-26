@@ -226,14 +226,14 @@ class DNSRoutingMissesTest {
             )
         ).thenReturn(null)
         trafficRouter = Mockito.mock(TrafficRouter::class.java)
-        Mockito.`when`(trafficRouter.getCacheRegister()).thenReturn(
+        Mockito.`when`(trafficRouter!!.getCacheRegister()).thenReturn(
             Mockito.mock(
                 CacheRegister::class.java
             )
         )
         Whitebox.setInternalState(trafficRouter, "federationRegistry", federationRegistry)
         Mockito.`when`(
-            trafficRouter.selectCachesByGeo(
+            trafficRouter!!.selectCachesByGeo(
                 Matchers.anyString(), Matchers.any(
                     DeliveryService::class.java
                 ), Matchers.any(CacheLocation::class.java), Matchers.any(
@@ -242,15 +242,15 @@ class DNSRoutingMissesTest {
             )
         ).thenCallRealMethod()
         track = PowerMockito.spy(StatTracker.getTrack())
-        PowerMockito.doCallRealMethod().`when`(trafficRouter).route(request, track)
+        PowerMockito.doCallRealMethod().`when`(trafficRouter)!!.route(request, track)
     }
 
     @Test
     @Throws(Exception::class)
     fun itSetsDetailsWhenNoDeliveryService() {
         trafficRouter!!.route(request, track)
-        Mockito.verify(track).setResult(ResultType.MISS)
-        Mockito.verify(track).setResultDetails(ResultDetails.LOCALIZED_DNS)
+        Mockito.verify(track)!!.setResult(ResultType.MISS)
+        Mockito.verify(track)!!.setResultDetails(ResultDetails.LOCALIZED_DNS)
     }
 
     // When the delivery service is unavailable ...
@@ -262,10 +262,10 @@ class DNSRoutingMissesTest {
         Mockito.`when`(deliveryService.getFailureDnsResponse(request, track)).thenCallRealMethod()
         Mockito.`when`(deliveryService.routingName).thenReturn("edge")
         Mockito.`when`(deliveryService.isDns).thenReturn(true)
-        Mockito.doReturn(deliveryService).`when`(trafficRouter).selectDeliveryService(request)
+        Mockito.doReturn(deliveryService).`when`(trafficRouter)!!.selectDeliveryService(request)
         trafficRouter!!.route(request, track)
-        Mockito.verify(track).setResult(ResultType.MISS)
-        Mockito.verify(track).setResultDetails(ResultDetails.DS_NO_BYPASS)
+        Mockito.verify(track)!!.setResult(ResultType.MISS)
+        Mockito.verify(track)!!.setResultDetails(ResultDetails.DS_NO_BYPASS)
     }
 
     @Test
@@ -276,15 +276,15 @@ class DNSRoutingMissesTest {
         Mockito.`when`(deliveryService.getFailureDnsResponse(request, track)).thenCallRealMethod()
         Mockito.`when`(deliveryService.routingName).thenReturn("edge")
         Mockito.`when`(deliveryService.isDns).thenReturn(true)
-        Mockito.doReturn(deliveryService).`when`(trafficRouter).selectDeliveryService(request)
+        Mockito.doReturn(deliveryService).`when`(trafficRouter)!!.selectDeliveryService(request)
         val bypassDestination = Mockito.mock(
             JsonNode::class.java
         )
         Mockito.`when`(bypassDestination["DNS"]).thenReturn(null)
         Whitebox.setInternalState(deliveryService, "bypassDestination", bypassDestination)
         trafficRouter!!.route(request, track)
-        Mockito.verify(track).setResult(ResultType.DS_REDIRECT)
-        Mockito.verify(track).setResultDetails(ResultDetails.DS_BYPASS)
+        Mockito.verify(track)!!.setResult(ResultType.DS_REDIRECT)
+        Mockito.verify(track)!!.setResultDetails(ResultDetails.DS_BYPASS)
     }
 
     // The Delivery Service is available but we don't find the cache in the coverage zone map
@@ -297,14 +297,14 @@ class DNSRoutingMissesTest {
         Mockito.`when`(deliveryService.routingName).thenReturn("edge")
         Mockito.`when`(deliveryService.isDns).thenReturn(true)
         Mockito.`when`(deliveryService.isCoverageZoneOnly).thenReturn(true)
-        Mockito.doReturn(deliveryService).`when`(trafficRouter).selectDeliveryService(
+        Mockito.doReturn(deliveryService).`when`(trafficRouter)!!.selectDeliveryService(
             Matchers.any(
                 Request::class.java
             )
         )
         trafficRouter!!.route(request, track)
-        Mockito.verify(track).setResult(ResultType.MISS)
-        Mockito.verify(track).setResultDetails(ResultDetails.DS_CZ_ONLY)
+        Mockito.verify(track)!!.setResult(ResultType.MISS)
+        Mockito.verify(track)!!.setResultDetails(ResultDetails.DS_CZ_ONLY)
     }
 
     // 1. We got an unsupported cache location from the coverage zone map
@@ -318,16 +318,16 @@ class DNSRoutingMissesTest {
         Mockito.`when`(deliveryService.routingName).thenReturn("edge")
         Mockito.`when`(deliveryService.isDns).thenReturn(true)
         Mockito.`when`(deliveryService.isCoverageZoneOnly).thenReturn(false)
-        Mockito.doReturn(deliveryService).`when`(trafficRouter).selectDeliveryService(request)
+        Mockito.doReturn(deliveryService).`when`(trafficRouter)!!.selectDeliveryService(request)
         trafficRouter!!.route(request, track)
-        Mockito.verify(track).setResult(ResultType.MISS)
-        Mockito.verify(track).setResultDetails(ResultDetails.DS_CLIENT_GEO_UNSUPPORTED)
+        Mockito.verify(track)!!.setResult(ResultType.MISS)
+        Mockito.verify(track)!!.setResultDetails(ResultDetails.DS_CLIENT_GEO_UNSUPPORTED)
     }
 
     @Test
     @Throws(Exception::class)
     fun itSetsDetailsWhenCacheNotFoundByGeolocation() {
-        PowerMockito.doCallRealMethod().`when`(trafficRouter).selectCachesByGeo(
+        PowerMockito.doCallRealMethod().`when`(trafficRouter)!!.selectCachesByGeo(
             Matchers.anyString(), Matchers.any(
                 DeliveryService::class.java
             ), Matchers.any(CacheLocation::class.java), Matchers.any(
@@ -342,12 +342,12 @@ class DNSRoutingMissesTest {
         Mockito.`when`(deliveryService.isCoverageZoneOnly).thenReturn(false)
         Mockito.`when`(deliveryService.routingName).thenReturn("edge")
         Mockito.`when`(deliveryService.isDns).thenReturn(true)
-        Mockito.doReturn(deliveryService).`when`(trafficRouter).selectDeliveryService(request)
-        Mockito.doReturn(cacheLocation).`when`(trafficRouter)
+        Mockito.doReturn(deliveryService).`when`(trafficRouter)!!.selectDeliveryService(request)
+        Mockito.doReturn(cacheLocation).`when`(trafficRouter)!!
             .getCoverageZoneCacheLocation("192.168.34.56", deliveryService, IPVersions.IPV4ONLY)
-        Mockito.doReturn(cacheRegister).`when`(trafficRouter).cacheRegister
+        Mockito.doReturn(cacheRegister).`when`(trafficRouter)!!.cacheRegister
         trafficRouter!!.route(request, track)
-        Mockito.verify(track).setResult(ResultType.MISS)
-        Mockito.verify(track).setResultDetails(ResultDetails.DS_CLIENT_GEO_UNSUPPORTED)
+        Mockito.verify(track)!!.setResult(ResultType.MISS)
+        Mockito.verify(track)!!.setResultDetails(ResultDetails.DS_CLIENT_GEO_UNSUPPORTED)
     }
 }

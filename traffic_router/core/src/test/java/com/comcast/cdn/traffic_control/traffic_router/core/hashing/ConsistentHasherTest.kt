@@ -246,13 +246,13 @@ class ConsistentHasherTest {
         hashables.add(hashable3)
         trafficRouter = Mockito.mock(TrafficRouter::class.java)
         Mockito.`when`(
-            trafficRouter.buildPatternBasedHashString(
+            trafficRouter!!.buildPatternBasedHashString(
                 org.mockito.Matchers.anyString(),
                 org.mockito.Matchers.anyString()
             )
         ).thenCallRealMethod()
         Mockito.`when`(
-            trafficRouter.buildPatternBasedHashString(
+            trafficRouter!!.buildPatternBasedHashString(
                 org.mockito.Matchers.any(
                     DeliveryService::class.java
                 ), org.mockito.Matchers.any(HTTPRequest::class.java)
