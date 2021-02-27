@@ -236,11 +236,11 @@ import java.lang.StringBuilder
 import java.util.*
 
 class DnsSecKeyPairImpl constructor(keyPair: JsonNode?, defaultTTL: Long) : DnsSecKeyPair {
-    override var tTL: Long
-    override var inception: Date
-    override var effective: Date
-    override var expiration: Date
-    override var name: String
+    override var ttl: Long = JsonUtils.optLong(keyPair, "ttl", defaultTTL)
+    override var inception: Date = Date(1000L * JsonUtils.getLong(keyPair, "inceptionDate"))
+    override var effective: Date = Date(1000L * JsonUtils.getLong(keyPair, "effectiveDate"))
+    override var expiration: Date = Date(1000L * JsonUtils.getLong(keyPair, "expirationDate"))
+    override var name: String = JsonUtils.getString(keyPair, "name").toLowerCase()
     override var dNSKEYRecord: DNSKEYRecord? = null
     override var private: PrivateKey? = null
     override val isKeySigningKey: Boolean
@@ -262,11 +262,11 @@ class DnsSecKeyPairImpl constructor(keyPair: JsonNode?, defaultTTL: Long) : DnsS
     }
 
     public override fun isOlder(other: DnsSecKeyPair): Boolean {
-        return effective.before(other.getEffective())
+        return effective.before(other.effective)
     }
 
     public override fun isNewer(other: DnsSecKeyPair): Boolean {
-        return effective.after(other.getEffective())
+        return effective.after(other.effective)
     }
 
     override val public: PublicKey?
@@ -279,7 +279,7 @@ class DnsSecKeyPairImpl constructor(keyPair: JsonNode?, defaultTTL: Long) : DnsS
             return null
         }
 
-    public override fun equals(obj: Any?): Boolean {
+    override fun equals(obj: Any?): Boolean {
         val okp: DnsSecKeyPairImpl? = obj as DnsSecKeyPairImpl?
         if (!(dNSKEYRecord == okp!!.dNSKEYRecord)) {
             return false
@@ -295,7 +295,7 @@ class DnsSecKeyPairImpl constructor(keyPair: JsonNode?, defaultTTL: Long) : DnsS
             return false
         } else if (!(name == okp.name)) {
             return false
-        } else if (tTL != okp.tTL) {
+        } else if (ttl != okp.ttl) {
             return false
         }
         return true
@@ -304,7 +304,7 @@ class DnsSecKeyPairImpl constructor(keyPair: JsonNode?, defaultTTL: Long) : DnsS
     public override fun toString(): String {
         val sb: StringBuilder = StringBuilder()
         sb.append("name=").append(name)
-            .append(" ttl=").append(tTL)
+            .append(" ttl=").append(ttl)
             .append(" ksk=").append(isKeySigningKey)
             .append(" inception=\"")
         sb.append(inception)
@@ -320,11 +320,6 @@ class DnsSecKeyPairImpl constructor(keyPair: JsonNode?, defaultTTL: Long) : DnsS
     }
 
     init {
-        inception = Date(1000L * JsonUtils.getLong(keyPair, "inceptionDate"))
-        effective = Date(1000L * JsonUtils.getLong(keyPair, "effectiveDate"))
-        expiration = Date(1000L * JsonUtils.getLong(keyPair, "expirationDate"))
-        tTL = JsonUtils.optLong(keyPair, "ttl", defaultTTL)
-        name = JsonUtils.getString(keyPair, "name").toLowerCase()
         val mimeDecoder: Base64.Decoder = Base64.getMimeDecoder()
         try {
             private = BindPrivateKey().decode(String(mimeDecoder.decode(JsonUtils.getString(keyPair, "private"))))
@@ -333,7 +328,7 @@ class DnsSecKeyPairImpl constructor(keyPair: JsonNode?, defaultTTL: Long) : DnsS
         }
         val publicKey: ByteArray = mimeDecoder.decode(JsonUtils.getString(keyPair, "public"))
         ByteArrayInputStream(publicKey).use({ `in` ->
-            val master: Master = Master(`in`, Name(name), tTL)
+            val master: Master = Master(`in`, Name(name), ttl)
             var record: Record
             while ((master.nextRecord().also({ record = it })) != null) {
                 if (record.getType() == Type.DNSKEY) {

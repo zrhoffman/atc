@@ -272,7 +272,7 @@ class CoverageZoneController {
     ): ResponseEntity<CacheLocation?> {
         val requestVersion = if (ip.contains(":")) IPVersions.IPV6ONLY else IPVersions.IPV4ONLY
         val cacheLocation =
-            trafficRouterManager.getTrafficRouter().getCoverageZoneCacheLocation(ip, deliveryServiceId, requestVersion)
+            trafficRouterManager!!.trafficRouter!!.getCoverageZoneCacheLocation(ip, deliveryServiceId, requestVersion)
                 ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
         return ResponseEntity.ok(cacheLocation)
     }
@@ -283,7 +283,7 @@ class CoverageZoneController {
         @RequestParam(name = "deliveryServiceId") deliveryServiceId: String?,
         @RequestParam(name = "cacheLocationId") cacheLocationId: String?
     ): ResponseEntity<List<Cache?>?> {
-        val caches = trafficRouterManager.getTrafficRouter()
+        val caches = trafficRouterManager!!.trafficRouter!!
             .selectCachesByCZ(deliveryServiceId, cacheLocationId, null, IPVersions.ANY)
         return if (caches == null || caches.isEmpty()) {
             ResponseEntity.status(HttpStatus.NOT_FOUND)

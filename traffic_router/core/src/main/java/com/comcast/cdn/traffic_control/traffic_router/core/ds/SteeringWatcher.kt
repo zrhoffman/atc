@@ -257,9 +257,8 @@ import com.comcast.cdn.traffic_control.traffic_router.core.secure.CertificatesRe
 import javax.management.ObjectName
 import com.comcast.cdn.traffic_control.traffic_router.shared.DeliveryServiceCertificatesMBean
 import org.springframework.context.event.ApplicationContextEvent
-import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrlimport
-
-org.apache.log4j.Logger
+import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrl
+import org.apache.log4j.Logger
 import org.springframework.context.event.ContextClosedEvent
 import java.util.Enumeration
 

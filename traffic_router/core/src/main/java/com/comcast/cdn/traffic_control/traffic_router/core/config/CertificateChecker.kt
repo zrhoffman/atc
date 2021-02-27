@@ -258,6 +258,8 @@ import javax.management.ObjectName
 import com.comcast.cdn.traffic_control.traffic_router.shared.DeliveryServiceCertificatesMBean
 import org.springframework.context.event.ApplicationContextEvent
 import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrl
+import com.comcast.cdn.traffic_control.traffic_router.core.util.JsonUtils.optBoolean
+import com.comcast.cdn.traffic_control.traffic_router.core.util.JsonUtils.optString
 import com.fasterxml.jackson.databind.JsonNode
 import org.apache.log4j.Logger
 import org.springframework.context.event.ContextClosedEvent
@@ -271,8 +273,8 @@ class CertificateChecker constructor() {
             if (matchset == null) {
                 continue
             }
-            val deliveryServiceType: String = optString(matchset, "protocol")
-            if (!deliveryServiceType.isEmpty()) {
+            val deliveryServiceType: String? = optString(matchset, "protocol")
+            if (!deliveryServiceType!!.isEmpty()) {
                 return deliveryServiceType
             }
         }

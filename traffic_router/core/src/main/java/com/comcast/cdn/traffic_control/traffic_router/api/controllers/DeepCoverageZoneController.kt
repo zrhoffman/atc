@@ -275,7 +275,7 @@ class DeepCoverageZoneController {
         @RequestParam(name = "deliveryServiceId") deliveryServiceId: String?
     ): ResponseEntity<CacheLocation?> {
         val requestVersion = if (ip.contains(":")) IPVersions.IPV6ONLY else IPVersions.IPV4ONLY
-        val cacheLocation = trafficRouterManager.getTrafficRouter()
+        val cacheLocation = trafficRouterManager!!.trafficRouter!!
             .getCoverageZoneCacheLocation(ip, deliveryServiceId, true, null, requestVersion)
             ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
         return ResponseEntity.ok(cacheLocation)

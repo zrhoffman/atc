@@ -258,9 +258,8 @@ import javax.management.ObjectName
 import com.comcast.cdn.traffic_control.traffic_router.shared.DeliveryServiceCertificatesMBean
 import org.springframework.context.event.ApplicationContextEvent
 import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrl
-import org.springframework.context.event.ContextClosedEventimport
-
-org.springframework.stereotype.Controller
+import org.springframework.context.event.ContextClosedEvent
+import org.springframework.stereotype.Controller
 import java.util.Enumeration
 
 @Controller
@@ -274,8 +273,8 @@ class StatsController {
     val stats: Map<String, Any?>
         get() {
             val map: MutableMap<String, Any?> = HashMap()
-            map["app"] = dataExporter.getAppInfo()
-            map["stats"] = dataExporter.getStatTracker()
+            map["app"] = dataExporter!!.appInfo
+            map["stats"] = dataExporter.statTracker
             return map
         }
 
@@ -288,7 +287,7 @@ class StatsController {
             required = false,
             defaultValue = "maxmindGeolocationService"
         ) geolocationProvider: String?
-    ): Map<String?, Any?>? {
+    ): Map<String, Any?> {
         return dataExporter!!.getCachesByIp(ip, geolocationProvider)
     }
 }

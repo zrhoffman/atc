@@ -258,9 +258,8 @@ import javax.management.ObjectName
 import com.comcast.cdn.traffic_control.traffic_router.shared.DeliveryServiceCertificatesMBean
 import org.springframework.context.event.ApplicationContextEvent
 import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrl
-import org.springframework.context.event.ContextClosedEventimport
-
-org.springframework.stereotype.Controller
+import org.springframework.context.event.ContextClosedEvent
+import org.springframework.stereotype.Controller
 import java.util.Enumeration
 
 @Controller
@@ -281,7 +280,7 @@ class LocationController {
     val locations: Map<String, List<String?>?>
         get() {
             val locations: MutableMap<String, List<String?>?> = HashMap()
-            locations["locations"] = dataExporter.getLocations()
+            locations["locations"] = dataExporter!!.locations
             return locations
         }
 
@@ -291,8 +290,8 @@ class LocationController {
         get() {
             val map: MutableMap<String, Map<String?, List<CacheModel?>?>> = HashMap()
             val innerMap: MutableMap<String?, List<CacheModel?>?> = HashMap()
-            for (location in dataExporter.getLocations()) {
-                innerMap[location] = dataExporter!!.getCaches(location)
+            for (location in dataExporter!!.locations) {
+                innerMap[location] = dataExporter.getCaches(location)
             }
             map["locations"] = innerMap
             return map

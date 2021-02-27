@@ -258,9 +258,8 @@ import javax.management.ObjectName
 import com.comcast.cdn.traffic_control.traffic_router.shared.DeliveryServiceCertificatesMBean
 import org.springframework.context.event.ApplicationContextEvent
 import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrl
-import org.springframework.context.event.ContextClosedEventimport
-
-org.springframework.stereotype.Controller
+import org.springframework.context.event.ContextClosedEvent
+import org.springframework.stereotype.Controller
 import java.util.Enumeration
 
 @Controller
@@ -272,5 +271,5 @@ class SteeringController {
     @get:ResponseBody
     @get:RequestMapping
     val steering: ResponseEntity<Collection<Steering?>?>
-        get() = ResponseEntity.ok(steeringRegistry.getAll())
+        get() = ResponseEntity.ok(steeringRegistry!!.all)
 }

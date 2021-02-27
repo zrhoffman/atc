@@ -274,8 +274,8 @@ class DeliveryServicesController {
         } catch (e: Exception) {
             return ResponseEntity.badRequest().body(null)
         }
-        val trafficRouter = trafficRouterManager.getTrafficRouter()
-        val deliveryService = trafficRouter.cacheRegister.getDeliveryService(HTTPRequest(request, decodedUrl))
+        val trafficRouter = trafficRouterManager!!.trafficRouter
+        val deliveryService = trafficRouter!!.cacheRegister!!.getDeliveryService(HTTPRequest(request, decodedUrl))
             ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
         val map: MutableMap<String, String?> = HashMap()
         map["id"] = deliveryService.id

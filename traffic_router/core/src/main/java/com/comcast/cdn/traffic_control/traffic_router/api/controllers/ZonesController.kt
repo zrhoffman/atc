@@ -258,9 +258,8 @@ import javax.management.ObjectName
 import com.comcast.cdn.traffic_control.traffic_router.shared.DeliveryServiceCertificatesMBean
 import org.springframework.context.event.ApplicationContextEvent
 import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrl
-import org.springframework.context.event.ContextClosedEventimport
-
-org.springframework.stereotype.Controller
+import org.springframework.context.event.ContextClosedEvent
+import org.springframework.stereotype.Controller
 import java.util.Enumeration
 
 @Controller
@@ -274,14 +273,14 @@ class ZonesController {
     val allCachesStats: Map<String, Any?>
         get() {
             val statsMap: MutableMap<String, Any?> = HashMap()
-            statsMap["dynamicZoneCaches"] = dataExporter.getDynamicZoneCacheStats()
-            statsMap["staticZoneCaches"] = dataExporter.getStaticZoneCacheStats()
+            statsMap["dynamicZoneCaches"] = dataExporter!!.dynamicZoneCacheStats
+            statsMap["staticZoneCaches"] = dataExporter!!.staticZoneCacheStats
             return statsMap
         }
 
     @RequestMapping(value = ["/caches/{filter:static|dynamic}"])
     @ResponseBody
-    fun getCachesStats(@PathVariable("filter") filter: String): Map<String?, Any?>? {
-        return if ("static" == filter) dataExporter.getStaticZoneCacheStats() else dataExporter.getDynamicZoneCacheStats()
+    fun getCachesStats(@PathVariable("filter") filter: String): Map<String, Any> {
+        return if ("static" == filter) dataExporter!!.staticZoneCacheStats else dataExporter!!.dynamicZoneCacheStats
     }
 }

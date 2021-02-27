@@ -274,7 +274,7 @@ class NameServer {
             val qclass = question.dClass
             val qname = question.name
             val qopt = request.opt
-            var list: List<EDNSOption?> = Collections.EMPTY_LIST
+            var list: List<EDNSOption?> = Collections.EMPTY_LIST as List<EDNSOption?>
             var dnssecRequest = false
             var qtype = question.type
             var flags = 0
@@ -298,7 +298,7 @@ class NameServer {
             }
             // Get list of options matching client subnet option code (8)
             if (qopt != null) {
-                list = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET)
+                list = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET) as List<EDNSOption?>
             }
             var ipaddr: InetAddress? = null
             var nmask = 0
@@ -339,7 +339,7 @@ class NameServer {
             }
             if (qopt != null && flags == FLAG_DNSSECOK) {
                 val optflags = ExtendedFlags.DO
-                val opt = OPTRecord(1280, 0.toByte(), 0.toByte(), optflags)
+                val opt = OPTRecord(1280, 0, 0, optflags)
                 response.addRecord(opt, Section.ADDITIONAL)
             }
         }
@@ -350,7 +350,7 @@ class NameServer {
         for (ds in ecsEnabledDses) {
             var domain = ds.domain ?: continue
             if (domain.endsWith("+")) {
-                domain = domain.replace("\\+\\z".toRegex(), ".") + ZoneManager.Companion.getTopLevelDomain()
+                domain = domain.replace("\\+\\z".toRegex(), ".") + ZoneManager.topLevelDomain
             }
             if (name.relativize(Name.root).toString().contains(domain)) {
                 isEnabled = true
@@ -390,7 +390,7 @@ class NameServer {
 
         // this allows us to locate zones for which we are authoritative
         if (zone == null || !qname.subdomain(zone.origin)) {
-            zone = trafficRouterManager.getTrafficRouter().getZone(qname, qtype, clientAddress, dnssecRequest, builder)
+            zone = trafficRouterManager?.trafficRouter?.getZone(qname, qtype, clientAddress, dnssecRequest, builder)
         }
 
         // null means we did not find a zone for which we are authoritative
@@ -512,13 +512,13 @@ class NameServer {
             }
             var nsecSpan: RRset? = null
             var candidate: Name? = null
-            val zi: Iterator<RRset?> = zone.iterator()
+            val zi: Iterator<RRset?> = zone.iterator() as Iterator<RRset?>
             while (zi.hasNext()) {
                 val rrset = zi.next()
                 if (rrset!!.type != Type.NSEC) {
                     continue
                 }
-                val it: Iterator<Record?> = rrset.rrs()
+                val it: Iterator<Record?> = rrset.rrs() as Iterator<Record?>
                 while (it.hasNext()) {
                     val r = it.next()
                     val name = r!!.name
@@ -558,7 +558,7 @@ class NameServer {
             }
             val recordList: MutableList<Record?> = ArrayList()
             if (flags and FLAG_SIGONLY == 0) {
-                val it: Iterator<Record?> = rrset.rrs()
+                val it: Iterator<Record?> = rrset.rrs() as Iterator<Record?>
                 while (it.hasNext()) {
                     var r = it.next()
                     if (r!!.name.isWild && !name.isWild) {
@@ -574,7 +574,7 @@ class NameServer {
                 response.addRecord(r, section)
             }
             if (flags and (FLAG_SIGONLY or FLAG_DNSSECOK) != 0) {
-                val it: Iterator<Record?> = rrset.sigs()
+                val it: Iterator<Record?> = rrset.sigs() as Iterator<Record?>
                 while (it.hasNext()) {
                     var r = it.next()
                     if (r!!.name.isWild && !name.isWild) {
@@ -603,7 +603,7 @@ class NameServer {
                 return original
             }
             val rrset = RRset()
-            val it: Iterator<Record?> = original.rrs()
+            val it: Iterator<Record?> = original.rrs() as Iterator<Record?>
             while (it.hasNext()) {
                 var record = it.next()
                 if (record is SOARecord) {

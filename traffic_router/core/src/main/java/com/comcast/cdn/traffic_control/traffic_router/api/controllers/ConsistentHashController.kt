@@ -276,7 +276,7 @@ class ConsistentHashController {
         @RequestParam(name = REQUEST_PATH) requestPath: String?
     ): ResponseEntity<*> {
         val cache =
-            trafficRouterManager.getTrafficRouter().consistentHashForCoverageZone(ip, deliveryServiceId, requestPath)
+            trafficRouterManager!!.trafficRouter!!.consistentHashForCoverageZone(ip, deliveryServiceId, requestPath)
                 ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{}")
         return ResponseEntity.ok(cache)
     }
@@ -288,7 +288,7 @@ class ConsistentHashController {
         @RequestParam(name = DELIVERY_SERVICE_ID) deliveryServiceId: String,
         @RequestParam(name = REQUEST_PATH) requestPath: String?
     ): ResponseEntity<*> {
-        val cache = trafficRouterManager.getTrafficRouter()
+        val cache = trafficRouterManager!!.trafficRouter!!
             .consistentHashForCoverageZone(ip, deliveryServiceId, requestPath, true)
             ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{}")
         return ResponseEntity.ok(cache)
@@ -302,7 +302,7 @@ class ConsistentHashController {
         @RequestParam(name = REQUEST_PATH) requestPath: String?
     ): ResponseEntity<*> {
         val cache =
-            trafficRouterManager.getTrafficRouter().consistentHashForGeolocation(ip, deliveryServiceId, requestPath)
+            trafficRouterManager!!.trafficRouter!!.consistentHashForGeolocation(ip, deliveryServiceId, requestPath)
                 ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{}")
         return ResponseEntity.ok(cache)
     }
@@ -314,7 +314,7 @@ class ConsistentHashController {
         @RequestParam(name = REQUEST_PATH) requestPath: String?
     ): ResponseEntity<*> {
         val deliveryService =
-            trafficRouterManager.getTrafficRouter().consistentHashDeliveryService(deliveryServiceId, requestPath)
+            trafficRouterManager!!.trafficRouter!!.consistentHashDeliveryService(deliveryServiceId, requestPath)
                 ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{}")
         return ResponseEntity.ok(deliveryService)
     }
@@ -333,7 +333,7 @@ class ConsistentHashController {
                 "Request Path length is restricted by API to " + MAX_REQUEST_PATH_LENGTH + " characters"
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map)
         }
-        val pathToHash = trafficRouterManager.getTrafficRouter().buildPatternBasedHashString(regex, requestPath)
+        val pathToHash = trafficRouterManager!!.trafficRouter!!.buildPatternBasedHashString(regex, requestPath)
             ?: return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(null)
         val map: MutableMap<String, String?> = HashMap()
@@ -349,7 +349,7 @@ class ConsistentHashController {
         @RequestParam(name = DELIVERY_SERVICE_ID) deliveryServiceId: String?,
         @RequestParam(name = REQUEST_PATH) requestPath: String?
     ): ResponseEntity<Map<String, String?>?> {
-        val pathToHash = trafficRouterManager.getTrafficRouter()
+        val pathToHash = trafficRouterManager!!.trafficRouter!!
             .buildPatternBasedHashStringDeliveryService(deliveryServiceId, requestPath)
             ?: return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(null)
@@ -367,7 +367,7 @@ class ConsistentHashController {
         @RequestParam(name = DELIVERY_SERVICE_ID) deliveryServiceId: String,
         @RequestParam(name = REQUEST_PATH) requestPath: String?
     ): ResponseEntity<*> {
-        val cache = trafficRouterManager.getTrafficRouter()
+        val cache = trafficRouterManager!!.trafficRouter!!
             .consistentHashSteeringForCoverageZone(ip, deliveryServiceId, requestPath)
             ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{}")
         return ResponseEntity.ok(cache)

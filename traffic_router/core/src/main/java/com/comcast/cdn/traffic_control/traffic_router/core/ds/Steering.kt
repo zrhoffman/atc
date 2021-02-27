@@ -257,12 +257,10 @@ import com.comcast.cdn.traffic_control.traffic_router.core.secure.CertificatesRe
 import javax.management.ObjectName
 import com.comcast.cdn.traffic_control.traffic_router.shared.DeliveryServiceCertificatesMBean
 import org.springframework.context.event.ApplicationContextEvent
-import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrlimport
-
-com.fasterxml.jackson.annotation .JsonProperty
-import org.springframework.context.event.ContextClosedEventimport
-
-java.util.ArrayList
+import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrl
+import com.fasterxml.jackson.annotation .JsonProperty
+import org.springframework.context.event.ContextClosedEvent
+import java.util.ArrayList
 import java.util.Enumeration
 
 class Steering {
@@ -288,7 +286,7 @@ class Steering {
 
     fun hasTarget(deliveryService: String?): Boolean {
         for (target in targets!!) {
-            if (deliveryService == target.getDeliveryService()) {
+            if (deliveryService == target!!.deliveryService) {
                 return true
             }
         }

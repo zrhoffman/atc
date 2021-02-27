@@ -243,9 +243,8 @@ import com.comcast.cdn.traffic_control.traffic_router.core.hash.ConsistentHasher
 import com.comcast.cdn.traffic_control.traffic_router.core.ds.SteeringGeolocationComparator
 import com.comcast.cdn.traffic_control.traffic_router.core.router.LocationComparator
 import org.springframework.beans.BeansException
-import com.comcast.cdn.traffic_control.traffic_router.configuration.ConfigurationListenerimport
-
-com.comcast.cdn.traffic_control.traffic_router.core.edge.*
+import com.comcast.cdn.traffic_control.traffic_router.configuration.ConfigurationListener
+import com.comcast.cdn.traffic_control.traffic_router.core.edge.*
 import com.comcast.cdn.traffic_control.traffic_router.core.router.RouteResult
 import org.springframework.context.ApplicationListener
 import org.springframework.context.event.ContextRefreshedEvent

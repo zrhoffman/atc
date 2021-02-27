@@ -247,33 +247,33 @@ object DNSAccessEventBuilder {
         var rType: String = "-"
         var rdtl: String = "-"
         var rloc: String = "-"
-        if (dnsAccessRecord.getResultType() != null) {
-            rType = dnsAccessRecord.getResultType().toString()
-            if (dnsAccessRecord.getResultDetails() != null) {
-                rdtl = dnsAccessRecord.getResultDetails().toString()
+        if (dnsAccessRecord?.resultType != null) {
+            rType = dnsAccessRecord.resultType.toString()
+            if (dnsAccessRecord.resultDetails != null) {
+                rdtl = dnsAccessRecord.resultDetails.toString()
             }
         }
-        if (dnsAccessRecord.getResultLocation() != null) {
-            val resultLocation: Geolocation? = dnsAccessRecord.getResultLocation()
-            val decimalFormat: DecimalFormat = DecimalFormat(".##")
+        if (dnsAccessRecord?.resultLocation != null) {
+            val resultLocation: Geolocation? = dnsAccessRecord.resultLocation
+            val decimalFormat = DecimalFormat(".##")
             decimalFormat.setRoundingMode(RoundingMode.DOWN)
             rloc =
                 decimalFormat.format(resultLocation!!.getLatitude()) + "," + decimalFormat.format(resultLocation.getLongitude())
         }
         val routingInfo: String = "rtype=" + rType + " rloc=\"" + rloc + "\" rdtl=" + rdtl + " rerr=\"-\""
-        var answer: String = "ans=\"-\""
-        if (dnsAccessRecord.getDnsMessage() != null) {
-            answer = createTTLandAnswer(dnsAccessRecord.getDnsMessage())
+        var answer = "ans=\"-\""
+        if (dnsAccessRecord?.dnsMessage != null) {
+            answer = createTTLandAnswer(dnsAccessRecord.dnsMessage)
         }
         return event + " " + routingInfo + " " + answer
     }
 
     private fun createEvent(dnsAccessRecord: DNSAccessRecord?): String {
         val timeString: String =
-            String.format("%d.%03d", dnsAccessRecord.getQueryInstant() / 1000, dnsAccessRecord.getQueryInstant() % 1000)
-        val ttms: Double = (System.nanoTime() - dnsAccessRecord.getRequestNanoTime()) / 1000000.0
-        val clientAddressString: String = dnsAccessRecord.getClient().getHostAddress()
-        val resolverAddressString: String = dnsAccessRecord.getResolver().getHostAddress()
+            String.format("%d.%03d", dnsAccessRecord!!.queryInstant / 1000, dnsAccessRecord.queryInstant % 1000)
+        val ttms: Double = (System.nanoTime() - dnsAccessRecord.requestNanoTime) / 1000000.0
+        val clientAddressString: String = dnsAccessRecord.client.getHostAddress()
+        val resolverAddressString: String = dnsAccessRecord.resolver.getHostAddress()
         val stringBuilder: StringBuilder =
             StringBuilder(timeString).append(" qtype=DNS chi=").append(clientAddressString).append(" rhi=")
         if (!(clientAddressString == resolverAddressString)) {
@@ -282,10 +282,10 @@ object DNSAccessEventBuilder {
             stringBuilder.append('-')
         }
         stringBuilder.append(" ttms=").append(String.format("%.03f", ttms))
-        if (dnsAccessRecord.getDnsMessage() == null) {
+        if (dnsAccessRecord.dnsMessage == null) {
             return stringBuilder.append(" xn=- fqdn=- type=- class=- rcode=-").toString()
         }
-        val messageHeader: String = createDnsMessageHeader(dnsAccessRecord.getDnsMessage())
+        val messageHeader: String = createDnsMessageHeader(dnsAccessRecord.dnsMessage)
         return stringBuilder.append(messageHeader).toString()
     }
 
@@ -329,7 +329,7 @@ object DNSAccessEventBuilder {
     }
 
     fun create(dnsAccessRecord: DNSAccessRecord?, exception: Exception): String {
-        val dnsMessage: Message? = dnsAccessRecord.getDnsMessage()
+        val dnsMessage: Message? = dnsAccessRecord?.dnsMessage
         dnsMessage!!.getHeader().setRcode(Rcode.SERVFAIL)
         val event: String = createEvent(dnsAccessRecord)
         val rerr: String = "Server Error:" + exception.javaClass.getSimpleName() + ":" + exception.message

@@ -249,27 +249,27 @@ class RRSetsBuilder constructor() {
         records.forEach(Consumer({ r: Record? -> rrSet.addRR(r) }))
         rrSet
     })
-    private val rrSetComparator: Comparator<RRset> = label@ Comparator({ rrSet1: RRset, rrSet2: RRset ->
+    private val rrSetComparator: Comparator<RRset> = Comparator { rrSet1: RRset, rrSet2: RRset ->
         var x: Int = rrSet1.getName().compareTo(rrSet2.getName())
         if (x != 0) {
-            return@label x
+            return@Comparator x
         }
         x = rrSet1.getDClass() - rrSet2.getDClass()
         if (x != 0) {
-            return@label x
+            return@Comparator x
         }
         if (rrSet1.getType() == Type.SOA) {
-            return@label -1
+            return@Comparator -1
         }
         if (rrSet2.getType() == Type.SOA) {
-            return@label 1
+            return@Comparator 1
         }
         rrSet1.getType() - rrSet2.getType()
-    })
+    }
 
     fun build(records: List<Record?>?): List<RRset> {
         val map: Map<String, List<Record?>> = records!!.stream().sorted().collect(
-            Collectors.groupingBy(Function({ record: Record -> qualifer(record) }), Collectors.toList())
+            Collectors.groupingBy({ record: Record? -> record?.let { qualifer(it) } }, Collectors.toList())
         )
         return map.values.stream().map(recordsToRRSet).sorted(rrSetComparator).collect(Collectors.toList())
     }

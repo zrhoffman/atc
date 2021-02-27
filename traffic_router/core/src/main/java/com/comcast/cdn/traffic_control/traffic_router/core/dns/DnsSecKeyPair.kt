@@ -20,7 +20,7 @@ import java.security.PublicKey
 import java.util.*
 
 open interface DnsSecKeyPair {
-    var tTL: Long
+    var ttl: Long
     var name: String
     var inception: Date
     var effective: Date

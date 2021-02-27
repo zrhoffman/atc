@@ -239,6 +239,9 @@ import com.comcast.cdn.traffic_control.traffic_router.shared.DeliveryServiceCert
 import org.springframework.context.event.ApplicationContextEvent
 import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrl
 import com.comcast.cdn.traffic_control.traffic_router.core.request.RequestMatcher
+import com.comcast.cdn.traffic_control.traffic_router.core.util.JsonUtils.optInt
+import com.comcast.cdn.traffic_control.traffic_router.core.util.JsonUtils.optLong
+import com.comcast.cdn.traffic_control.traffic_router.core.util.JsonUtils.optString
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.log4j.Logger
@@ -306,26 +309,26 @@ class ConfigHandler constructor() {
                 parseAnonymousIpConfig(jo)
                 val cacheRegister: CacheRegister = CacheRegister()
                 val deliveryServicesJson: JsonNode? = JsonUtils.getJsonNode(jo, deliveryServicesKey)
-                cacheRegister.setTrafficRouters(JsonUtils.getJsonNode(jo, "contentRouters"))
-                cacheRegister.setConfig(config)
-                cacheRegister.setStats(stats)
+                cacheRegister.trafficRouters = JsonUtils.getJsonNode(jo, "contentRouters")
+                cacheRegister.config = config
+                cacheRegister.stats = stats
                 parseTrafficOpsConfig(config, stats)
                 val deliveryServiceMap: Map<String?, DeliveryService>? =
                     parseDeliveryServiceConfig(JsonUtils.getJsonNode(jo, deliveryServicesKey))
                 parseCertificatesConfig(config)
-                certificatesPublisher.setDeliveryServicesJson(deliveryServicesJson)
+                certificatesPublisher!!.deliveryServicesJson = deliveryServicesJson
                 val deliveryServices: ArrayList<DeliveryService> = ArrayList()
                 if (deliveryServiceMap != null && !deliveryServiceMap.values.isEmpty()) {
                     deliveryServices.addAll(deliveryServiceMap.values)
                 }
                 if (deliveryServiceMap != null && !deliveryServiceMap.values.isEmpty()) {
-                    certificatesPublisher.setDeliveryServices(deliveryServices)
+                    certificatesPublisher!!.deliveryServices = deliveryServices
                 }
                 certificatesPoller!!.restart()
                 val httpsDeliveryServices: List<DeliveryService> = deliveryServices.stream().filter(
-                    Predicate({ ds: DeliveryService -> !ds.isDns() && ds.isSslEnabled() })
+                    Predicate({ ds: DeliveryService -> !ds.isDns && ds.isSslEnabled })
                 ).collect(Collectors.toList())
-                httpsDeliveryServices.forEach(Consumer({ ds: DeliveryService -> LOGGER.info("Checking for certificate for " + ds.getId()) }))
+                httpsDeliveryServices.forEach(Consumer({ ds: DeliveryService -> LOGGER.info("Checking for certificate for " + ds.id) }))
                 if (!httpsDeliveryServices.isEmpty()) {
                     try {
                         publishStatusQueue!!.put(true)
@@ -365,14 +368,13 @@ class ConfigHandler constructor() {
                 steeringWatcher!!.configure(config)
                 letsEncryptDnsChallengeWatcher!!.configure(config)
                 trafficRouterManager!!.setCacheRegister(cacheRegister)
-                trafficRouterManager.getNameServer().setEcsEnable(JsonUtils.optBoolean(config, "ecsEnable", false))
-                trafficRouterManager.getNameServer().setEcsEnabledDses(
-                    deliveryServices.stream().filter(Predicate({ obj: DeliveryService -> obj.isEcsEnabled() }))
+                trafficRouterManager!!.nameServer!!.setEcsEnable(JsonUtils.optBoolean(config, "ecsEnable", false))
+                trafficRouterManager!!.nameServer!!.ecsEnabledDses =
+                    deliveryServices.stream().filter(Predicate({ obj: DeliveryService -> obj.isEcsEnabled }))
                         .collect(Collectors.toSet())
-                )
-                trafficRouterManager.getTrafficRouter()
-                    .setRequestHeaders(parseRequestHeaders(config!!.get("requestHeaders")))
-                trafficRouterManager.getTrafficRouter().configurationChanged()
+                trafficRouterManager!!.trafficRouter!!
+                    .requestHeaders = parseRequestHeaders(config!!.get("requestHeaders"))
+                trafficRouterManager!!.trafficRouter!!.configurationChanged()
 
 
                 /*
@@ -421,13 +423,13 @@ class ConfigHandler constructor() {
     @Throws(JsonUtilsException::class)
     private fun parseTrafficOpsConfig(config: JsonNode?, stats: JsonNode?) {
         if (stats!!.has("tm_host")) {
-            trafficOpsUtils.setHostname(JsonUtils.getString(stats, "tm_host"))
+            trafficOpsUtils!!.hostname = JsonUtils.getString(stats, "tm_host")
         } else if (stats.has("to_host")) {
-            trafficOpsUtils.setHostname(JsonUtils.getString(stats, "to_host"))
+            trafficOpsUtils!!.hostname = JsonUtils.getString(stats, "to_host")
         } else {
             throw JsonUtilsException("Unable to find to_host or tm_host in stats section of TrConfig; unable to build TrafficOps URLs")
         }
-        trafficOpsUtils.setCdnName(JsonUtils.optString(stats, "CDN_name", null))
+        trafficOpsUtils!!.cdnName = JsonUtils.optString(stats, "CDN_name", null)
         trafficOpsUtils!!.setConfig(config)
     }
 
@@ -445,17 +447,17 @@ class ConfigHandler constructor() {
         val nodeIter: Iterator<String> = contentServers!!.fieldNames()
         while (nodeIter.hasNext()) {
             val node: String = nodeIter.next()
-            val jo: JsonNode? = JsonUtils.getJsonNode(contentServers, node)
+            val jo: JsonNode = JsonUtils.getJsonNode(contentServers, node)
             val loc: CacheLocation? = cacheRegister.getCacheLocation(JsonUtils.getString(jo, "locationId"))
             if (loc != null) {
                 var hashId: String = node
                 // not only must we check for the key, but also if it's null; problems with consistent hashing can arise if we use a null value as the hashId
-                if (jo!!.has("hashId") && jo.get("hashId").textValue() != null) {
+                if (jo.has("hashId") && jo.get("hashId").textValue() != null) {
                     hashId = jo.get("hashId").textValue()
                 }
-                val cache: Cache = Cache(node, hashId, optInt(jo, "hashCount"), loc.getGeolocation())
-                cache.setFqdn(JsonUtils.getString(jo, "fqdn"))
-                cache.setPort(JsonUtils.getInt(jo, "port"))
+                val cache = Cache(node, hashId, optInt(jo, "hashCount"), loc.geolocation)
+                cache.fqdn = JsonUtils.getString(jo, "fqdn")
+                cache.port = JsonUtils.getInt(jo, "port")
                 if (jo.has("capabilities")) {
                     val capabilities: MutableSet<String?> = HashSet()
                     val capabilitiesNode: JsonNode = jo.get("capabilities")
@@ -469,10 +471,10 @@ class ConfigHandler constructor() {
                             }
                         }))
                     }
-                    cache.addCapabilities(capabilities)
+                    cache.addCapabilities(capabilities as Set<String>?)
                 }
-                val ip: String? = JsonUtils.getString(jo, "ip")
-                val ip6: String = optString(jo, "ip6")
+                val ip: String = JsonUtils.getString(jo, "ip")
+                val ip6: String? = optString(jo, "ip6")
                 try {
                     cache.setIpAddress(ip, ip6, 0)
                 } catch (e: UnknownHostException) {
@@ -494,13 +496,13 @@ class ConfigHandler constructor() {
                         }
                         if (dso!!.isArray()) {
                             if (dso != null && dso.size() > 0) {
-                                var i: Int = 0
+                                var i = 0
                                 for (nameNode: JsonNode in dso) {
                                     val name: String = nameNode.asText()
                                     if (i == 0) {
                                         references.add(DeliveryServiceReference(ds, name))
                                     }
-                                    val tld: String = optString(cacheRegister.getConfig(), "domain_name")
+                                    val tld: String = optString(cacheRegister.config, "domain_name")!!
                                     val dsName: String = getDsName(name, tld)
                                     if (!dsNames.contains(dsName)) {
                                         dsNames.add(dsName)
@@ -519,10 +521,10 @@ class ConfigHandler constructor() {
                     cache.setDeliveryServices(references)
                 }
                 loc.addCache(cache)
-                map.put(cache.getId(), cache)
+                map.put(cache.id, cache)
             }
         }
-        cacheRegister.setCacheMap(map)
+        cacheRegister.cacheMap = map
         statTracker!!.initialize(statMap, cacheRegister)
     }
 
@@ -532,17 +534,17 @@ class ConfigHandler constructor() {
         val deliveryServiceIter: Iterator<String> = allDeliveryServices!!.fieldNames()
         while (deliveryServiceIter.hasNext()) {
             val deliveryServiceId: String = deliveryServiceIter.next()
-            val deliveryServiceJson: JsonNode? = JsonUtils.getJsonNode(allDeliveryServices, deliveryServiceId)
-            val deliveryService: DeliveryService = DeliveryService(deliveryServiceId, deliveryServiceJson)
-            var isDns: Boolean = false
-            val matchsets: JsonNode? = JsonUtils.getJsonNode(deliveryServiceJson, "matchsets")
-            for (matchset: JsonNode in matchsets!!) {
-                val protocol: String? = JsonUtils.getString(matchset, "protocol")
+            val deliveryServiceJson: JsonNode = JsonUtils.getJsonNode(allDeliveryServices, deliveryServiceId)
+            val deliveryService = DeliveryService(deliveryServiceId, deliveryServiceJson)
+            var isDns = false
+            val matchsets: JsonNode = JsonUtils.getJsonNode(deliveryServiceJson, "matchsets")
+            for (matchset: JsonNode in matchsets) {
+                val protocol: String = JsonUtils.getString(matchset, "protocol")
                 if (("DNS" == protocol)) {
                     isDns = true
                 }
             }
-            deliveryService.setDns(isDns)
+            deliveryService.isDns = isDns
             deliveryServiceMap.put(deliveryServiceId, deliveryService)
         }
         return deliveryServiceMap
@@ -559,59 +561,59 @@ class ConfigHandler constructor() {
     ) {
         val topologyMap: MutableMap<String?, List<String>> = HashMap()
         val statMap: MutableMap<String?, MutableList<String>> = HashMap()
-        val tld: String = optString(cacheRegister.getConfig(), "domain_name")
-        allTopologies!!.fieldNames().forEachRemaining(Consumer({ topologyName: String? ->
+        val tld: String = optString(cacheRegister.config, "domain_name")!!
+        allTopologies!!.fieldNames().forEachRemaining { topologyName: String? ->
             val nodes: MutableList<String> = ArrayList()
             allTopologies.get(topologyName).get("nodes")
                 .forEach(Consumer({ cache: JsonNode -> nodes.add(cache.textValue()) }))
             topologyMap.put(topologyName, nodes)
-        }))
-        deliveryServiceMap!!.forEach(BiConsumer({ xmlId: String?, ds: DeliveryService ->
+        }
+        deliveryServiceMap!!.forEach { xmlId: String?, ds: DeliveryService ->
             val dsReferences: MutableList<DeliveryServiceReference> = ArrayList()
             val dsNames: MutableList<String> = ArrayList() // for stats
-            Stream.of(ds.getTopology())
-                .filter(Predicate({ topologyName: String? ->
+            Stream.of(ds.topology)
+                .filter { topologyName: String? ->
                     !Objects.isNull(topologyName) && topologyMap.containsKey(
                         topologyName
                     )
-                }))
-                .flatMap(Function<String?, Stream<out String>>({ topologyName: String? ->
-                    statMap.put(ds.getId(), dsNames)
+                }
+                .flatMap { topologyName: String? ->
+                    statMap.put(ds.id, dsNames)
                     topologyMap.get(topologyName)!!.stream()
-                }))
-                .flatMap(Function<String, Stream<out Cache?>>({ node: String? ->
+                }
+                .flatMap { node: String? ->
                     cacheRegister.getCacheLocation(node)!!
                         .getCaches().stream()
-                }))
-                .filter(Predicate({ cache: Cache -> ds.hasRequiredCapabilities(cache.getCapabilities()) }))
-                .forEach(Consumer({ cache: Cache ->
+                }
+                .filter { cache: Cache? -> ds.hasRequiredCapabilities(cache!!.getCapabilities()) }
+                .forEach { cache: Cache? ->
                     cacheRegister.getDeliveryServiceMatchers(ds).stream()
-                        .flatMap(Function<DeliveryServiceMatcher?, Stream<out RequestMatcher?>>({ deliveryServiceMatcher: DeliveryServiceMatcher? ->
+                        .flatMap { deliveryServiceMatcher: DeliveryServiceMatcher? ->
                             deliveryServiceMatcher!!.getRequestMatchers().stream()
-                        }))
-                        .map<String>(Function({ requestMatcher: RequestMatcher ->
-                            requestMatcher.getPattern().pattern()
-                        }))
-                        .forEach(Consumer({ pattern: String ->
-                            val remap: String? = ds.getRemap(pattern)
+                        }
+                        .map { requestMatcher: RequestMatcher? ->
+                            requestMatcher!!.pattern!!.pattern()
+                        }
+                        .forEach(Consumer { pattern: String ->
+                            val remap: String = ds.getRemap(pattern)
                             val fqdn: String =
-                                if (pattern.contains(".*") && !ds.isDns()) cache.getId() + "." + remap else (remap)!!
+                                if (pattern.contains(".*") && !ds.isDns) cache!!.id + "." + remap else remap
                             dsNames.add(getDsName(fqdn, tld))
-                            if (!(remap == if (ds.isDns()) ds.getRoutingName() + "." + ds.getDomain() else ds.getDomain())) {
-                                return@forEach
+                            if (!(remap == if (ds.isDns) ds.routingName + "." + ds.domain else ds.domain)) {
+                                return@Consumer
                             }
                             try {
-                                dsReferences.add(DeliveryServiceReference(ds.getId(), fqdn))
+                                dsReferences.add(DeliveryServiceReference(ds.id, fqdn))
                             } catch (e: ParseException) {
                                 LOGGER.error(
-                                    "Unable to create a DeliveryServiceReference from DeliveryService '" + ds.getId() + "'",
+                                    "Unable to create a DeliveryServiceReference from DeliveryService '" + ds.id + "'",
                                     e
                                 )
                             }
-                        }))
-                    cache.setDeliveryServices(dsReferences)
-                }))
-        }))
+                        })
+                    cache!!.setDeliveryServices(dsReferences)
+                }
+        }
         statTracker!!.initialize(statMap, cacheRegister)
     }
 
@@ -622,24 +624,24 @@ class ConfigHandler constructor() {
         cacheRegister: CacheRegister
     ) {
         val deliveryServiceMatchers: TreeSet<DeliveryServiceMatcher> = TreeSet()
-        val config: JsonNode? = cacheRegister.getConfig()
+        val config: JsonNode? = cacheRegister.config
         val regexSuperhackEnabled: Boolean = JsonUtils.optBoolean(config, "confighandler.regex.superhack.enabled", true)
         val deliveryServiceIds: Iterator<String> = allDeliveryServices!!.fieldNames()
         while (deliveryServiceIds.hasNext()) {
             val deliveryServiceId: String = deliveryServiceIds.next()
-            val deliveryServiceJson: JsonNode? = JsonUtils.getJsonNode(allDeliveryServices, deliveryServiceId)
-            val matchsets: JsonNode? = JsonUtils.getJsonNode(deliveryServiceJson, "matchsets")
+            val deliveryServiceJson: JsonNode = JsonUtils.getJsonNode(allDeliveryServices, deliveryServiceId)
+            val matchsets: JsonNode = JsonUtils.getJsonNode(deliveryServiceJson, "matchsets")
             val deliveryService: DeliveryService? = deliveryServiceMap!!.get(deliveryServiceId)
-            for (i in 0 until matchsets!!.size()) {
+            for (i in 0 until matchsets.size()) {
                 val matchset: JsonNode = matchsets.get(i)
-                val deliveryServiceMatcher: DeliveryServiceMatcher = DeliveryServiceMatcher(deliveryService)
+                val deliveryServiceMatcher = DeliveryServiceMatcher(deliveryService)
                 deliveryServiceMatchers.add(deliveryServiceMatcher)
-                val list: JsonNode? = JsonUtils.getJsonNode(matchset, "matchlist")
-                for (j in 0 until list!!.size()) {
+                val list: JsonNode = JsonUtils.getJsonNode(matchset, "matchlist")
+                for (j in 0 until list.size()) {
                     val matcherJo: JsonNode = list.get(j)
                     val type: DeliveryServiceMatcher.Type =
                         DeliveryServiceMatcher.Type.valueOf(JsonUtils.getString(matcherJo, "match-type"))
-                    val target: String = optString(matcherJo, "target")
+                    val target: String? = optString(matcherJo, "target")
                     var regex: String? = JsonUtils.getString(matcherJo, "regex")
                     if (regexSuperhackEnabled && (i == 0) && (j == 0) && (type == DeliveryServiceMatcher.Type.HOST)) {
                         regex = regex!!.replaceFirst("^\\.\\*\\\\\\.".toRegex(), "(.*\\\\.|^)")
@@ -658,7 +660,7 @@ class ConfigHandler constructor() {
         while (itr.hasNext()) {
             val ds: DeliveryService? = dsMap.get(itr.next())
             //check if it's relative path or not
-            val rurl: String? = ds.getGeoRedirectUrl()
+            val rurl: String? = ds!!.geoRedirectUrl
             if (rurl == null) {
                 continue
             }
@@ -666,24 +668,24 @@ class ConfigHandler constructor() {
                 val idx: Int = rurl.indexOf("://")
                 if (idx < 0) {
                     //this is a relative url, belongs to this ds
-                    ds.setGeoRedirectUrlType("DS_URL")
+                    ds.geoRedirectUrlType = "DS_URL"
                     continue
                 }
                 //this is a url with protocol, must check further
                 //first, parse the url, if url invalid it will throw Exception
-                val url: URL = URL(rurl)
+                val url = URL(rurl)
 
                 //make a fake HTTPRequest for the redirect url
-                val req: HTTPRequest = HTTPRequest(url)
-                ds.setGeoRedirectFile(url.getFile())
+                val req = HTTPRequest(url)
+                ds.geoRedirectFile = url.getFile()
                 //try select the ds by the redirect fake HTTPRequest
                 val rds: DeliveryService? = cacheRegister.getDeliveryService(req)
-                if (rds == null || rds.getId() !== ds.getId()) {
+                if (rds == null || rds.id !== ds.id) {
                     //the redirect url not belongs to this ds
-                    ds.setGeoRedirectUrlType("NOT_DS_URL")
+                    ds.geoRedirectUrlType = "NOT_DS_URL"
                     continue
                 }
-                ds.setGeoRedirectUrlType("DS_URL")
+                ds.geoRedirectUrlType = "DS_URL"
             } catch (e: Exception) {
                 LOGGER.error("fatal error, failed to init NGB redirect with Exception: " + e.message)
             }
@@ -700,7 +702,7 @@ class ConfigHandler constructor() {
      */
     @Throws(JsonUtilsException::class)
     private fun parseGeolocationConfig(config: JsonNode?) {
-        var pollingUrlKey: String = "geolocation.polling.url"
+        var pollingUrlKey = "geolocation.polling.url"
         if (config!!.has("alt.geolocation.polling.url")) {
             pollingUrlKey = "alt.geolocation.polling.url"
         }
@@ -717,7 +719,7 @@ class ConfigHandler constructor() {
     }
 
     private fun parseCertificatesConfig(config: JsonNode?) {
-        val pollingInterval: String = "certificates.polling.interval"
+        val pollingInterval = "certificates.polling.interval"
         if (config!!.has(pollingInterval)) {
             try {
                 System.setProperty(pollingInterval, JsonUtils.getString(config, pollingInterval))
@@ -729,35 +731,35 @@ class ConfigHandler constructor() {
 
     @Throws(JsonUtilsException::class)
     private fun parseAnonymousIpConfig(jo: JsonNode) {
-        val anonymousPollingUrl: String = "anonymousip.polling.url"
-        val anonymousPollingInterval: String = "anonymousip.polling.interval"
-        val anonymousPolicyConfiguration: String = "anonymousip.policy.configuration"
-        val config: JsonNode? = JsonUtils.getJsonNode(jo, "config")
-        val configUrl: String? = JsonUtils.optString(config, anonymousPolicyConfiguration, null)
-        val databaseUrl: String? = JsonUtils.optString(config, anonymousPollingUrl, null)
+        val anonymousPollingUrl = "anonymousip.polling.url"
+        val anonymousPollingInterval = "anonymousip.polling.interval"
+        val anonymousPolicyConfiguration = "anonymousip.policy.configuration"
+        val config: JsonNode = JsonUtils.getJsonNode(jo, "config")
+        val configUrl: String? = optString(config, anonymousPolicyConfiguration, null)
+        val databaseUrl: String? = optString(config, anonymousPollingUrl, null)
         if (configUrl == null) {
             LOGGER.info(anonymousPolicyConfiguration + " not configured; stopping service updater and disabling feature")
             anonymousIpConfigUpdater!!.stopServiceUpdater()
-            AnonymousIp.Companion.getCurrentConfig().enabled = false
+            AnonymousIp.currentConfig.enabled = false
             return
         }
         if (databaseUrl == null) {
             LOGGER.info(anonymousPollingUrl + " not configured; stopping service updater and disabling feature")
             anonymousIpDatabaseUpdater!!.stopServiceUpdater()
-            AnonymousIp.Companion.getCurrentConfig().enabled = false
+            AnonymousIp.currentConfig.enabled = false
             return
         }
         if (jo.has(deliveryServicesKey)) {
-            val dss: JsonNode? = JsonUtils.getJsonNode(jo, deliveryServicesKey)
-            val dsNames: Iterator<String> = dss!!.fieldNames()
+            val dss: JsonNode = JsonUtils.getJsonNode(jo, deliveryServicesKey)
+            val dsNames: Iterator<String> = dss.fieldNames()
             while (dsNames.hasNext()) {
                 val ds: String = dsNames.next()
-                val dsNode: JsonNode? = JsonUtils.getJsonNode(dss, ds)
+                val dsNode: JsonNode = JsonUtils.getJsonNode(dss, ds)
                 if ((optString(dsNode, "anonymousBlockingEnabled") == "true")) {
                     val interval: Long = optLong(config, anonymousPollingInterval)
                     anonymousIpConfigUpdater!!.setDataBaseURL(configUrl, interval)
                     anonymousIpDatabaseUpdater!!.setDataBaseURL(databaseUrl, interval)
-                    AnonymousIp.Companion.getCurrentConfig().enabled = true
+                    AnonymousIp.currentConfig.enabled = true
                     LOGGER.debug("Anonymous Blocking in use, scheduling service updaters and enabling feature")
                     return
                 }
@@ -766,7 +768,7 @@ class ConfigHandler constructor() {
         LOGGER.debug("No DS using anonymous ip blocking - disabling feature")
         anonymousIpConfigUpdater!!.cancelServiceUpdater()
         anonymousIpDatabaseUpdater!!.cancelServiceUpdater()
-        AnonymousIp.Companion.getCurrentConfig().enabled = false
+        AnonymousIp.currentConfig.enabled = false
     }
 
     /**
@@ -788,15 +790,15 @@ class ConfigHandler constructor() {
     @Throws(JsonUtilsException::class)
     private fun parseDeepCoverageZoneNetworkConfig(config: JsonNode?) {
         deepNetworkUpdater!!.setDataBaseURL(
-            JsonUtils.optString(config, "deepcoveragezone.polling.url", null),
+            optString(config, "deepcoveragezone.polling.url", null),
             optLong(config, "deepcoveragezone.polling.interval")
         )
     }
 
     @Throws(JsonUtilsException::class)
     private fun parseRegionalGeoConfig(jo: JsonNode) {
-        val config: JsonNode? = JsonUtils.getJsonNode(jo, "config")
-        val url: String? = JsonUtils.optString(config, "regional_geoblock.polling.url", null)
+        val config: JsonNode = JsonUtils.getJsonNode(jo, "config")
+        val url: String? = optString(config, "regional_geoblock.polling.url", null)
         if (url == null) {
             LOGGER.info("regional_geoblock.polling.url not configured; stopping service updater")
             regionalGeoUpdater!!.stopServiceUpdater()
@@ -1018,13 +1020,13 @@ class ConfigHandler constructor() {
             var ip: String? = null
             var ip6: String? = null
             try {
-                val trLoc: String? = JsonUtils.getString(trafficRouter, locationKey)
+                val trLoc: String = JsonUtils.getString(trafficRouter, locationKey)
                 val cl: Location? = allLocations.get(trLoc)
                 if (cl != null) {
-                    var trafficRouterLocation: TrafficRouterLocation? = locations.get(cl.getGeolocation())
+                    var trafficRouterLocation: TrafficRouterLocation? = locations.get(cl.geolocation)
                     if (trafficRouterLocation == null) {
-                        trafficRouterLocation = TrafficRouterLocation(trLoc, cl.getGeolocation())
-                        locations.put(cl.getGeolocation(), trafficRouterLocation)
+                        trafficRouterLocation = TrafficRouterLocation(trLoc, cl.geolocation)
+                        locations.put(cl.geolocation, trafficRouterLocation)
                     }
                     val status: JsonNode? = trafficRouter.get("status")
                     if (status == null || (!("ONLINE" == status.asText()) && !("REPORTED" == status.asText()))) {
@@ -1043,15 +1045,15 @@ class ConfigHandler constructor() {
                                 status,
                                 trafficRouterName,
                                 trLoc,
-                                cl.getGeolocation().toString()
+                                cl.geolocation.toString()
                             )
                         )
                     }
                     val edgeTrafficRouter: Node = Node(trafficRouterName, trafficRouterName, optInt(jo, "hashCount"))
                     ip = JsonUtils.getString(trafficRouter, "ip")
                     ip6 = optString(trafficRouter, "ip6")
-                    edgeTrafficRouter.setFqdn(JsonUtils.getString(trafficRouter, "fqdn"))
-                    edgeTrafficRouter.setPort(JsonUtils.getInt(trafficRouter, "port"))
+                    edgeTrafficRouter.fqdn = JsonUtils.getString(trafficRouter, "fqdn")
+                    edgeTrafficRouter.port = JsonUtils.getInt(trafficRouter, "port")
                     edgeTrafficRouter.setIpAddress(ip, ip6, 0)
                     trafficRouterLocation.addTrafficRouter(trafficRouterName, edgeTrafficRouter)
                 } else {

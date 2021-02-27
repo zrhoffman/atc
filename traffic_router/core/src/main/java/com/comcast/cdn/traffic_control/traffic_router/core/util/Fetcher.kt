@@ -265,20 +265,20 @@ open class Fetcher constructor() {
             try {
                 // TODO: make disabling self signed certificates configurable
                 val ctx: SSLContext = SSLContext.getInstance("SSL")
-                com.comcast.cdn.traffic_control.traffic_router.core.util.ctx.init(
+                ctx.init(
                     null,
                     arrayOf<TrustManager>(DefaultTrustManager()),
                     SecureRandom()
                 )
-                SSLContext.setDefault(com.comcast.cdn.traffic_control.traffic_router.core.util.ctx)
-                HttpsURLConnection.setDefaultSSLSocketFactory(com.comcast.cdn.traffic_control.traffic_router.core.util.ctx.getSocketFactory())
+                SSLContext.setDefault(ctx)
+                HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory())
             } catch (e: Exception) {
                 LOGGER.warn(e, e)
             }
         }
     }
 
-    private class DefaultTrustManager constructor() : X509TrustManager {
+    public class DefaultTrustManager constructor() : X509TrustManager {
         @Throws(CertificateException::class)
         public override fun checkClientTrusted(arg0: Array<X509Certificate>, arg1: String) {
         }
@@ -287,7 +287,7 @@ open class Fetcher constructor() {
         public override fun checkServerTrusted(arg0: Array<X509Certificate>, arg1: String) {
         }
 
-        public override fun getAcceptedIssuers(): Array<X509Certificate> {
+        public override fun getAcceptedIssuers(): Array<X509Certificate>? {
             return null
         }
     }

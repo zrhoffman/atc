@@ -257,9 +257,11 @@ import com.comcast.cdn.traffic_control.traffic_router.core.secure.CertificatesRe
 import javax.management.ObjectName
 import com.comcast.cdn.traffic_control.traffic_router.shared.DeliveryServiceCertificatesMBean
 import org.springframework.context.event.ApplicationContextEvent
-import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrlimport
-
-com.fasterxml.jackson.core.JsonFactoryimport com.fasterxml.jackson.core.type.TypeReferenceimport com.fasterxml.jackson.databind.ObjectMapperimport org.apache.log4j.Logger
+import com.comcast.cdn.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrl
+import com.fasterxml.jackson.core.JsonFactory
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.apache.log4j.Logger
 import org.springframework.context.event.ContextClosedEvent
 import java.util.Enumeration
 
@@ -271,7 +273,7 @@ class SteeringRegistry {
         try {
             m = objectMapper.readValue<HashMap<String, List<Steering>>>(
                 json,
-                object : TypeReference<HashMap<String?, List<Steering?>?>?>() {})
+                object : TypeReference<HashMap<String, List<Steering>>?>() {})
         } catch (e: IOException) {
             LOGGER.error("Failed consuming Json data to populate steering registry, keeping current data:" + e.message)
             return
@@ -279,7 +281,7 @@ class SteeringRegistry {
         val steerings = m.values.iterator().next()
         val newSteerings: MutableMap<String?, Steering> = HashMap()
         for (steering in steerings) {
-            for (steeringTarget in steering.targets) {
+            for (steeringTarget in steering.targets!!) {
                 steeringTarget!!.generateHashes()
             }
             newSteerings[steering.deliveryService] = steering
@@ -287,8 +289,8 @@ class SteeringRegistry {
         newSteerings.forEach { (k: String?, newSteering: Steering) ->
             val old = registry[k]
             if (old == null || old != newSteering) {
-                for (target in newSteering.targets) {
-                    if (target.geolocation != null && target.geoOrder != 0) {
+                for (target in newSteering.targets!!) {
+                    if (target!!.geolocation != null && target.geoOrder != 0) {
                         LOGGER.info("Steering " + newSteering.deliveryService + " target " + target.deliveryService + " now has geolocation [" + target.latitude + ", " + target.longitude + "] and geoOrder " + target.geoOrder)
                     } else if (target.geolocation != null && target.weight > 0) {
                         LOGGER.info("Steering " + newSteering.deliveryService + " target " + target.deliveryService + " now has geolocation [" + target.latitude + ", " + target.longitude + "] and weight " + target.weight)
@@ -313,7 +315,7 @@ class SteeringRegistry {
             val mapper = ObjectMapper(JsonFactory())
             mapper.readValue<HashMap<String, List<Steering>>>(
                 json,
-                object : TypeReference<HashMap<String?, List<Steering?>?>?>() {})
+                object : TypeReference<HashMap<String, List<Steering>>?>() {})
         } catch (e: IOException) {
             LOGGER.error("Failed consuming Json data to populate steering registry while verifying:" + e.message)
             return false

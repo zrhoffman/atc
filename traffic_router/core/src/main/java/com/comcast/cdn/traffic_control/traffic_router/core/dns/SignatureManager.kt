@@ -260,7 +260,7 @@ class SignatureManager constructor(
 
     private fun initKeyMap() {
         synchronized(SignatureManager::class.java, {
-            val config: JsonNode? = cacheRegister.getConfig()
+            val config: JsonNode? = cacheRegister?.config
             var dnssecEnabled: Boolean = optBoolean(config, TrafficRouter.Companion.DNSSEC_ENABLED)
             if (dnssecEnabled) {
                 dnssecEnabled = true
