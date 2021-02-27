@@ -293,7 +293,7 @@ class NameServerTest {
 
         //Verification of response
         val qopt = res.opt!!
-        val list: MutableList<EDNSOption?> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET) as MutableList<EDNSOption?>
+        val list: MutableList<*> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET)
         assert(list !== Collections.EMPTY_LIST)
         val option = list[0] as ClientSubnetOption?
         MatcherAssert.assertThat(nmask, org.hamcrest.Matchers.equalTo(option!!.sourceNetmask))
@@ -357,7 +357,7 @@ class NameServerTest {
 
         //Verification of response
         val qopt = res.opt!!
-        val list: MutableList<EDNSOption?> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET) as MutableList<EDNSOption?>
+        val list: MutableList<*> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET)
         assert(list !== Collections.EMPTY_LIST)
         val option = list[0] as ClientSubnetOption?
         MatcherAssert.assertThat(1, org.hamcrest.Matchers.equalTo(list.size))
@@ -431,7 +431,7 @@ class NameServerTest {
 
         //Verification of response
         val qopt = res.opt!!
-        val list: MutableList<EDNSOption?> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET) as MutableList<EDNSOption?>
+        val list: MutableList<*> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET)
         assert(list !== Collections.EMPTY_LIST)
         val option = list[0] as ClientSubnetOption?
         MatcherAssert.assertThat(nmask, org.hamcrest.Matchers.equalTo(option!!.sourceNetmask))
@@ -509,7 +509,7 @@ class NameServerTest {
 
         //Verification of response
         val qopt = res.opt!!
-        val list: MutableList<EDNSOption?> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET) as MutableList<EDNSOption?>
+        val list: MutableList<*> = qopt.getOptions(EDNSOption.Code.CLIENT_SUBNET)
         assert(list !== Collections.EMPTY_LIST)
         val option = list[0] as ClientSubnetOption?
         MatcherAssert.assertThat(1, org.hamcrest.Matchers.equalTo(list.size))

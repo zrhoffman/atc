@@ -302,7 +302,7 @@ object CacheRegisterBuilder {
             val isDns = false
             dsMap[dsId] = ds
             for (matchset in matchsets) {
-                val protocol = JsonUtils.getString(matchset, "protocol")
+                JsonUtils.getString(matchset, "protocol")
                 val m = DeliveryServiceMatcher(ds)
                 deliveryServiceMatchers.add(m)
                 for (matchlist in matchset["matchlist"]) {

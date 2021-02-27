@@ -270,7 +270,7 @@ class TCPTest {
     @Test
     @Throws(Exception::class)
     fun testTCPSocketHandlerBadMessage() {
-        val client = InetAddress.getLocalHost()
+        InetAddress.getLocalHost()
         val handler = tcp!!.TCPSocketHandler(socket)
         val wireRequest = ByteArray(0)
         val baos = ByteArrayOutputStream()

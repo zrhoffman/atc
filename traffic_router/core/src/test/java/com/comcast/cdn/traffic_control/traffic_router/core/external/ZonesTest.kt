@@ -244,7 +244,7 @@ class ZonesTest {
             val zoneStats: Map<String, Any> = ObjectMapper().readValue<HashMap<String, Any>>(
                 actual,
                 object : TypeReference<HashMap<String, Any>?>() {})
-            val dynamicZonesStats = zoneStats["dynamicZoneCaches"] as Map<String, Any>?
+            val dynamicZonesStats = zoneStats["dynamicZoneCaches"] as Map<*, *>?
             MatcherAssert.assertThat(
                 dynamicZonesStats!!.keys, Matchers.containsInAnyOrder(
                     "requestCount",
@@ -261,7 +261,7 @@ class ZonesTest {
                     "loadExceptionCount"
                 )
             )
-            val staticZonesStats = zoneStats["staticZoneCaches"] as Map<String, Any>?
+            val staticZonesStats = zoneStats["staticZoneCaches"] as Map<*, *>?
             MatcherAssert.assertThat(
                 staticZonesStats!!.keys, Matchers.containsInAnyOrder(
                     "requestCount",

@@ -238,12 +238,7 @@ object ExternalTestSuite {
     private var testHttpServerPort = 0
     @Throws(Exception::class)
     fun addToEnv(envVars: Map<String, String?>?) {
-        val envMap = System.getenv()
-        val clazz: Class<*> = envMap.javaClass
-        val m = clazz.getDeclaredField("m")
-        m.isAccessible = true
-        val mutableEnvMap = m[envMap] as MutableMap<String, String?>
-        mutableEnvMap.putAll(envVars!!)
+        System.getenv().putAll(envVars!!)
     }
 
     @Throws(Exception::class)
@@ -279,7 +274,7 @@ object ExternalTestSuite {
         System.setProperty("routerHttpPort", "" + SocketUtils.findAvailableTcpPort())
         System.setProperty("routerSecurePort", "" + SocketUtils.findAvailableTcpPort())
         setupFakeServers()
-        val prefix = System.getProperty("user.dir")
+        System.getProperty("user.dir")
         tmpDeployDir = Files.createTempDirectory("ext-test-").toFile()
         File(tmpDeployDir, "conf").mkdirs()
         println()
