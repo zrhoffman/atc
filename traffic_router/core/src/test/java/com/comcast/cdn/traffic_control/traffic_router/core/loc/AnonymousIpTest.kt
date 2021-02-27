@@ -225,8 +225,8 @@ class AnonymousIpTest {
         val mmdbFile = File(mmdb)
         Assume.assumeTrue(mmdbFile.exists())
         AnonymousIp.parseConfigFile(configFile, false)
-        assert(AnonymousIp.getCurrentConfig().iPv4Whitelist != null)
-        assert(AnonymousIp.getCurrentConfig().iPv6Whitelist != null)
+        assert(AnonymousIp.currentConfig.iPv4Whitelist != null)
+        assert(AnonymousIp.currentConfig.iPv6Whitelist != null)
 
         // Set up a mock traffic router with real database
         val anonymousIpService = AnonymousIpDatabaseService()
@@ -234,13 +234,13 @@ class AnonymousIpTest {
         anonymousIpService.reloadDatabase()
         assert(anonymousIpService.isInitialized)
         trafficRouter = Mockito.mock(TrafficRouter::class.java)
-        Mockito.`when`(trafficRouter!!.getAnonymousIpDatabaseService()).thenReturn(anonymousIpService)
-        assert(trafficRouter!!.getAnonymousIpDatabaseService() != null)
+        Mockito.`when`(trafficRouter!!.anonymousIpDatabaseService).thenReturn(anonymousIpService)
+        assert(trafficRouter!!.anonymousIpDatabaseService != null)
     }
 
     @Test
     fun testConfigFileParsingIpv4() {
-        val currentConfig = AnonymousIp.getCurrentConfig()
+        val currentConfig = AnonymousIp.currentConfig
         MatcherAssert.assertThat(currentConfig, CoreMatchers.notNullValue())
         val whitelist = currentConfig.iPv4Whitelist
         MatcherAssert.assertThat(whitelist, CoreMatchers.notNullValue())
@@ -248,7 +248,7 @@ class AnonymousIpTest {
 
     @Test
     fun testConfigFileParsingIpv6() {
-        val currentConfig = AnonymousIp.getCurrentConfig()
+        val currentConfig = AnonymousIp.currentConfig
         MatcherAssert.assertThat(currentConfig, CoreMatchers.notNullValue())
         val whitelist = currentConfig.iPv6Whitelist
         MatcherAssert.assertThat(whitelist, CoreMatchers.notNullValue())

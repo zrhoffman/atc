@@ -382,7 +382,7 @@ class NameServerTest {
         val ds1 = DeliveryService("ds1", node)
         val dses: MutableSet<DeliveryService> = HashSet<DeliveryService>()
         dses.add(ds1)
-        nameServer!!.setEcsEnabledDses(dses)
+        nameServer!!.ecsEnabledDses = dses
         val name = Name.fromString("host1.example.com.")
         val question = Record.newRecord(name, Type.A, DClass.IN, 12345L)
         val query = Message.newQuery(question)
@@ -458,7 +458,7 @@ class NameServerTest {
         val ds1 = DeliveryService("ds1", node)
         val dses: MutableSet<DeliveryService> = HashSet<DeliveryService>()
         dses.add(ds1)
-        nameServer!!.setEcsEnabledDses(dses)
+        nameServer!!.ecsEnabledDses = dses
 
 
         //Add opt record, with multiple client subnet option.

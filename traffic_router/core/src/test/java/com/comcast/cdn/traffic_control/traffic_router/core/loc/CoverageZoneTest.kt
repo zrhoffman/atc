@@ -278,7 +278,7 @@ class CoverageZoneTest {
                 IPVersions.IPV4ONLY
             )
         ).thenCallRealMethod()
-        Mockito.`when`(trafficRouter!!.getCacheRegister()).thenReturn(cacheRegister)
+        Mockito.`when`(trafficRouter!!.cacheRegister).thenReturn(cacheRegister)
         Mockito.`when`(
             trafficRouter!!.orderLocations(
                 Matchers.anyListOf(

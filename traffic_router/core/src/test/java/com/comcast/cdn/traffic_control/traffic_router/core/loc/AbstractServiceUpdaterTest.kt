@@ -235,7 +235,7 @@ class AbstractServiceUpdaterTest {
     @Throws(Exception::class)
     fun itUsesETag() {
         val updater = Updater()
-        updater.setDatabasesDirectory(databasesDirectory)
+        updater.databasesDirectory = databasesDirectory
         updater.dataBaseURL = "http://www.example.com"
         updater.updateDatabase()
         Mockito.verify(connection, Mockito.times(0))!!

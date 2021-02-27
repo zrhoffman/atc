@@ -219,13 +219,13 @@ class TrafficRouterTest {
     fun before() {
         deliveryService = Mockito.mock(DeliveryService::class.java)
         Mockito.`when`(deliveryService!!.isAvailable()).thenReturn(true)
-        Mockito.`when`(deliveryService!!.isCoverageZoneOnly()).thenReturn(false)
-        Mockito.`when`(deliveryService!!.getDispersion()).thenReturn(
+        Mockito.`when`(deliveryService!!.isCoverageZoneOnly).thenReturn(false)
+        Mockito.`when`(deliveryService!!.dispersion).thenReturn(
             Mockito.mock(
                 Dispersion::class.java
             )
         )
-        Mockito.`when`(deliveryService!!.isAcceptHttp()).thenReturn(true)
+        Mockito.`when`(deliveryService!!.isAcceptHttp).thenReturn(true)
         consistentHasher = Mockito.mock(ConsistentHasher::class.java)
         Mockito.`when`(
             deliveryService!!.createURIString(
@@ -308,7 +308,7 @@ class TrafficRouterTest {
         val request = DNSRequest("example.com", name, Type.A)
         request.clientIP = "192.168.10.11"
         request.hostname = name.relativize(Name.root).toString()
-        val track = Mockito.spy(StatTracker.getTrack())
+        val track = Mockito.spy(StatTracker.track)
         Mockito.`when`(deliveryService!!.routingName).thenReturn("edge")
         Mockito.`when`(deliveryService!!.isDns).thenReturn(true)
         val result = trafficRouter!!.route(request, track)
@@ -325,7 +325,7 @@ class TrafficRouterTest {
         val httpRequest = HTTPRequest()
         httpRequest.clientIP = "192.168.10.11"
         httpRequest.hostname = "ccr.example.com"
-        val track = Mockito.spy(StatTracker.getTrack())
+        val track = Mockito.spy(StatTracker.track)
         val cache = Mockito.mock(
             Cache::class.java
         )
@@ -473,7 +473,7 @@ class TrafficRouterTest {
             .getCachesByGeo(deliveryService, deliveryService!!.missLocation, track, IPVersions.IPV4ONLY)
         MatcherAssert.assertThat(result.size, org.hamcrest.Matchers.equalTo(1))
         MatcherAssert.assertThat(result[0], org.hamcrest.Matchers.equalTo(cache))
-        MatcherAssert.assertThat(track.getResult(), org.hamcrest.Matchers.equalTo(ResultType.GEO_DS))
+        MatcherAssert.assertThat(track.result, org.hamcrest.Matchers.equalTo(ResultType.GEO_DS))
     }
 
     @Test
@@ -576,10 +576,10 @@ class TrafficRouterTest {
         httpRequest.clientIP = "192.168.10.11"
         httpRequest.hostname = "ccr.example.com"
         httpRequest.path = "/some/path"
-        var track = Mockito.spy(StatTracker.getTrack())
+        var track = Mockito.spy(StatTracker.track)
         trafficRouter!!.route(httpRequest, track)
-        MatcherAssert.assertThat(track.getResult(), org.hamcrest.Matchers.equalTo(ResultType.GEO))
-        MatcherAssert.assertThat(track.getResultLocation(), org.hamcrest.Matchers.equalTo(Geolocation(50.0, 50.0)))
+        MatcherAssert.assertThat(track.result, org.hamcrest.Matchers.equalTo(ResultType.GEO))
+        MatcherAssert.assertThat(track.resultLocation, org.hamcrest.Matchers.equalTo(Geolocation(50.0, 50.0)))
         Mockito.`when`(
             federationRegistry!!.findInetRecords(
                 Matchers.anyString(), Matchers.any(
@@ -593,10 +593,10 @@ class TrafficRouterTest {
         val dnsRequest = DNSRequest("example.com", name, Type.A)
         dnsRequest.clientIP = "10.10.10.10"
         dnsRequest.hostname = name.relativize(Name.root).toString()
-        track = StatTracker.getTrack()
+        track = StatTracker.track
         trafficRouter!!.route(dnsRequest, track)
-        MatcherAssert.assertThat(track.getResult(), org.hamcrest.Matchers.equalTo(ResultType.GEO))
-        MatcherAssert.assertThat(track.getResultLocation(), org.hamcrest.Matchers.equalTo(Geolocation(50.0, 50.0)))
+        MatcherAssert.assertThat(track.result, org.hamcrest.Matchers.equalTo(ResultType.GEO))
+        MatcherAssert.assertThat(track.resultLocation, org.hamcrest.Matchers.equalTo(Geolocation(50.0, 50.0)))
     }
 
     @Test

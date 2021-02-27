@@ -245,7 +245,7 @@ class StatelessTrafficRouterTest {
         req.queryString = ""
         req.hostname = "somehost.cdn.net"
         req.requestedUrl = "http://somehost.cdn.net/QualityLevels(96000)/Fragments(audio_eng=20720000000)"
-        val track = StatTracker.getTrack()
+        val track = StatTracker.track
         trafficRouterManager!!.trafficRouter.route(req, track)
     }
 

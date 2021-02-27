@@ -243,7 +243,7 @@ class DeliveryServiceHTTPRoutingMissesTest {
         Mockito.`when`(unusedByTest["deepCachingType"]).thenReturn(mapper.readTree("\"NEVER\""))
         deliveryService = DeliveryService("ignoredbytest", unusedByTest)
         httpRequest = Mockito.mock(HTTPRequest::class.java)
-        track = StatTracker.getTrack()
+        track = StatTracker.track
         bypassDestination = Mockito.mock(JsonNode::class.java)
         Whitebox.setInternalState(deliveryService, "bypassDestination", bypassDestination)
     }
@@ -254,8 +254,8 @@ class DeliveryServiceHTTPRoutingMissesTest {
         val nullBypassDestination: JsonNode? = null
         Whitebox.setInternalState(deliveryService, "bypassDestination", nullBypassDestination)
         deliveryService!!.getFailureHttpResponse(httpRequest, track)
-        MatcherAssert.assertThat(track!!.getResultDetails(), Matchers.equalTo(ResultDetails.DS_NO_BYPASS))
-        MatcherAssert.assertThat(track!!.getResult(), Matchers.equalTo(ResultType.MISS))
+        MatcherAssert.assertThat(track!!.resultDetails, Matchers.equalTo(ResultDetails.DS_NO_BYPASS))
+        MatcherAssert.assertThat(track!!.result, Matchers.equalTo(ResultType.MISS))
     }
 
     @Test
@@ -263,8 +263,8 @@ class DeliveryServiceHTTPRoutingMissesTest {
     fun itSetsDetailsWhenNoHTTPBypass() {
         Mockito.`when`(bypassDestination!!["HTTP"]).thenReturn(null)
         deliveryService!!.getFailureHttpResponse(httpRequest, track)
-        MatcherAssert.assertThat(track!!.getResultDetails(), Matchers.equalTo(ResultDetails.DS_NO_BYPASS))
-        MatcherAssert.assertThat(track!!.getResult(), Matchers.equalTo(ResultType.MISS))
+        MatcherAssert.assertThat(track!!.resultDetails, Matchers.equalTo(ResultDetails.DS_NO_BYPASS))
+        MatcherAssert.assertThat(track!!.result, Matchers.equalTo(ResultType.MISS))
     }
 
     @Test
@@ -277,7 +277,7 @@ class DeliveryServiceHTTPRoutingMissesTest {
         Mockito.`when`(bypassDestination!!["HTTP"]).thenReturn(httpJsonObject)
         deliveryService!!.getFailureHttpResponse(httpRequest, track)
         Mockito.verify(httpJsonObject)["fqdn"]
-        MatcherAssert.assertThat(track!!.getResultDetails(), Matchers.equalTo(ResultDetails.DS_NO_BYPASS))
-        MatcherAssert.assertThat(track!!.getResult(), Matchers.equalTo(ResultType.MISS))
+        MatcherAssert.assertThat(track!!.resultDetails, Matchers.equalTo(ResultDetails.DS_NO_BYPASS))
+        MatcherAssert.assertThat(track!!.result, Matchers.equalTo(ResultType.MISS))
     }
 }

@@ -227,7 +227,7 @@ class TrafficRouterHTTPRoutingMissesTest {
         request!!.clientIP = "192.168.34.56"
         cacheRegister = Mockito.mock(CacheRegister::class.java)
         trafficRouter = Mockito.mock(TrafficRouter::class.java)
-        track = PowerMockito.spy(StatTracker.getTrack())
+        track = PowerMockito.spy(StatTracker.track)
         Whitebox.setInternalState(trafficRouter, "cacheRegister", cacheRegister)
         PowerMockito.doCallRealMethod().`when`(trafficRouter)!!.route(request, track)
         PowerMockito.doCallRealMethod().`when`(trafficRouter)!!.singleRoute(request, track)
@@ -237,7 +237,7 @@ class TrafficRouterHTTPRoutingMissesTest {
     @Throws(Exception::class)
     fun itSetsDetailsWhenNoDeliveryService() {
         trafficRouter!!.route(request, track)
-        Mockito.verify(track)!!.setResult(ResultType.DS_MISS)
-        Mockito.verify(track)!!.setResultDetails(ResultDetails.DS_NOT_FOUND)
+        Mockito.verify(track)!!.result = ResultType.DS_MISS
+        Mockito.verify(track)!!.resultDetails = ResultDetails.DS_NOT_FOUND
     }
 }
