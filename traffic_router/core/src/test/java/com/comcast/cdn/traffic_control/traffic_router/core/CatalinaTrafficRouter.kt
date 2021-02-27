@@ -248,13 +248,15 @@ class CatalinaTrafficRouter(serverXmlPath: String, appBase: String?) {
         // Override the port and app base property of server.xml
         val trafficRouterService = catalina.server.findService("traffic_router_core") as StandardService
         val secureConnectorList = Arrays.stream(trafficRouterService.findConnectors())
-            .filter { k: Connector -> k.getAttribute("portAttribute") == "SecureApiPort" }
+            .filter { k: Connector -> k.getProperty("portAttribute") == "SecureApiPort" }
             .collect(Collectors.toList())
         val hasHttpsPort = secureConnectorList.size > 0
         val securePort = if (hasHttpsPort) secureConnectorList[0].port else 0
+        logger.info("securePort is " + securePort)
         val apiPort = Arrays.stream(trafficRouterService.findConnectors())
-            .filter { k: Connector -> k.getAttribute("portAttribute") == "ApiPort" }
+            .filter { k: Connector -> k.getProperty("portAttribute") == "ApiPort" }
             .collect(Collectors.toList())[0].port
+        logger.info("apiPort is " + apiPort)
         val connectors = trafficRouterService.findConnectors()
         for (connector in connectors) {
             if (connector.port == 80) {

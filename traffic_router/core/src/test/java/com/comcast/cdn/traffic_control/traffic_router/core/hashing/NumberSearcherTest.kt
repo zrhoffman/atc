@@ -223,7 +223,6 @@ class NumberSearcherTest {
     @Test
     fun itFindsClosest() {
         val numbers = arrayOf(1.2, 2.3, 3.4, 4.5, 5.6)
-        val numberSearcher = NumberSearcher()
         Assert.assertThat(NumberSearcher.findClosest(numbers, 3.4), IsEqual.equalTo(2))
         Assert.assertThat(NumberSearcher.findClosest(numbers, 1.9), IsEqual.equalTo(1))
         Assert.assertThat(NumberSearcher.findClosest(numbers, 1.3), IsEqual.equalTo(0))

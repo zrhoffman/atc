@@ -244,7 +244,6 @@ class CacheRegisterTest {
         deliveryServiceMatchers.add(deliveryServiceMatcher3)
         val dnsMatcher1 = DeliveryServiceMatcher(deliveryService1)
         dnsMatcher1.addMatch(DeliveryServiceMatcher.Type.HOST, ".*\\.service01-kabletown\\..*", "")
-        val dnsMatchers = TreeSet<DeliveryServiceMatcher>()
         deliveryServiceMatchers.add(dnsMatcher1)
         cacheRegister.setDeliveryServiceMatchers(deliveryServiceMatchers)
     }

@@ -425,7 +425,7 @@ class AnonymousIpTest {
         val total: Long = 100000
         val start = System.nanoTime()
         for (i in 0..total) {
-            val result = AnonymousIp.enforce(trafficRouter, dsvcId, url, ip)
+            AnonymousIp.enforce(trafficRouter, dsvcId, url, ip)
         }
         val duration = System.nanoTime() - start
         println(

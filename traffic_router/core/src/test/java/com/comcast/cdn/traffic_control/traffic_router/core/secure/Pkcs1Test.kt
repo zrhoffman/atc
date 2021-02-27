@@ -298,7 +298,7 @@ class Pkcs1Test {
         val keySpec = pkcs1.keySpec
         //assertThat(keySpec instanceof RSAMultiPrimePrivateCrtKeySpec, equalTo(true));
         Assert.assertThat(keySpec is PKCS8EncodedKeySpec, Matchers.equalTo(true))
-        val rsaKeySpec = keySpec as PKCS8EncodedKeySpec
+        //val rsaKeySpec = keySpec as PKCS8EncodedKeySpec
         //RSAMultiPrimePrivateCrtKeySpec rsaKeySpec = (RSAMultiPrimePrivateCrtKeySpec) keySpec;
         //assertThat(rsaKeySpec.getPrivateExponent(), equalTo(new BigInteger(primeExponent)));
         //assertThat(rsaKeySpec.getPrimeP(), equalTo(new BigInteger(primeP)));

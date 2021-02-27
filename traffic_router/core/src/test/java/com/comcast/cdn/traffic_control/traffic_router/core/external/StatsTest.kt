@@ -254,12 +254,12 @@ class StatsTest {
                 responseContent,
                 object : TypeReference<HashMap<String, Any>?>() {})
             MatcherAssert.assertThat(data.keys, Matchers.containsInAnyOrder("app", "stats"))
-            val appData = data["app"] as Map<String, Any>?
+            val appData = data["app"] as Map<*, *>?
             MatcherAssert.assertThat(
                 appData!!.keys,
                 Matchers.containsInAnyOrder("buildTimestamp", "name", "deploy-dir", "git-revision", "version")
             )
-            val statsData = data["stats"] as Map<String, Any>?
+            val statsData = data["stats"] as Map<*, *>?
             MatcherAssert.assertThat(
                 statsData!!.keys,
                 Matchers.containsInAnyOrder(
@@ -274,23 +274,23 @@ class StatsTest {
                     "updateTracker"
                 )
             )
-            val dnsStats = statsData["dnsMap"] as Map<String, Any>?
-            val cacheDnsStats = dnsStats!!.values.iterator().next() as Map<String, Any>
+            val dnsStats = statsData["dnsMap"] as Map<*, *>?
+            val cacheDnsStats = dnsStats!!.values.iterator().next() as Map<*, *>
             MatcherAssert.assertThat(
                 cacheDnsStats.keys, Matchers.containsInAnyOrder(
                     "czCount", "geoCount", "missCount", "dsrCount", "errCount",
                     "deepCzCount", "staticRouteCount", "fedCount", "regionalDeniedCount", "regionalAlternateCount"
                 )
             )
-            val httpStats = statsData["httpMap"] as Map<String, Any>?
-            val cacheHttpStats = httpStats!!.values.iterator().next() as Map<String, Any>
+            val httpStats = statsData["httpMap"] as Map<*, *>?
+            val cacheHttpStats = httpStats!!.values.iterator().next() as Map<*, *>
             MatcherAssert.assertThat(
                 cacheHttpStats.keys, Matchers.containsInAnyOrder(
                     "czCount", "geoCount", "missCount", "dsrCount", "errCount",
                     "deepCzCount", "staticRouteCount", "fedCount", "regionalDeniedCount", "regionalAlternateCount"
                 )
             )
-            val updateTracker = statsData["updateTracker"] as Map<String, Any>?
+            val updateTracker = statsData["updateTracker"] as Map<*, *>?
             val keys = updateTracker!!.keys
             val expectedStats =
                 Arrays.asList("lastCacheStateCheck", "lastCacheStateChange", "lastConfigCheck", "lastConfigChange")
@@ -320,7 +320,7 @@ class StatsTest {
             MatcherAssert.assertThat(data["requestIp"], Matchers.equalTo("8.8.8.8"))
             MatcherAssert.assertThat(data["locationByFederation"], Matchers.equalTo("not found"))
             MatcherAssert.assertThat(data["locationByCoverageZone"], Matchers.equalTo("not found"))
-            val locationByGeo = data["locationByGeo"] as Map<String, Any>?
+            val locationByGeo = data["locationByGeo"] as Map<*, *>?
             MatcherAssert.assertThat(
                 locationByGeo!!.keys,
                 Matchers.containsInAnyOrder("city", "countryCode", "latitude", "longitude", "postalCode", "countryName")

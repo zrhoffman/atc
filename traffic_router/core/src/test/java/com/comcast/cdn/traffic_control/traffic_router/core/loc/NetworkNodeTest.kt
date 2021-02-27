@@ -300,7 +300,7 @@ class NetworkNodeTest {
             for (location in testNetMap.keys) {
                 try {
                     for (address in testNetMap[location]!!) {
-                        val nn = testRoot!!.getNetwork(address)
+                        testRoot!!.getNetwork(address)
                     }
                 } catch (e: NetworkNodeException) {
                     e.printStackTrace()
