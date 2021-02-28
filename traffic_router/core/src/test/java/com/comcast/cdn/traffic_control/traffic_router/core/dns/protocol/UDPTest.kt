@@ -209,6 +209,7 @@ import javax.management.MBeanServer
 import javax.management.ObjectName
 import com.comcast.cdn.traffic_control.traffic_router.shared.DeliveryServiceCertificatesMBean
 import com.comcast.cdn.traffic_control.traffic_router.shared.DeliveryServiceCertificates
+import com.nhaarman.mockitokotlin2.mock
 import org.springframework.context.support.FileSystemXmlApplicationContext
 import kotlin.jvm.JvmStatic
 import org.apache.catalina.startup.Catalina
@@ -237,7 +238,7 @@ class UDPTest {
     private var datagramSocket: DatagramSocket? = null
     private var executorService: ThreadPoolExecutor? = null
     private var cancelService: ExecutorService? = null
-    private var queue: LinkedBlockingQueue<*>? = null
+    private var queue: LinkedBlockingQueue<Runnable>? = null
     private var nameServer: NameServer? = null
     private var udp: UDP? = null
     @Before
@@ -246,15 +247,15 @@ class UDPTest {
         datagramSocket = Mockito.mock(DatagramSocket::class.java)
         executorService = Mockito.mock(ThreadPoolExecutor::class.java)
         cancelService = Mockito.mock(ExecutorService::class.java)
-        queue = Mockito.mock(LinkedBlockingQueue::class.java)
+        queue = mock()
         nameServer = Mockito.mock(NameServer::class.java)
         udp = UDP()
         udp!!.datagramSocket = datagramSocket
         udp!!.executorService = executorService
         udp!!.cancelService = cancelService
         udp!!.nameServer = nameServer
-        Mockito.`when`(executorService.getQueue()).thenReturn(queue)
-        Mockito.`when`(queue.size).thenReturn(0)
+        Mockito.`when`(executorService!!.getQueue()).thenReturn(queue)
+        Mockito.`when`(queue!!.size).thenReturn(0)
     }
 
     @Test
@@ -290,7 +291,7 @@ class UDPTest {
             SocketHandler::class.java
         )
         udp!!.submit(r)
-        Mockito.verify(executorService).submit(r)
+        Mockito.verify(executorService)!!.submit(r)
     }
 
     @Test
@@ -323,7 +324,7 @@ class UDPTest {
             MatcherAssert.assertThat(datagramPacket.data, org.hamcrest.Matchers.equalTo(wireResponse))
             count.incrementAndGet()
             null
-        }.`when`(datagramSocket).send(Matchers.any(DatagramPacket::class.java))
+        }.`when`(datagramSocket)!!.send(Matchers.any(DatagramPacket::class.java))
         val handler = udp!!.UDPPacketHandler(packet)
         handler.run()
         MatcherAssert.assertThat(count.get(), org.hamcrest.Matchers.equalTo(1))
@@ -373,7 +374,7 @@ class UDPTest {
             MatcherAssert.assertThat(datagramPacket.data, org.hamcrest.Matchers.equalTo(wireResponse))
             count.incrementAndGet()
             null
-        }.`when`(datagramSocket).send(Matchers.any(DatagramPacket::class.java))
+        }.`when`(datagramSocket)!!.send(Matchers.any(DatagramPacket::class.java))
         val handler = udp!!.UDPPacketHandler(packet)
         handler.run()
         MatcherAssert.assertThat(count.get(), org.hamcrest.Matchers.equalTo(1))

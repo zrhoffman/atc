@@ -221,16 +221,16 @@ import org.junit.Test
 class CacheLocationComparatorTest {
     @Test
     fun testCompareBothLocEqual() {
-        val comparator = LocationComparator(Geolocation(1f, 1f))
-        val loc1 = CacheLocation("loc1", Geolocation(0f, 0f))
-        val loc2 = CacheLocation("loc2", Geolocation(0f, 0f))
+        val comparator = LocationComparator(Geolocation(1.0, 1.0))
+        val loc1 = CacheLocation("loc1", Geolocation(0.0, 0.0))
+        val loc2 = CacheLocation("loc2", Geolocation(0.0, 0.0))
         Assert.assertEquals(0, comparator.compare(loc1, loc2).toLong())
         Assert.assertEquals(0, comparator.compare(loc2, loc1).toLong())
     }
 
     @Test
     fun testCompareBothLocNull() {
-        val comparator = LocationComparator(Geolocation(1f, 1f))
+        val comparator = LocationComparator(Geolocation(1.0, 1.0))
         val loc1 = CacheLocation("loc1", null)
         val loc2 = CacheLocation("loc2", null)
         Assert.assertEquals(0, comparator.compare(loc1, loc2).toLong())
@@ -239,17 +239,17 @@ class CacheLocationComparatorTest {
 
     @Test
     fun testCompareLocsDifferent() {
-        val comparator = LocationComparator(Geolocation(1f, 1f))
-        val loc1 = CacheLocation("loc1", Geolocation(1f, 1f))
-        val loc2 = CacheLocation("loc2", Geolocation(0f, 0f))
+        val comparator = LocationComparator(Geolocation(1.0, 1.0))
+        val loc1 = CacheLocation("loc1", Geolocation(1.0, 1.0))
+        val loc2 = CacheLocation("loc2", Geolocation(0.0, 0.0))
         Assert.assertEquals(-1, comparator.compare(loc1, loc2).toLong())
         Assert.assertEquals(1, comparator.compare(loc2, loc1).toLong())
     }
 
     @Test
     fun testCompareOneLocNull() {
-        val comparator = LocationComparator(Geolocation(1f, 1f))
-        val loc1 = CacheLocation("loc1", Geolocation(0f, 0f))
+        val comparator = LocationComparator(Geolocation(1.0, 1.0))
+        val loc1 = CacheLocation("loc1", Geolocation(0.0, 0.0))
         val loc2 = CacheLocation("loc2", null)
         Assert.assertEquals(-1, comparator.compare(loc1, loc2).toLong())
         Assert.assertEquals(1, comparator.compare(loc2, loc1).toLong())

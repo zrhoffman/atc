@@ -356,7 +356,7 @@ class RouterTest {
         Assert.assertThat(httpsOnlyLocations.isEmpty(), IsEqual.equalTo(false))
         trustStore = KeyStore.getInstance(KeyStore.getDefaultType())
         val keystoreStream = javaClass.classLoader.getResourceAsStream("keystore.jks")
-        trustStore.load(keystoreStream, "changeit".toCharArray())
+        trustStore!!.load(keystoreStream, "changeit".toCharArray())
         TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()).init(trustStore)
         httpClient = HttpClientBuilder.create()
             .setSSLSocketFactory(ClientSslSocketFactory("tr.https-only-test.thecdn.example.com"))
@@ -519,7 +519,7 @@ class RouterTest {
             .build()
         httpGet = HttpGet("https://localhost:$routerSecurePort/stuff?fakeClientIpAddress=12.34.56.78")
         httpGet.addHeader("Host", "tr.$httpToHttpsId.bar")
-        httpClient.execute(httpGet).use { response ->
+        httpClient!!.execute(httpGet).use { response ->
             Assert.assertThat(response.statusLine.statusCode, IsEqual.equalTo(302))
             val header = response.getFirstHeader("Location")
             Assert.assertThat(header.value, Matchers.isIn(httpToHttpsLocations))
@@ -567,7 +567,7 @@ class RouterTest {
             .build()
         httpGet = HttpGet("https://localhost:$routerSecurePort/stuff?fakeClientIpAddress=12.34.56.78")
         httpGet.addHeader("Host", "tr.$httpAndHttpsId.bar")
-        httpClient.execute(httpGet).use { response ->
+        httpClient!!.execute(httpGet).use { response ->
             Assert.assertThat(response.statusLine.statusCode, IsEqual.equalTo(302))
             val header = response.getFirstHeader("Location")
             Assert.assertThat(header.value, Matchers.isIn(httpAndHttpsLocations))
@@ -600,7 +600,7 @@ class RouterTest {
         httpGet = HttpGet("https://localhost:$routerSecurePort/x?fakeClientIpAddress=12.34.56.78")
         httpGet.addHeader("Host", "tr.$httpsNoCertsId.bar")
         try {
-            httpClient.execute(httpGet).use { response ->
+            httpClient!!.execute(httpGet).use { response ->
                 val code = response.statusLine.statusCode
                 Assert.assertThat(
                     "Expected a server error code (503) But got: $code",
@@ -613,13 +613,13 @@ class RouterTest {
 
         // Pretend someone did a cr-config snapshot that would have updated the location to be different
         var httpPost = HttpPost("http://localhost:$testHttpPort/crconfig-2")
-        httpClient.execute(httpPost).close()
+        httpClient!!.execute(httpPost).close()
 
         // Default interval for polling cr config is 10 seconds
         Thread.sleep((15 * 1000).toLong())
         httpGet = HttpGet("http://localhost:$routerHttpPort/stuff?fakeClientIpAddress=12.34.56.78")
         httpGet.addHeader("Host", "tr.$httpOnlyId.bar")
-        httpClient.execute(httpGet).use { response ->
+        httpClient!!.execute(httpGet).use { response ->
             Assert.assertThat(response.statusLine.statusCode, IsEqual.equalTo(302))
             val location = response.getFirstHeader("Location").value
             Assert.assertThat(
@@ -638,13 +638,13 @@ class RouterTest {
         // that it's able to get through while TR is still concurrently trying to get certs
         var testHttpPort = System.getProperty("testHttpServerPort", "8889")
         httpPost = HttpPost("http://localhost:$testHttpPort/crconfig-3")
-        httpClient.execute(httpPost).close()
+        httpClient!!.execute(httpPost).close()
 
         // Default interval for polling cr config is 10 seconds
         Thread.sleep((30 * 1000).toLong())
         httpGet = HttpGet("http://localhost:$routerHttpPort/stuff?fakeClientIpAddress=12.34.56.78")
         httpGet.addHeader("Host", "tr.$httpOnlyId.bar")
-        httpClient.execute(httpGet).use { response ->
+        httpClient!!.execute(httpGet).use { response ->
             Assert.assertThat(response.statusLine.statusCode, IsEqual.equalTo(302))
             val location = response.getFirstHeader("Location").value
             Assert.assertThat(
@@ -660,7 +660,7 @@ class RouterTest {
         httpGet = HttpGet("https://localhost:$routerSecurePort/stuff?fakeClientIpAddress=12.34.56.78")
         httpGet.addHeader("Host", "tr.$httpsNoCertsId.bar")
         try {
-            httpClient.execute(httpGet).use { response ->
+            httpClient!!.execute(httpGet).use { response ->
                 val code = response.statusLine.statusCode
                 Assert.assertThat(
                     "Expected an server error code! But got: $code",
@@ -674,7 +674,7 @@ class RouterTest {
         // Go back to the cr-config that makes the delivery service https again
         // Pretend someone did a cr-config snapshot that would have updated the location to be different
         httpPost = HttpPost("http://localhost:$testHttpPort/crconfig-4")
-        httpClient.execute(httpPost).close()
+        httpClient!!.execute(httpPost).close()
 
         // Default interval for polling cr config is 10 seconds
         Thread.sleep((15 * 1000).toLong())
@@ -682,7 +682,7 @@ class RouterTest {
         // Update certificates so new ds is valid
         testHttpPort = System.getProperty("testHttpServerPort", "8889")
         httpPost = HttpPost("http://localhost:$testHttpPort/certificates")
-        httpClient.execute(httpPost).close()
+        httpClient!!.execute(httpPost).close()
         httpClient = HttpClientBuilder.create()
             .setSSLSocketFactory(ClientSslSocketFactory("https-additional"))
             .setSSLHostnameVerifier(TestHostnameVerifier())
@@ -693,7 +693,7 @@ class RouterTest {
         httpGet = HttpGet("https://localhost:$routerSecurePort/stuff?fakeClientIpAddress=12.34.56.78")
         httpGet.addHeader("Host", "tr." + "https-additional" + ".bar")
         try {
-            httpClient.execute(httpGet).use { response ->
+            httpClient!!.execute(httpGet).use { response ->
                 val code = response.statusLine.statusCode
                 Assert.assertThat(
                     "Expected an server error code! But got: $code",
@@ -705,7 +705,7 @@ class RouterTest {
         }
         httpGet = HttpGet("https://localhost:$routerSecurePort/stuff?fakeClientIpAddress=12.34.56.78")
         httpGet.addHeader("Host", "tr.$httpsNoCertsId.bar")
-        httpClient.execute(httpGet).use { response ->
+        httpClient!!.execute(httpGet).use { response ->
             Assert.assertThat(response.statusLine.statusCode, IsEqual.equalTo(302))
             val location = response.getFirstHeader("Location").value
             Assert.assertThat(
@@ -720,7 +720,7 @@ class RouterTest {
         httpGet.addHeader("Host", "tr.$httpOnlyId.bar")
         println(httpGet.toString())
         println(Arrays.toString(httpGet.allHeaders))
-        httpClient.execute(httpGet).use { response ->
+        httpClient!!.execute(httpGet).use { response ->
             Assert.assertThat(response.statusLine.statusCode, IsEqual.equalTo(302))
             val location = response.getFirstHeader("Location").value
             Assert.assertThat(

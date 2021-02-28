@@ -236,7 +236,7 @@ class GeoSortSteeringResultsTest {
         steeringResults = ArrayList()
         clientLocation = Geolocation(47.0, -122.0)
         deliveryService = Mockito.mock(DeliveryService::class.java)
-        Mockito.doCallRealMethod().`when`(trafficRouter).geoSortSteeringResults(
+        Mockito.doCallRealMethod().`when`(trafficRouter)!!.geoSortSteeringResults(
             Matchers.anyListOf(
                 SteeringResult::class.java
             ), Matchers.anyString(), Matchers.any(
@@ -244,7 +244,7 @@ class GeoSortSteeringResultsTest {
             )
         )
         Mockito.`when`(
-            trafficRouter.getClientLocationByCoverageZoneOrGeo(
+            trafficRouter!!.getClientLocationByCoverageZoneOrGeo(
                 Matchers.anyString(), Matchers.any(
                     DeliveryService::class.java
                 )
@@ -255,20 +255,20 @@ class GeoSortSteeringResultsTest {
     @Test
     fun testNullClientIP() {
         trafficRouter!!.geoSortSteeringResults(steeringResults, null, deliveryService)
-        Mockito.verify(trafficRouter, Mockito.never()).getClientLocationByCoverageZoneOrGeo(null, deliveryService)
+        Mockito.verify(trafficRouter, Mockito.never())!!.getClientLocationByCoverageZoneOrGeo(null, deliveryService)
     }
 
     @Test
     fun testEmptyClientIP() {
         trafficRouter!!.geoSortSteeringResults(steeringResults, "", deliveryService)
-        Mockito.verify(trafficRouter, Mockito.never()).getClientLocationByCoverageZoneOrGeo("", deliveryService)
+        Mockito.verify(trafficRouter, Mockito.never())!!.getClientLocationByCoverageZoneOrGeo("", deliveryService)
     }
 
     @Test
     fun testNoSteeringTargetsHaveGeolocations() {
         steeringResults!!.add(SteeringResult(SteeringTarget(), deliveryService))
         trafficRouter!!.geoSortSteeringResults(steeringResults, "::1", deliveryService)
-        Mockito.verify(trafficRouter, Mockito.never()).getClientLocationByCoverageZoneOrGeo("::1", deliveryService)
+        Mockito.verify(trafficRouter, Mockito.never())!!.getClientLocationByCoverageZoneOrGeo("::1", deliveryService)
     }
 
     @Test

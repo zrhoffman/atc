@@ -235,10 +235,10 @@ class CoverageZoneTest {
         val deliveryServiceReference = DeliveryServiceReference("delivery-service-1", "some.example.com")
         val deliveryServices: MutableList<DeliveryServiceReference> = ArrayList()
         deliveryServices.add(deliveryServiceReference)
-        val testLocation = Geolocation(40.0, -101)
+        val testLocation = Geolocation(40.0, -101.0)
         val farEastLocation = Geolocation(40.0, -101.5)
-        val eastLocation = Geolocation(40.0, -100)
-        val westLocation = Geolocation(40.0, -105)
+        val eastLocation = Geolocation(40.0, -100.0)
+        val westLocation = Geolocation(40.0, -105.0)
         val farEastCache1 = Cache("far-east-cache-1", "hashid", 1)
         farEastCache1.setIsAvailable(true)
         val lms: MutableSet<LocalizationMethod> = HashSet()
@@ -267,14 +267,14 @@ class CoverageZoneTest {
         trafficRouter = PowerMockito.mock(TrafficRouter::class.java)
         Whitebox.setInternalState(trafficRouter, "cacheRegister", cacheRegister)
         Mockito.`when`(
-            trafficRouter.getCoverageZoneCacheLocation(
+            trafficRouter!!.getCoverageZoneCacheLocation(
                 "12.23.34.45",
                 "delivery-service-1",
                 IPVersions.IPV4ONLY
             )
         ).thenCallRealMethod()
         Mockito.`when`(
-            trafficRouter.getCoverageZoneCacheLocation(
+            trafficRouter!!.getCoverageZoneCacheLocation(
                 "12.23.34.45",
                 "delivery-service-1",
                 false,
@@ -282,16 +282,16 @@ class CoverageZoneTest {
                 IPVersions.IPV4ONLY
             )
         ).thenCallRealMethod()
-        Mockito.`when`(trafficRouter.getCacheRegister()).thenReturn(cacheRegister)
+        Mockito.`when`(trafficRouter!!.getCacheRegister()).thenReturn(cacheRegister)
         Mockito.`when`(
-            trafficRouter.orderLocations(
+            trafficRouter!!.orderLocations(
                 Matchers.anyListOf(
                     CacheLocation::class.java
                 ), Matchers.any(Geolocation::class.java)
             )
         ).thenCallRealMethod()
         Mockito.`when`(
-            trafficRouter.getSupportingCaches(
+            trafficRouter!!.getSupportingCaches(
                 Matchers.anyListOf(
                     Cache::class.java
                 ), Matchers.eq(deliveryService), Matchers.any(
@@ -300,7 +300,7 @@ class CoverageZoneTest {
             )
         ).thenCallRealMethod()
         Mockito.`when`(
-            trafficRouter.filterEnabledLocations(
+            trafficRouter!!.filterEnabledLocations(
                 Matchers.anyListOf(
                     CacheLocation::class.java
                 ), Matchers.any(LocalizationMethod::class.java)
