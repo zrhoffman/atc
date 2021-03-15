@@ -186,6 +186,8 @@ services:
     build:
       context: ../..
       dockerfile: infrastructure/cdn-in-a-box/edge/Dockerfile
+      args:
+        RHEL_VERSION: ${RHEL_VERSION:-8}
     domainname: infra.ciab.test
     env_file:
       - variables.env
@@ -199,6 +201,8 @@ services:
     build:
       context: ../..
       dockerfile: infrastructure/cdn-in-a-box/mid/Dockerfile
+      args:
+        RHEL_VERSION: ${RHEL_VERSION:-8}
     domainname: infra.ciab.test
     env_file:
       - variables.env
@@ -212,6 +216,8 @@ services:
     build:
       context: ../..
       dockerfile: infrastructure/cdn-in-a-box/mid/Dockerfile
+      args:
+        RHEL_VERSION: ${RHEL_VERSION:-8}
     domainname: infra.ciab.test
     env_file:
       - variables.env
