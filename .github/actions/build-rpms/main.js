@@ -38,4 +38,4 @@ function runProcess(...commandArguments) {
 }
 
 runProcess(...dockerCompose, "pull", atcComponent);
-runProcess(...dockerCompose, "run", atcComponent);
+runProcess(...dockerCompose, "run", "-e", "RHEL_VERSION", atcComponent);
