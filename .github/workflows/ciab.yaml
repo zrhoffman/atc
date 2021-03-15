@@ -159,6 +159,25 @@ jobs:
           name: ${{ github.job }}
           path: ${{ github.workspace }}/dist/*.rpm
 
+  trafficserver:
+      if: github.event.pull_request.draft == false
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@master
+        - name: Build RPM
+          env:
+            ATC_COMPONENT: ats
+          run: |
+            mkdir -p dist traffic_server/_tsb/dist &&
+            ./pkg -v -o ${ATC_COMPONENT} &&
+            find traffic_server/_tsb/dist -type f -exec mv {} dist/ ';'
+        - name: Upload RPM
+          uses: actions/upload-artifact@v2
+          with:
+            name: ${{ github.job }}
+            path: ${{ github.workspace }}/dist/${{ github.job }}-8.0.*.rpm
+
   traffic_stats:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
@@ -216,6 +235,7 @@ jobs:
       - traffic_ops_ort
       - traffic_portal
       - traffic_router
+      - trafficserver
       - traffic_stats
     steps:
       - name: Checkout

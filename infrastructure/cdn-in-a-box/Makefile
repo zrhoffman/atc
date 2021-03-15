@@ -43,22 +43,25 @@ TC_VERSION := $(shell cat "../../VERSION")
 TOMCAT_VERSION := $(shell grep '^\s*TOMCAT_VERSION=' ../../traffic_router/build/build_rpm.sh  | cut -d= -f2)
 TOMCAT_RELEASE := $(shell grep '^\s*TOMCAT_RELEASE=' ../../traffic_router/build/build_rpm.sh  | cut -d= -f2)
 
+TRAFFICSERVER_RPM := $(shell ls -t ../../dist/$(wildcard trafficserver-8.0.8-11.*.el$(RHEL_VERSION).x86_64.rpm) | head -n1)
+
 SPECIAL_SAUCE := $(TC_VERSION)-$(BUILD_NUMBER).el$(RHEL_VERSION).x86_64.rpm
 SPECIAL_SEASONING := $(TOMCAT_VERSION).$(TOMCAT_RELEASE)-$(BUILD_NUMBER).el$(RHEL_VERSION).x86_64.rpm
 
-TO_SOURCE := $(wildcard ../../traffic_ops/**/*)
-TO_SOURCE += $(wildcard ../../traffic_ops_db/**/*)
-ORT_SOURCE:= $(wildcard ../../traffic_ops_ort/atstccfg/**/*.go)
-ORT_SOURCE+= $(wildcard ../../lib/**/*.go)
-TM_SOURCE := $(wildcard ../../traffic_monitor/**/*)
-TP_SOURCE := $(wildcard ../../traffic_portal/**/*)
-TR_SOURCE := $(wildcard ../../traffic_router/**/*)
-TS_SOURCE := $(wildcard ../../traffic_stats/**/*)
+TO_SOURCE := $(wildcard ../../traffic_ops/**)
+TO_SOURCE += $(wildcard ../../traffic_ops_db/**)
+ORT_SOURCE:= $(wildcard ../../traffic_ops_ort/atstccfg/**.go)
+ORT_SOURCE+= $(wildcard ../../lib/**.go)
+TM_SOURCE := $(wildcard ../../traffic_monitor/**)
+TP_SOURCE := $(wildcard ../../traffic_portal/**)
+TR_SOURCE := $(wildcard ../../traffic_router/**)
+ATS_SOURCE := $(wildcard ../../traffic_server/**)
+TS_SOURCE := $(wildcard ../../traffic_stats/**)
 
 .PHONY: all build-builders clean debug native nearly-all pull-builders very-clean
 
 # Default target; builds all pre-requisite rpms from source trees
-all: cache/traffic_ops_ort.rpm traffic_monitor/traffic_monitor.rpm traffic_portal/traffic_portal.rpm traffic_ops/traffic_ops.rpm traffic_router/traffic_router.rpm traffic_router/tomcat.rpm traffic_stats/traffic_stats.rpm
+all: cache/traffic_ops_ort.rpm traffic_monitor/traffic_monitor.rpm traffic_portal/traffic_portal.rpm traffic_ops/traffic_ops.rpm traffic_router/traffic_router.rpm traffic_router/tomcat.rpm cache/trafficserver.rpm traffic_stats/traffic_stats.rpm
 
 ifneq ($(filter build-builders,$(MAKECMDGOALS)),)
 PKG_FLAGS += -b
@@ -114,6 +117,8 @@ traffic_router/traffic_router.rpm: ../../dist/traffic_router-$(SPECIAL_SAUCE)
 	cp -f $? $@
 traffic_router/tomcat.rpm: ../../dist/tomcat-$(SPECIAL_SEASONING)
 	cp -f $? $@
+cache/trafficserver.rpm: ../../dist/trafficserver-8.0.*-*.*.el$(RHEL_VERSION).x86_64.rpm
+	cp -f $? $@
 traffic_stats/traffic_stats.rpm: ../../dist/traffic_stats-$(SPECIAL_SAUCE)
 	cp -f $? $@
 cache/traffic_ops_ort.rpm: ../../dist/traffic_ops_ort-$(SPECIAL_SAUCE)
@@ -132,6 +137,9 @@ cache/traffic_ops_ort.rpm: ../../dist/traffic_ops_ort-$(SPECIAL_SAUCE)
 ../../dist/traffic_rou%er-$(SPECIAL_SAUCE) ../../dist/tomca%-$(SPECIAL_SEASONING): $(TR_SOURCE)
 	$(PKG_COMMAND) $(PKG_FLAGS) traffic_router$(BUILD_SUFFIX)
 
+../../dist/trafficserver-8.0.*-*.*.el$(RHEL_VERSION).x86_64.rpm: $(ATS_SOURCE)
+	$(PKG_COMMAND) $(PKG_FLAGS) -o ats
+
 ../../dist/traffic_stats-$(SPECIAL_SAUCE): $(TS_SOURCE)
 	$(PKG_COMMAND) $(PKG_FLAGS) traffic_stats$(BUILD_SUFFIX)
 
@@ -139,7 +147,7 @@ cache/traffic_ops_ort.rpm: ../../dist/traffic_ops_ort-$(SPECIAL_SAUCE)
 	$(PKG_COMMAND) $(PKG_FLAGS) traffic_ops_ort$(BUILD_SUFFIX)
 
 clean:
-	$(RM) traffic_monitor/traffic_monitor.rpm traffic_ops/traffic_ops.rpm traffic_portal/traffic_portal.rpm traffic_router/traffic_router.rpm traffic_router/tomcat.rpm cache/traffic_ops_ort.rpm traffic_stats/traffic_stats.rpm
+	$(RM) traffic_monitor/traffic_monitor.rpm traffic_ops/traffic_ops.rpm traffic_portal/traffic_portal.rpm traffic_router/traffic_router.rpm traffic_router/tomcat.rpm cache/traffic_ops_ort.rpm cache/trafficserver.rpm traffic_stats/traffic_stats.rpm
 
 very-clean: clean
 	$(warning This will destroy ALL OUTPUT RPMS IN 'dist'. Please be sure this is what you want)

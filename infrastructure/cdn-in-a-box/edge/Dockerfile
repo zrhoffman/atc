@@ -100,10 +100,9 @@ RUN dnf -y install epel-release && \
         ln -s "$source" "$target" || exit 1; \
     done
 
-ADD https://ci.trafficserver.apache.org/RPMS/CentOS7/trafficserver-7.1.4-2.el7.x86_64.rpm /trafficserver.rpm
-ADD https://ci.trafficserver.apache.org/RPMS/CentOS7/trafficserver-devel-7.1.4-2.el7.x86_64.rpm /trafficserver-devel.rpm
+COPY infrastructure/cdn-in-a-box/cache/trafficserver.rpm /
 
-RUN rpm -Uvh --nodeps /trafficserver.rpm /trafficserver-devel.rpm && \
+RUN dnf -y install /trafficserver.rpm && \
     dnf install -y jq python3-psutil python3-setuptools python3-pip logrotate && \
     dnf clean all
 
@@ -111,23 +110,10 @@ RUN dnf install -y bind-utils kyotocabinet-libs initscripts iproute net-tools nm
 
 RUN python3 -m pip install --upgrade pip && python3 -m pip install requests urllib3 distro
 
-ADD traffic_server/plugins/astats_over_http/astats_over_http.c traffic_server/plugins/astats_over_http/Makefile.am /
-
-RUN tsxs -v -c astats_over_http.c -o astats_over_http.so
-
-# The symbolic link here is a shim for broken atstccfg behavior - remove when it's fixed.
-RUN mkdir -p /usr/libexec/trafficserver /opt/ort /opt/trafficserver/etc/trafficserver/ /opt/init.d && ln -s /opt/trafficserver/etc/trafficserver/ssl /etc/trafficserver/ssl && tsxs -v -o astats_over_http.so -i
-
-RUN dnf remove -y gcc-c++ glibc-devel autoconf automake libtool && rm -f /astats_over_http.c /Makefile.am
-
-# You need to do this because the RPM in the ATS archives is just all kinds of messed-up
-RUN chmod 755 /usr/lib64/trafficserver /etc/trafficserver/body_factory /etc/trafficserver/body_factory/default
-RUN mkdir -p /var/trafficserver /opt/ort && \
-    dd if=/dev/zero bs=1M count=1000 of=/var/trafficserver/cache && \
-    chown -R ats:ats /etc/trafficserver/ /var/trafficserver/ /opt/ort /usr/lib64/trafficserver/ && \
-    sed -i 's/STRING 8080 8080:ipv6/STRING 80 80:ipv6/' /etc/trafficserver/records.config
-
-RUN setcap CAP_NET_BIND_SERVICE=+eip /bin/traffic_server && setcap CAP_NET_BIND_SERVICE=+eip /bin/traffic_manager && setcap CAP_NET_BIND_SERVICE=+eip /bin/trafficserver && setcap CAP_NET_BIND_SERVICE=+eip /bin/traffic_cop
+RUN set -o errexit;\
+    mkdir /var/log/trafficserver;\
+    ln -s /opt/trafficserver/etc/trafficserver /etc/trafficserver;\
+    chown -R ats:ats /etc/trafficserver /opt/trafficserver /var/log/trafficserver
 
 WORKDIR /opt
 

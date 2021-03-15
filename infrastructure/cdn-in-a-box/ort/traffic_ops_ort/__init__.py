@@ -463,7 +463,7 @@ def main() -> int:
 	                    help="Specify the root directory at which Apache Traffic Server is installed"\
 	                         " (e.g. '/opt/trafficserver')",
 	                    type=str,
-	                    default="/")
+	                    default="/opt/trafficserver")
 	parser.add_argument("-k", "--insecure",
 	                    help="Skip verification of SSL certificates for Traffic Ops connections. "\
 	                         "DON'T use this in production!",
