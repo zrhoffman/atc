@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # Files are relative to this script directory.
-SELF="${BASH_SOURCE[0]}"
+SELF="${PWD}/${BASH_SOURCE[0]}"
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 COMPOSE_FILE=./infrastructure/docker/build/docker-compose.yml
 COMPOSE_FILE_OPT=./infrastructure/docker/build/docker-compose-opt.yml
