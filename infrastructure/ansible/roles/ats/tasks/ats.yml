@@ -33,6 +33,7 @@
         /opt/ort/supermicro_udev_mapper.pl
       {%- endif -%}
     dest: /bin/supermicro_udev_mapper.pl
+    remote_src: true
     owner: root
     group: root
     mode: 0755
