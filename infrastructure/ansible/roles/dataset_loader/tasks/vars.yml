@@ -1,0 +1,17 @@
+dl_to_url: https://localhost
+dl_to_api_version: 4.0
+dl_to_user: admin
+dl_to_user_password: twelve12
+# Federations
+dl_ds_merged_federation: "{{ dl_ds_default_federation }}"
+dl_ds_default_federation:
+#  deliveryService: simple-dns-{{ Target_cdn_delegation | lower }}
+  deliveryService: simple-dns-mkga
+  #deliveryService: demo1
+  mappings:
+    cname: 'foo.kabletown.net.'
+    resolve4:
+      - '0.0.0.0/0'
+    resolve6:
+      - '::/0'
+    ttl: 60
