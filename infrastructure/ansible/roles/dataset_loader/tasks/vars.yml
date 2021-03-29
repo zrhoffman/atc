@@ -6,8 +6,8 @@ dl_to_user_password: twelve12
 dl_ds_merged_federation: "{{ dl_ds_default_federation }}"
 dl_ds_default_federation:
 #  deliveryService: simple-dns-{{ Target_cdn_delegation | lower }}
-  deliveryService: simple-dns-mkga
-  #deliveryService: demo1
+  #deliveryService: simple-dns-mkga
+  deliveryService: demo1
   mappings:
     cname: 'foo.kabletown.net.'
     resolve4:

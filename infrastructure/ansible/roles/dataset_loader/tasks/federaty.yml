@@ -68,12 +68,14 @@
     - name: Create Federation
       vars:
         user_id: '{{ current_user_out.json | json_query("response.id") }}'
+        cdn_name_query: 'response[?xmlId == `{{ dl_ds_merged_federation.deliveryService | to_json }}`].cdnName | [0]'
+        cdn_name: '{{ get_all_ds.json | json_query(cdn_name_query) }}'
       uri:
         validate_certs: no
         headers:
           Cookie: "{{ dl_mojo_token.set_cookie | default(omit) }}"
         body_format: json
-        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/cdns/CDN-in-a-Box/federations"
+        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/cdns/{{ cdn_name }}/federations"
         method: POST
         body: '{"cname":{{ dl_ds_merged_federation.mappings.cname | to_json }},"ttl":{{ dl_ds_merged_federation.mappings.ttl }},"dsId":{{ dns_ds_id }},"userId":{{ user_id }}}'
       register: create_federation_out
