@@ -1,0 +1,194 @@
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+- name: hi
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Get TO Cookie
+      vars:
+        dl_to_url: https://localhost
+        dl_to_api_version: 4.0
+        dl_to_user: admin
+        dl_to_user_password: twelve12
+      uri:
+        validate_certs: no
+        body_format: json
+        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/user/login"
+        method: POST
+        body: '{ "u":"{{ dl_to_user }}", "p":"{{ dl_to_user_password }}" }'
+        headers:
+          Content-Type: "application/x-www-form-urlencoded"
+      register: dl_mojo_token
+      #no_log: true
+
+    - name: Get TO User
+      vars:
+        dl_to_url: https://localhost
+        dl_to_api_version: 4.0
+        dl_to_user: admin
+      uri:
+        validate_certs: no
+        headers:
+          Cookie: "{{ dl_mojo_token.set_cookie | default(omit) }}"
+        body_format: json
+        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/user/current"
+        method: GET
+      register: current_user_out
+      #no_log: true
+
+    - name: Get All Delivery Services
+      vars:
+        dl_to_url: https://localhost
+        dl_to_api_version: 4.0
+        dl_to_user: admin
+      uri:
+        validate_certs: no
+        headers:
+          Cookie: "{{ dl_mojo_token.set_cookie | default(omit) }}"
+        body_format: json
+        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/deliveryservices"
+        method: GET
+      register: get_all_ds
+
+    - name: Get All Types
+      vars:
+        dl_to_url: https://localhost
+        dl_to_api_version: 4.0
+        dl_to_user: admin
+      uri:
+        validate_certs: no
+        headers:
+          Cookie: "{{ dl_mojo_token.set_cookie | default(omit) }}"
+        body_format: json
+        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/types"
+        method: GET
+      register: get_all_types
+
+    - name: Get DNS Delivery Service ID
+      vars:
+        dns_ds_id_query: 'response[?type==`"DNS"`].id | [0]'
+      set_fact:
+        dns_ds_id: "{{ get_all_ds.json | json_query(dns_ds_id_query) }}"
+      #no_log: true
+
+    - name: Create Federation
+      vars:
+        dl_to_url: https://localhost
+        dl_to_api_version: 4.0
+        dl_to_user: admin
+        user_id: '{{ current_user_out.json | json_query("response.id") }}'
+      uri:
+        validate_certs: no
+        headers:
+          Cookie: "{{ dl_mojo_token.set_cookie | default(omit) }}"
+        body_format: json
+        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/cdns/CDN-in-a-Box/federations"
+        method: POST
+        body: '{"cname":"foo.kabletown.net.","ttl":60,"dsId":{{ dns_ds_id }},"userId":{{ user_id }}}'
+      register: create_federation_out
+      #no_log: true
+
+    - name: Get Federation ID
+      vars:
+        federation_id_query: response.id
+      set_fact:
+        federation_id: "{{ create_federation_out.json | json_query(federation_id_query) }}"
+      #no_log: true
+
+    - name: Assign User to Federation
+      vars:
+        dl_to_url: https://localhost
+        dl_to_api_version: 4.0
+        dl_to_user: admin
+        user_id: '{{ current_user_out.json | json_query("response.id") }}'
+      uri:
+        validate_certs: no
+        headers:
+          Cookie: "{{ dl_mojo_token.set_cookie | default(omit) }}"
+        body_format: json
+        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/federations/{{ federation_id }}/users"
+        method: POST
+        body: '{"userIds":[{{ user_id }}],"replace":false}'
+      #no_log: true
+
+    - name: Assign Delivery Service to Federation
+      vars:
+        dl_to_url: https://localhost
+        dl_to_api_version: 4.0
+        dl_to_user: admin
+      uri:
+        validate_certs: no
+        headers:
+          Cookie: "{{ dl_mojo_token.set_cookie | default(omit) }}"
+        body_format: json
+        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/federations/{{ federation_id }}/deliveryservices"
+        method: POST
+        body: '{"dsIds":[{{ dns_ds_id }}],"replace":false}'
+      #no_log: true
+
+    - name: Create IPv4 Federation Resolver
+      vars:
+        dl_to_url: https://localhost
+        dl_to_api_version: 4.0
+        dl_to_user: admin
+        type_name: RESOLVE6
+        type_query: "[?name == `{{ type_name }}`].id | [0]"
+        resolve4_type_id: "{{ get_all_types.json.response | to_json | from_json | json_query(type_query) }}"
+      uri:
+        validate_certs: no
+        headers:
+          Cookie: "{{ dl_mojo_token.set_cookie | default(omit) }}"
+        body_format: json
+        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/federation_resolvers"
+        method: POST
+        body: '{"ipAddress":"0.0.0.0/0","typeId":{{ resolve4_type_id }}}'
+      register: ipv4_federation_resolver_out
+      #no_log: true
+
+    - name: Create IPv6 Federation Resolver
+      vars:
+        dl_to_url: https://localhost
+        dl_to_api_version: 4.0
+        dl_to_user: admin
+        type_name: RESOLVE6
+        type_query: "[?name == `{{ type_name }}`].id | [0]"
+        resolve6_type_id: "{{ get_all_types.json.response | to_json | from_json | json_query(type_query) }}"
+      uri:
+        validate_certs: no
+        headers:
+          Cookie: "{{ dl_mojo_token.set_cookie | default(omit) }}"
+        body_format: json
+        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/federation_resolvers"
+        method: POST
+        body: '{"ipAddress":"::/0","typeId":{{ resolve6_type_id }}}'
+      register: ipv6_federation_resolver_out
+      #no_log: true
+
+    - name: Assign Federation Resolvers to Federation
+      vars:
+        dl_to_url: https://localhost
+        dl_to_api_version: 4.0
+        dl_to_user: admin
+        federation_resolver_query: response.id
+        ipv4_federation_resolver_id: '{{ ipv4_federation_resolver_out.json | json_query(federation_resolver_query) }}'
+        ipv6_federation_resolver_id: '{{ ipv6_federation_resolver_out.json | json_query(federation_resolver_query) }}'
+      uri:
+        validate_certs: no
+        headers:
+          Cookie: "{{ dl_mojo_token.set_cookie | default(omit) }}"
+        body_format: json
+        url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/federations/{{ federation_id }}/federation_resolvers"
+        method: POST
+        body: '{"fedResolverIds":[{{ ipv4_federation_resolver_id }},{{ ipv6_federation_resolver_id }}],"replace":true}'
+      #no_log: true
