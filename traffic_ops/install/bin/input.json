@@ -78,7 +78,7 @@
       "hidden": "1"
     },
     {
-      "Download Maxmind Database?": "no",
+      "Download Maxmind Database?": "yes",
       "config_var": "maxmind"
     }
   ],
