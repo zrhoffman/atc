@@ -51,6 +51,12 @@ RUN	yum -y install \
 		openssl-devel \
 		perl-ExtUtils-MakeMaker \
 		tar && \
+	if [[ "${RHEL_VERSION%%.*}" -eq 7 ]]; then \
+		enable_repo=''; \
+	else \
+		enable_repo='--enablerepo=powertools'; \
+	fi && \
+	yum -y $enable_repo install glibc-static && \
 	yum -y clean all
 
 COPY GO_VERSION /
