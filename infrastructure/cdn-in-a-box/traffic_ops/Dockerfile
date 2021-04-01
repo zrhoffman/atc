@@ -70,7 +70,6 @@ RUN set -o nounset -o errexit && \
 		cpanminus            \
 		expat-devel          \
 		gcc-c++              \
-		golang               \
 		libcap               \
 		libcurl-devel        \
 		libidn-devel         \
