@@ -210,6 +210,7 @@ fi
 %files
 %license ../LICENSE
 %defattr(644,root,root,755)
+%attr(755,%{TRAFFIC_OPS_USER},%{TRAFFIC_OPS_GROUP}) %{PACKAGEDIR}/go/bin/goose
 %attr(755,%{TRAFFIC_OPS_USER},%{TRAFFIC_OPS_GROUP}) %{PACKAGEDIR}/app/bin/traffic_ops_golang
 %attr(755,%{TRAFFIC_OPS_USER},%{TRAFFIC_OPS_GROUP}) %{PACKAGEDIR}/app/script/detect10ginterfaces.pl
 %attr(755,%{TRAFFIC_OPS_USER},%{TRAFFIC_OPS_GROUP}) %{PACKAGEDIR}/app/script/generate_raid0_files.pl
@@ -218,6 +219,7 @@ fi
 %config(noreplace)/var/www/files/osversions.json
 %attr(755, %{TRAFFIC_OPS_USER},%{TRAFFIC_OPS_GROUP}) %{PACKAGEDIR}/app/db/admin
 %attr(755, %{TRAFFIC_OPS_USER},%{TRAFFIC_OPS_GROUP}) %{PACKAGEDIR}/install/bin/convert_profile/convert_profile
+%{PACKAGEDIR}/go/bin
 %{PACKAGEDIR}/etc
 %{PACKAGEDIR}/app/bin/checks
 %{PACKAGEDIR}/app/bin/tests

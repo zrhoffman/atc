@@ -93,10 +93,6 @@ EXPOSE 443
 
 ADD traffic_router/core/src/test/resources/geo/GeoLite2-City.mmdb.gz /opt/traffic_ops/app/public/
 
-WORKDIR /opt/traffic_ops/app
-ADD traffic_ops/install/bin/install_goose.sh ./
-RUN ./install_goose.sh && rm ./install_goose.sh
-
 ADD infrastructure/cdn-in-a-box/traffic_ops_data /traffic_ops_data
 
 # Override TRAFFIC_OPS_RPM arg to use a different one using --build-arg TRAFFIC_OPS_RPM=...  Can be local file or http://...
@@ -121,6 +117,7 @@ COPY infrastructure/cdn-in-a-box/enroller/server_template.json \
 	/
 
 EXPOSE 443
+WORKDIR /opt/traffic_ops/app
 CMD /run-go.sh
 HEALTHCHECK --interval=10s --timeout=1s \
 	CMD bash -c 'source /to-access.sh && [[ "$(curl -sk "https://${TO_FQDN}/api/${TO_API_VERSION}/ping" | jq .ping)" == \"pong\" ]]'

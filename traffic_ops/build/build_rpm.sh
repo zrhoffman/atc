@@ -80,15 +80,19 @@ initBuildArea() {
 	go build -v -gcflags "$gcflags" -ldflags "$ldflags" -tags="$tags" || \
 								{ echo "Could not build convert_profile binary"; return 1; })
 
-	rsync -av etc install "$dest"/ || \
+	install/bin/install_goose.sh
+	(cd "${GOPATH}/.."
+	rsync -aR go/bin/goose "${dest}/")
+
+	rsync -av etc install "${dest}/" || \
 		 { echo "Could not copy to $dest: $?"; return 1; }
 	if ! (cd app; rsync -av bin conf db public script templates "${dest}/app"); then
 		echo "Could not copy to $dest/app"
 		return 1
 	fi
 
-	# include LICENSE in the tarball
-	cp "${TC_DIR}/LICENSE" "$dest"
+	# include ATC LICENSE and goose license in the tarball
+	cat "${TC_DIR}/LICENSE" "${GOPATH}"/pkg/*/bitbucket.org/liamstask/goose*/MIT-License.md >"${dest}/LICENSE"
 
 	tar -czvf "$dest".tgz -C "$RPMBUILD"/SOURCES "$(basename "$dest")" || \
 		 { echo "Could not create tar archive $dest.tgz: $?"; return 1; }
