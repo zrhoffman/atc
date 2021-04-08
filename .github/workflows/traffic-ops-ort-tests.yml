@@ -21,7 +21,10 @@ on:
   push:
   workflow_dispatch:
     paths:
-      - .github/workflows/traffic-ops-ort.yml
+      - .github/workflows/traffic-ops-ort-tests.yml
+      - .github/actions/build-ats-test-rpm
+      - .github/actions/fetch-github-branch-sha
+      - .github/actions/to-ort-integration-tests
       - go.mod
       - go.sum
       - GO_VERSION
@@ -33,7 +36,10 @@ on:
   create:
   pull_request:
     paths:
-      - .github/workflows/traffic-ops-ort.yml
+      - .github/workflows/traffic-ops-ort-tests.yml
+      - .github/actions/build-ats-test-rpm
+      - .github/actions/fetch-github-branch-sha
+      - .github/actions/to-ort-integration-tests
       - go.mod
       - go.sum
       - GO_VERSION
