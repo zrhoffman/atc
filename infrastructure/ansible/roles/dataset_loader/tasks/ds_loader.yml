@@ -22,7 +22,6 @@
     fixed_profile_name: "{{ Target_ds.profileName | default(dl_ds_default_ds.profileName) | default() }}"
     ds_suffix: "{{ Target_ds.profileNameSuffix | default(dl_ds_default_ds.profileNameSuffix) | default() }}"
 
-
 - name: Get All Profiles
   uri:
     url: "{{ dl_to_url }}/api/{{ dl_to_api_version }}/profiles"
