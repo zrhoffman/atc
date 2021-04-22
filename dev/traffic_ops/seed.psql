@@ -23,9 +23,9 @@ INSERT INTO tm_user (
 	'admin',
 	(SELECT id FROM tenant WHERE "name" = 'root'),
 	(SELECT id FROM "role" WHERE "name" = 'admin'),
-	-- 'twelve12' encrypted with SCRYPT
-	'SCRYPT:16384:8:1:p0Bppp/6IBeYxSwdLuYddsdMLBU/BNSlLY6fSIF7H1XW4eTbNVeMPVm7TuTEG4FM8PbqLlVwi8sPy8ZJznAlaQ==:sRcHWGe43mm/uEmXTIw37GcLEQZTlWAdf4vJqK8f0MDh8P+8gXoNx+nxWyb3r/0Bh+yyg0g/dUvti/ePZJL+Jw==',
-	'SCRYPT:16384:8:1:p0Bppp/6IBeYxSwdLuYddsdMLBU/BNSlLY6fSIF7H1XW4eTbNVeMPVm7TuTEG4FM8PbqLlVwi8sPy8ZJznAlaQ==:sRcHWGe43mm/uEmXTIw37GcLEQZTlWAdf4vJqK8f0MDh8P+8gXoNx+nxWyb3r/0Bh+yyg0g/dUvti/ePZJL+Jw==',
+	-- 'twelve' encrypted with SCRYPT
+	'SCRYPT:16384:8:1:e0Qvo+Y/R1NTeDnXjcWg14KJhriHqMPL581e4cZZsBSrHNoclSWaySzwqrvnPZi9pvx1r7HgftWhnAy0hq0HpQ==:4XeiJ+8+IoX9oHkvGtlBRSah/NDI3ovne/rgW0kF9n5UPnKOPkoXurhVC/KP9JSoAbVEXAY9ZZRitOw/40yIUw==',
+	'SCRYPT:16384:8:1:e0Qvo+Y/R1NTeDnXjcWg14KJhriHqMPL581e4cZZsBSrHNoclSWaySzwqrvnPZi9pvx1r7HgftWhnAy0hq0HpQ==:4XeiJ+8+IoX9oHkvGtlBRSah/NDI3ovne/rgW0kF9n5UPnKOPkoXurhVC/KP9JSoAbVEXAY9ZZRitOw/40yIUw==',
 	'admin@no-reply.atc.test',
 	'Development Admin User'
 )

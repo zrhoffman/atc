@@ -21,12 +21,12 @@ import { ADMIN_ROLE, Capability, CurrentUser } from "src/app/models";
  *
  * The authenticated user it "manages" is perpetually authenticated, but logging
  * in can fail - it expects the credentials to match the existing currentUser's
- * username with the password 'twelve12!' (determined by the static 'PASSWORD'
+ * username with the password 'twelve!' (determined by the static 'PASSWORD'
  * property of the service).
  */
 @Injectable()
 export class CurrentUserTestingService {
-	public static readonly PASSWORD = "twelve12!";
+	public static readonly PASSWORD = "twelve!";
 	public userChanged = new EventEmitter<CurrentUser>();
 	public currentUser: CurrentUser = {
 		addressLine1: null,

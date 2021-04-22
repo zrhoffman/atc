@@ -43,7 +43,7 @@ export class UserService {
 	private lastID = 0;
 
 	private testAdminUsername = "test-admin";
-	private readonly testAdminPassword = "twelve12!";
+	private readonly testAdminPassword = "twelve!";
 	private readonly users: Array<GetResponseUser> = [
 		{
 			addressLine1: null,

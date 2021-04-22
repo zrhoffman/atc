@@ -79,7 +79,7 @@ export interface CreatedData {
 }
 
 const globals = {
-	adminPass: "twelve12",
+	adminPass: "twelve",
 	adminUser: "admin",
 	afterEach: (browser: NightwatchBrowser, done: () => void): void => {
 		browser.end(() => {

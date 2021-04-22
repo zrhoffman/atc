@@ -33,7 +33,7 @@ cd "$TC/dev/traffic_ops"
 "$ADMIN" -v -c ./traffic.vault.dbconf.yml -s "$TC/traffic_ops/app/db/trafficvault/create_tables.sql" -m "$TC/traffic_ops/app/db/trafficvault/migrations" reset
 "$ADMIN" -v -c ./traffic.vault.dbconf.yml -s "$TC/traffic_ops/app/db/trafficvault/create_tables.sql" -m "$TC/traffic_ops/app/db/trafficvault/migrations" upgrade
 
-psql -d 'postgres://traffic_ops:twelve12@db:5432/traffic_ops_development?sslmode=disable' -f ./seed.psql
+psql -d 'postgres://traffic_ops:twelve@db:5432/traffic_ops_development?sslmode=disable' -f ./seed.psql
 
 cd "$TC/traffic_ops/traffic_ops_golang"
 
