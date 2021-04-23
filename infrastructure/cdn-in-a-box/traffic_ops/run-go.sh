@@ -41,9 +41,9 @@ set -o errexit -o monitor -o pipefail -o xtrace;
 # Check that env vars are set
 envvars=( DB_SERVER DB_PORT DB_ROOT_PASS DB_USER DB_USER_PASS ADMIN_USER ADMIN_PASS)
 for v in $envvars; do
-	if [[ -z $$v ]]; then
-		echo "$v is unset" >&2;
-		exit 1;
+	if [[ -z "${!v}" ]]; then
+		echo "$v is unset" >&2
+		exit 1
 	fi
 done
 
