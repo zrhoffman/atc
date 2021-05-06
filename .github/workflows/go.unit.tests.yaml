@@ -24,6 +24,8 @@ env:
 on:
   push:
     paths:
+      - .github/actions/go-test/**
+      - .github/workflows/go.unit.tests.yaml
       - GO_VERSION
       - grove/**.go
       - lib/**.go
@@ -34,6 +36,8 @@ on:
   create:
   pull_request:
     paths:
+      - .github/actions/go-test/**
+      - .github/workflows/go.unit.tests.yaml
       - GO_VERSION
       - grove/**.go
       - lib/**.go
