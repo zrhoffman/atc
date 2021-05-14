@@ -15,7 +15,7 @@
 			"configFile": "records.config",
 			"name": "CONFIG proxy.config.config_dir",
 			"secure": false,
-			"value": "STRING /etc/trafficserver"
+			"value": "STRING etc/trafficserver"
 		},
 		{
 			"configFile": "records.config",
@@ -243,7 +243,7 @@
 			"configFile": "records.config",
 			"name": "CONFIG proxy.config.body_factory.template_sets_dir",
 			"secure": false,
-			"value": "STRING /etc/trafficserver/body_factory"
+			"value": "STRING etc/trafficserver/body_factory"
 		},
 		{
 			"configFile": "storage.config",
