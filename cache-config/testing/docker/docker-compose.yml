@@ -90,6 +90,9 @@ services:
     volumes:
       - ../../..:/root/go/src/github.com/apache/trafficcontrol
       - ./yumserver:/yumserver
+      - ./configs:/opt/trafficserver/etc/trafficserver
+      - ./logs:/var/log
+      - ./logs-2:/opt/trafficserver/var/log
 
   yumserver:
     build:

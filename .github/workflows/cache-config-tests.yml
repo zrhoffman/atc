@@ -160,3 +160,21 @@ jobs:
       run: docker-compose -f ${{ github.workspace }}/cache-config/testing/docker/docker-compose.yml build --parallel
     - name: Run cache config integration tests
       uses: ./.github/actions/cache-config-integration-tests
+    - name: Upload Apache Traffic Server configs
+      uses: actions/upload-artifact@v2
+      with:
+        name: ats-configs
+        path: cache-config/testing/docker/configs/**
+      if: ${{ failure() }}
+    - name: Upload Apache Traffic Server logs
+      uses: actions/upload-artifact@v2
+      with:
+        name: ats-logs
+        path: cache-config/testing/docker/logs/**
+      if: ${{ failure() }}
+    - name: Upload Apache Traffic Server logs 2
+      uses: actions/upload-artifact@v2
+      with:
+        name: ats-logs-2
+        path: cache-config/testing/docker/logs-2/**
+      if: ${{ failure() }}
