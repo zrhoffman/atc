@@ -24,6 +24,10 @@ store_ciab_logs() {
 	for service in $($docker_compose ps --services); do
 		$docker_compose logs --no-color --timestamps "$service" >"logs/${service}.log";
 	done;
+	docker cp $($docker_compose ps -q edge):/var/log/trafficserver logs
+	$docker_compose exec -T edge bash -c 'time timeout 30s /usr/bin/traffic_cop --debug --stdout' >logs/ats.log 2>&1
+	mv logs/trafficserver/* logs/
+	echo 'Yep moved those logs'
 }
 
 cd infrastructure/cdn-in-a-box;
