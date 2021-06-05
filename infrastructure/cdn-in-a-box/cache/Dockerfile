@@ -61,6 +61,7 @@ RUN dnf -y install epel-release && \
         # TODO: Use a proper CentOS 7 or 8 RPM once trafficserver
         # is in EPEL again (see apache/trafficserver#6855)
         cd /usr/lib64 && \
+        ln -s libhwloc.so.15      libhwloc.so.5 && \
         ln -s libtcl8.6.so        libtcl8.5.so && \
         ln -s libncursesw.so.6    libncursesw.so.5 && \
         ln -s libtinfo.so.6       libtinfo.so.5  || \
