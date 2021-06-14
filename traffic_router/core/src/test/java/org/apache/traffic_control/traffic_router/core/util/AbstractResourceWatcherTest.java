@@ -38,6 +38,7 @@ import static org.apache.traffic_control.traffic_router.core.ds.SteeringWatcher.
 import static org.apache.traffic_control.traffic_router.core.loc.FederationsWatcher.DEFAULT_FEDERATION_DATA_URL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNull;
 
 
@@ -115,11 +116,11 @@ public class AbstractResourceWatcherTest {
         TrafficRouter trafficRouter = trafficRouterManager.getTrafficRouter();
         CacheRegister cacheRegister = trafficRouter.getCacheRegister();
         JsonNode config = cacheRegister.getConfig();
-        assertNull(config.get(federationsWatcher.getWatcherConfigPrefix() + ".polling.url"));
+        String newFedsUrl = "https://${toHostname}/api/3.0/notAFederationsEndpoint";
+        assertThat(config.get(federationsWatcher.getWatcherConfigPrefix() + ".polling.url"), not(newFedsUrl));
         assertThat(federationsWatcher.getDataBaseURL(), endsWith(DEFAULT_FEDERATION_DATA_URL.split("api")[1]));
         assertThat(steeringWatcher.getDataBaseURL(), endsWith(DEFAULT_STEERING_DATA_URL.split("api")[1]));
 
-        String newFedsUrl = "https://${toHostname}/api/3.0/notAFederationsEndpoint";
         config = ((ObjectNode) config).put(federationsWatcher.getWatcherConfigPrefix() + ".polling.url", newFedsUrl);
         federationsWatcher.trafficOpsUtils.setConfig(config);
         federationsWatcher.configure(config);
