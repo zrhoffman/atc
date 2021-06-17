@@ -35,7 +35,7 @@ services:
       - JANSSON_TAG=v2.11
       - OPENSSL_URL=https://github.com/openssl/openssl
       - OPENSSL_TAG=OpenSSL_1_1_1
-      - RUN_ATS_UNIT_TESTS=true
+      - RUN_ATS_UNIT_TESTS=${RUN_ATS_UNIT_TESTS:-true}
     build:
       context: ../../..
       dockerfile: cache-config/testing/docker/trafficserver/Dockerfile
