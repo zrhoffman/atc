@@ -19,9 +19,9 @@
 # Dockerfile to build Traffic Server RPM
 ###############################################################
 
-ARG RHEL_VERSION=8
+ARG RHEL_VERSION=7
 FROM centos:${RHEL_VERSION}
-ARG RHEL_VERSION=8
+ARG RHEL_VERSION=7
 # Makes RHEL_VERSION available in later layers without needing to specify it again
 ENV RHEL_VERSION=$RHEL_VERSION
 

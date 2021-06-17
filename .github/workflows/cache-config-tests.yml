@@ -18,7 +18,7 @@
 name: Traffic Control Cache Config integration tests
 
 env:
-  RHEL_VERSION: 8
+  RHEL_VERSION: 7
   ATS_VERSION: 8.1.x
 
 on:

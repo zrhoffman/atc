@@ -82,7 +82,7 @@ services:
       - variables.env
     build:
       args:
-        RHEL_VERSION: ${RHEL_VERSION:-8}
+        RHEL_VERSION: ${RHEL_VERSION:-7}
       context: .
       dockerfile: ort_test/Dockerfile
     depends_on:
