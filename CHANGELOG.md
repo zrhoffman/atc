@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - [#2101](https://github.com/apache/trafficcontrol/issues/2101) Added the ability to tell if a Delivery Service is the target of another steering DS.
 - [#6033](https://github.com/apache/trafficcontrol/issues/6033) Added ability to assign multiple server capabilities to a server.
 - [#7032](https://github.com/apache/trafficcontrol/issues/7032) Add t3c-apply flag to use local ATS version for config generation rather than Server package Parameter, to allow managing the ATS OS package via external tools. See 'man t3c-apply' and 'man t3c-generate' for details.
+- Add Kotlin 1.7.10 to Traffic Router
 
 - [Traffic Monitor] Added logging for `ipv4Availability` and `ipv6Availability` in TM.
 - [Traffic Ops] Added the `ASN` field in TO Server struct, which provides the ability to query servers by `ASN`.
