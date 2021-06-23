@@ -21,7 +21,7 @@
 ############################################################
 
 ARG RHEL_VERSION=8
-FROM centos:${RHEL_VERSION} as trafficops-dependencies
+FROM rockylinux/rockylinux:${RHEL_VERSION} as trafficops-dependencies
 ARG RHEL_VERSION=8
 # Makes RHEL_VERSION available in later layers without needing to specify it again
 ENV RHEL_VERSION="$RHEL_VERSION"

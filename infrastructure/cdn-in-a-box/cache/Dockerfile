@@ -22,7 +22,7 @@
 ############################################################
 
 ARG RHEL_VERSION=8
-FROM centos:${RHEL_VERSION} AS common-traffic-server-dependencies
+FROM rockylinux/rockylinux:${RHEL_VERSION} AS common-traffic-server-dependencies
 ARG RHEL_VERSION=8
 # Makes RHEL_VERSION available at runtime
 ENV RHEL_VERSION="$RHEL_VERSION"

@@ -20,7 +20,7 @@
 ############################################################
 
 ARG RHEL_VERSION=8
-FROM centos:${RHEL_VERSION} as trafficmonitor-dependencies
+FROM rockylinux/rockylinux:${RHEL_VERSION} as trafficmonitor-dependencies
 ARG RHEL_VERSION=8
 
 RUN if [[ "${RHEL_VERSION%%.*}" -eq 7 ]]; then \

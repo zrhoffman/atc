@@ -16,7 +16,7 @@
 # under the License.
 
 ARG RHEL_VERSION=8
-FROM centos:${RHEL_VERSION}
+FROM rockylinux/rockylinux:${RHEL_VERSION}
 ARG RHEL_VERSION=8
 
 RUN if [[ "${RHEL_VERSION%%.*}" -eq 7 ]]; then \
