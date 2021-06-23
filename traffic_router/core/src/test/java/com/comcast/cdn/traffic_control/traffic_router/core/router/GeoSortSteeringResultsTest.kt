@@ -41,7 +41,7 @@ class GeoSortSteeringResultsTest {
     @Before
     fun before() {
         trafficRouter = Mockito.mock(TrafficRouter::class.java)
-        steeringResults = ArrayList()
+        steeringResults = ArrayList<SteeringResult>() as MutableList<SteeringResult>
         clientLocation = Geolocation(47.0, -122.0)
         deliveryService = Mockito.mock(DeliveryService::class.java)
         Mockito.doCallRealMethod().`when`(trafficRouter).geoSortSteeringResults(

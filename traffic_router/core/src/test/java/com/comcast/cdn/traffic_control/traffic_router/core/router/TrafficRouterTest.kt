@@ -145,7 +145,7 @@ class TrafficRouterTest {
         Mockito.`when`(deliveryService.isDns).thenReturn(true)
         val result = trafficRouter.route(request, track)
         MatcherAssert.assertThat(
-            result.addresses,
+            result!!.addresses,
             org.hamcrest.Matchers.containsInAnyOrder(InetRecord("cname1", 12345))
         )
         Mockito.verify(track).setRouteType(StatTracker.Track.RouteType.DNS, "edge.example.com")
@@ -174,7 +174,7 @@ class TrafficRouterTest {
             )
         ).thenCallRealMethod()
         Mockito.`when`(deliveryService.isLocationAvailable(cacheLocation)).thenReturn(true)
-        val caches: MutableList<Cache> = ArrayList()
+        val caches = ArrayList<Cache?>()
         caches.add(cache)
         Mockito.`when`(
             trafficRouter.selectCaches(
@@ -220,7 +220,7 @@ class TrafficRouterTest {
         ).thenCallRealMethod()
         val httpRouteResult = trafficRouter.route(httpRequest, track)
         MatcherAssert.assertThat(
-            httpRouteResult.url.toString(),
+            httpRouteResult!!.url.toString(),
             org.hamcrest.Matchers.equalTo("http://atscache.kabletown.net/index.html")
         )
     }
@@ -263,16 +263,16 @@ class TrafficRouterTest {
         ).thenCallRealMethod()
         val supportingIPv4Caches = trafficRouter.getSupportingCaches(caches, ds, IPVersions.IPV4ONLY)
         MatcherAssert.assertThat(supportingIPv4Caches.size, org.hamcrest.Matchers.equalTo(1))
-        MatcherAssert.assertThat(supportingIPv4Caches[0].id, org.hamcrest.Matchers.equalTo("cache IPv4"))
+        MatcherAssert.assertThat(supportingIPv4Caches[0]!!.id, org.hamcrest.Matchers.equalTo("cache IPv4"))
         val supportingIPv6Caches = trafficRouter.getSupportingCaches(caches, ds, IPVersions.IPV6ONLY)
         MatcherAssert.assertThat(supportingIPv6Caches.size, org.hamcrest.Matchers.equalTo(1))
-        MatcherAssert.assertThat(supportingIPv6Caches[0].id, org.hamcrest.Matchers.equalTo("cache IPv6"))
+        MatcherAssert.assertThat(supportingIPv6Caches[0]!!.id, org.hamcrest.Matchers.equalTo("cache IPv6"))
         val supportingEitherCaches = trafficRouter.getSupportingCaches(caches, ds, IPVersions.ANY)
         MatcherAssert.assertThat(supportingEitherCaches.size, org.hamcrest.Matchers.equalTo(2))
         cacheIPv6.setIsAvailable(false)
         val supportingAvailableCaches = trafficRouter.getSupportingCaches(caches, ds, IPVersions.ANY)
         MatcherAssert.assertThat(supportingAvailableCaches.size, org.hamcrest.Matchers.equalTo(1))
-        MatcherAssert.assertThat(supportingAvailableCaches[0].id, org.hamcrest.Matchers.equalTo("cache IPv4"))
+        MatcherAssert.assertThat(supportingAvailableCaches[0]!!.id, org.hamcrest.Matchers.equalTo("cache IPv4"))
     }
 
     @Test
@@ -292,7 +292,7 @@ class TrafficRouterTest {
         val cache = Mockito.mock(
             Cache::class.java
         )
-        val list: MutableList<Cache> = ArrayList()
+        val list: MutableList<Cache?> = ArrayList()
         list.add(cache)
         Mockito.`when`(deliveryService.missLocation).thenReturn(defaultUSLocation)
         Mockito.`when`(
@@ -305,7 +305,7 @@ class TrafficRouterTest {
         val result = trafficRouter.selectCachesByGeo(ip, deliveryService, null, track, IPVersions.IPV4ONLY)
         Mockito.verify(trafficRouter)
             .getCachesByGeo(deliveryService, deliveryService.missLocation, track, IPVersions.IPV4ONLY)
-        MatcherAssert.assertThat(result.size, org.hamcrest.Matchers.equalTo(1))
+        MatcherAssert.assertThat(result!!.size, org.hamcrest.Matchers.equalTo(1))
         MatcherAssert.assertThat(result[0], org.hamcrest.Matchers.equalTo(cache))
         MatcherAssert.assertThat(track.getResult(), org.hamcrest.Matchers.equalTo(ResultType.GEO_DS))
     }

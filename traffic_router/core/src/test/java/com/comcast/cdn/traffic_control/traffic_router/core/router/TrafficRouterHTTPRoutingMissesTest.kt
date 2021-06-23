@@ -25,7 +25,7 @@ import org.powermock.api.mockito.PowerMockito
 import org.powermock.reflect.Whitebox
 
 class TrafficRouterHTTPRoutingMissesTest {
-    private var request: HTTPRequest? = null
+    private var request: HTTPRequest = Mockito.mock(HTTPRequest::class.java)
     private var trafficRouter: TrafficRouter = Mockito.mock(TrafficRouter::class.java)
     private var track: StatTracker.Track = Mockito.mock(StatTracker.Track::class.java)
     private var cacheRegister: CacheRegister? = null
@@ -34,7 +34,7 @@ class TrafficRouterHTTPRoutingMissesTest {
     @Throws(Exception::class)
     fun before() {
         request = HTTPRequest()
-        request!!.clientIP = "192.168.34.56"
+        request.clientIP = "192.168.34.56"
         cacheRegister = Mockito.mock(CacheRegister::class.java)
         trafficRouter = Mockito.mock(TrafficRouter::class.java)
         track = PowerMockito.spy(StatTracker.getTrack())
