@@ -27,7 +27,8 @@ import com.comcast.cdn.traffic_control.traffic_router.geolocation.GeolocationExc
 import com.google.common.cache.CacheStats
 import org.apache.log4j.Logger
 import java.io.IOException
-import java.util.*
+import java.util.Collections
+import java.util.Properties
 
 class DataExporter {
     private var trafficRouterManager: TrafficRouterManager? = null

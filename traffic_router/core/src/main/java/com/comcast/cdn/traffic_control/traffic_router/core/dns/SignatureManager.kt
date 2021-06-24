@@ -34,7 +34,8 @@ import org.xbill.DNS.TextParseException
 import java.io.IOException
 import java.security.GeneralSecurityException
 import java.security.NoSuchAlgorithmException
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.Executors

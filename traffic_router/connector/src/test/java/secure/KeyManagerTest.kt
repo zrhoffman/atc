@@ -28,7 +28,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
-import java.util.*
+import java.util.Arrays
 import javax.net.ssl.ExtendedSSLSession
 import javax.net.ssl.SNIServerName
 import javax.net.ssl.SSLSocket

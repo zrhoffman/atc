@@ -44,7 +44,7 @@ import org.xbill.DNS.Type
 import java.io.IOException
 import java.net.UnknownHostException
 import java.security.KeyStore
-import java.util.*
+import java.util.Arrays
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SNIHostName
 import javax.net.ssl.SNIServerName

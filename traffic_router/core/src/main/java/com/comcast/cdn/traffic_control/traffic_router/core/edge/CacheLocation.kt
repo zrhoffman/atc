@@ -19,7 +19,7 @@ import com.comcast.cdn.traffic_control.traffic_router.geolocation.Geolocation
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.apache.log4j.Logger
-import java.util.*
+import java.util.Arrays
 
 /**
  * A physical location that has caches.

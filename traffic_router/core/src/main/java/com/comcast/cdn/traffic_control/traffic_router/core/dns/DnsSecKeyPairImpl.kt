@@ -28,7 +28,9 @@ import org.xbill.DNS.Type
 import java.io.ByteArrayInputStream
 import java.security.PrivateKey
 import java.security.PublicKey
-import java.util.*
+import java.util.Base64
+import java.util.Calendar
+import java.util.Date
 
 class DnsSecKeyPairImpl(keyPair: JsonNode?, defaultTTL: Long) : DnsSecKeyPair {
     private var ttl: Long

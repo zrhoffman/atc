@@ -20,7 +20,8 @@ import com.fasterxml.jackson.databind.JsonNode
 import org.apache.log4j.Logger
 import org.xbill.DNS.Record
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 object ZoneUtils {
     private val LOGGER = Logger.getLogger(ZoneUtils::class.java)

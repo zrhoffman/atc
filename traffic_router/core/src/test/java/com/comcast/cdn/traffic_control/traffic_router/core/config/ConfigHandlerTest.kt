@@ -32,7 +32,7 @@ import org.mockito.Matchers
 import org.mockito.Mockito
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.reflect.Whitebox
-import java.util.*
+import java.util.TreeSet
 
 class ConfigHandlerTest {
     private var handler: ConfigHandler? = null

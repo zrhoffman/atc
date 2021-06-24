@@ -33,7 +33,7 @@ import org.mockito.Matchers
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import java.util.*
+import java.util.Random
 
 class ConsistentHasherTest {
     @Mock

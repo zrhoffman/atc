@@ -16,7 +16,7 @@ package com.comcast.cdn.traffic_control.traffic_router.core.router
 
 import com.comcast.cdn.traffic_control.traffic_router.core.ds.DeliveryService
 import java.net.URL
-import java.util.*
+import java.util.StringJoiner
 
 class HTTPRouteResult(private val multiRouteRequest: Boolean) : RouteResult {
     private val urls: MutableList<URL?>? = ArrayList()

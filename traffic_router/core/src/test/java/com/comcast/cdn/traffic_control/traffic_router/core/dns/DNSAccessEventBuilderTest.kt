@@ -37,7 +37,7 @@ import org.xbill.DNS.Type
 import org.xbill.DNS.WireParseException
 import java.net.Inet4Address
 import java.net.InetAddress
-import java.util.*
+import java.util.Random
 
 @RunWith(PowerMockRunner::class)
 @PrepareForTest(Random::class, Header::class, DNSAccessEventBuilder::class, System::class, DNSAccessRecord::class)
