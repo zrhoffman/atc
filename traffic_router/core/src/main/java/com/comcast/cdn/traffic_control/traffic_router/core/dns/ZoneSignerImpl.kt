@@ -14,12 +14,16 @@
  */
 package com.comcast.cdn.traffic_control.traffic_router.core.dns
 
-org.apache.log4j.Loggerimport org.xbill.DNS.Name
-import org.xbill.DNS.Recordimport
-
-org.xbill.DNS.Typeimport java.lang.Exceptionimport java.util.*import java.util.function.Consumerimport
-
-java.util.function.Functionimport java.util.stream.Stream org.springframework.web.bind.annotation .RequestMapping
+import org.apache.log4j.Logger
+import org.xbill.DNS.Name
+import org.xbill.DNS.Record
+import org.xbill.DNS.Type
+import java.lang.Exception
+import java.util.*
+import java.util.function.Consumer
+import java.util.function.Function
+import java.util.stream.Stream
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import com.comcast.cdn.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

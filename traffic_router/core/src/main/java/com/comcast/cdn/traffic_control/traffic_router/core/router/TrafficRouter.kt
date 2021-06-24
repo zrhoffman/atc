@@ -325,13 +325,13 @@ import com.comcast.cdn.traffic_control.traffic_router.core.external.LocationsTes
 import com.comcast.cdn.traffic_control.traffic_router.core.external.RouterTest
 import com.comcast.cdn.traffic_control.traffic_router.core.external.StatsTest
 import com.comcast.cdn.traffic_control.traffic_router.core.external.ZonesTest
-import com.comcast.cdn.traffic_control.traffic_router.core.CatalinaTrafficRouterimport
-
-com.comcast.cdn.traffic_control.traffic_router.core.edge.Cacheimport com.comcast.cdn.traffic_control.traffic_router.core.edge.Locationimport com.comcast.cdn.traffic_control.traffic_router.core.edge.Node
+import com.comcast.cdn.traffic_control.traffic_router.core.CatalinaTrafficRouter
+import com.comcast.cdn.traffic_control.traffic_router.core.edge.Cache
+import com.comcast.cdn.traffic_control.traffic_router.core.edge.Location
+import com.comcast.cdn.traffic_control.traffic_router.core.edge.Node
 import com.comcast.cdn.traffic_control.traffic_router.core.external.HttpDataServer
-import com.comcast.cdn.traffic_control.traffic_router.core.external.ExternalTestSuiteimport
-
-com.comcast.cdn.traffic_control.traffic_router.core.request.Request
+import com.comcast.cdn.traffic_control.traffic_router.core.external.ExternalTestSuite
+import com.comcast.cdn.traffic_control.traffic_router.core.request.Request
 import org.apache.log4j.ConsoleAppender
 import org.apache.log4j.PatternLayout
 import org.junit.AfterClass
@@ -418,9 +418,18 @@ import org.apache.tomcat.util.net.SSLUtil
 import secure.KeyManagerTest.TestSNIServerName
 import java.lang.management.ManagementFactory
 import secure.CertificateDataConverterTest
-import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementationimport
-
-com.fasterxml.jackson.databind.JsonNodeimport org.apache.log4j.Loggerimport org.springframework.context.ApplicationContextimport org.xbill.DNS.Nameimport org.xbill.DNS.Typeimport org.xbill.DNS.Zoneimport java.lang.Exceptionimport java.net.URLimport java.net.UnknownHostExceptionimport java.util.*import java.util.regex.Pattern
+import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementation
+import com.fasterxml.jackson.databind.JsonNode
+import org.apache.log4j.Logger
+import org.springframework.context.ApplicationContext
+import org.xbill.DNS.Name
+import org.xbill.DNS.Type
+import org.xbill.DNS.Zone
+import java.lang.Exception
+import java.net.URL
+import java.net.UnknownHostException
+import java.util.*
+import java.util.regex.Pattern
 
 /**
  * TrafficRouter is the main router class that handles Traffic Router logic.

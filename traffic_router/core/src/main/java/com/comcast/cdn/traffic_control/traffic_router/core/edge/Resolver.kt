@@ -14,10 +14,11 @@
  */
 package com.comcast.cdn.traffic_control.traffic_router.core.edge
 
-com.comcast.cdn.traffic_control.traffic_router.core.edge.Resolverimport org.apache.log4j.Logger
-import java.net.UnknownHostExceptionimport
-
-java.util.ArrayList org.springframework.web.bind.annotation .RequestMapping
+import com.comcast.cdn.traffic_control.traffic_router.core.edge.Resolver
+import org.apache.log4j.Logger
+import java.net.UnknownHostException
+import java.util.ArrayList
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import com.comcast.cdn.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

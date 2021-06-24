@@ -14,9 +14,9 @@
  */
 package com.comcast.cdn.traffic_control.traffic_router.core.secure
 
-import com.fasterxml.jackson.annotation.JsonIgnorePropertiesimport
-
-com.fasterxml.jackson.annotation .JsonProperty org.springframework.web.bind.annotation .RequestMapping
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import com.comcast.cdn.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

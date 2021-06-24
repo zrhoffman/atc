@@ -425,9 +425,12 @@ import org.apache.tomcat.util.net.SSLUtil
 import secure.KeyManagerTest.TestSNIServerName
 import java.lang.management.ManagementFactory
 import secure.CertificateDataConverterTest
-import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementationimport
-
-com.fasterxml.jackson.databind.JsonNodeimport org.apache.log4j.Loggerimport java.io.Fileimport java.lang.Exceptionimport java.net.URL
+import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementation
+import com.fasterxml.jackson.databind.JsonNode
+import org.apache.log4j.Logger
+import java.io.File
+import java.lang.Exception
+import java.net.URL
 abstract class AbstractResourceWatcher : AbstractServiceUpdater() {
     private var authorizationUrl: URL? = null
     private var postData: String? = null

@@ -14,9 +14,11 @@
  */
 package com.comcast.cdn.traffic_control.traffic_router.core.router
 
-import com.fasterxml.jackson.databind.JsonNodeimport
-
-org.apache.log4j.Loggerimport org.springframework.context.ApplicationContextimport java.net.UnknownHostException org.springframework.web.bind.annotation .RequestMapping
+import com.fasterxml.jackson.databind.JsonNode
+import org.apache.log4j.Logger
+import org.springframework.context.ApplicationContext
+import java.net.UnknownHostException
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import com.comcast.cdn.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

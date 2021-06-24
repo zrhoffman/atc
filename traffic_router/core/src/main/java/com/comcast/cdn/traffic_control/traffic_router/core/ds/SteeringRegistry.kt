@@ -425,9 +425,11 @@ import org.apache.tomcat.util.net.SSLUtil
 import secure.KeyManagerTest.TestSNIServerName
 import java.lang.management.ManagementFactory
 import secure.CertificateDataConverterTest
-import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementationimport
-
-com.fasterxml.jackson.core.JsonFactoryimport com.fasterxml.jackson.core.type.TypeReferenceimport com.fasterxml.jackson.databind.ObjectMapperimport org.apache.log4j.Logger
+import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementation
+import com.fasterxml.jackson.core.JsonFactory
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.apache.log4j.Logger
 class SteeringRegistry {
     private var registry: MutableMap<String?, Steering?>? = HashMap()
     private val objectMapper: ObjectMapper? = ObjectMapper(JsonFactory())

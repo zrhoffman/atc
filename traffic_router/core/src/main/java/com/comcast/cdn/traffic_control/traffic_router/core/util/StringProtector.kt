@@ -17,7 +17,7 @@ package com.comcast.cdn.traffic_control.traffic_router.core.util
 import org.apache.commons.codec.binary.Base64
 import javax.crypto.Cipher
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import com.comcast.cdn.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

@@ -425,9 +425,11 @@ import org.apache.tomcat.util.net.SSLUtil
 import secure.KeyManagerTest.TestSNIServerName
 import java.lang.management.ManagementFactory
 import secure.CertificateDataConverterTest
-import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementationimport
-
-org.apache.log4j.Loggerimport java.lang.Exceptionimport java.util.ArrayListimport java.util.concurrent.ScheduledFuture
+import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementation
+import org.apache.log4j.Logger
+import java.lang.Exception
+import java.util.ArrayList
+import java.util.concurrent.ScheduledFuture
 class CertificatesPoller : ConfigurationListener {
     private val executor: ScheduledExecutorService?
     private var future: ScheduledFuture<*>? = null

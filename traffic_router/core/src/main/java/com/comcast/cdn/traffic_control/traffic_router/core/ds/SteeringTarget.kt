@@ -425,9 +425,8 @@ import org.apache.tomcat.util.net.SSLUtil
 import secure.KeyManagerTest.TestSNIServerName
 import java.lang.management.ManagementFactory
 import secure.CertificateDataConverterTest
-import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementationimport
-
-com.fasterxml.jackson.annotation .JsonProperty
+import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementation
+import com.fasterxml.jackson.annotation.JsonProperty
 class SteeringTarget : DefaultHashable() {
     @JsonProperty
     private var deliveryService: String? = null

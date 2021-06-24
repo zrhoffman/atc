@@ -14,9 +14,9 @@
  */
 package com.comcast.cdn.traffic_control.traffic_router.core.router
 
-import com.comcast.cdn.traffic_control.traffic_router.core.edge.Locationimport
-
-java.util.Comparator org.springframework.web.bind.annotation .RequestMapping
+import com.comcast.cdn.traffic_control.traffic_router.core.edge.Location
+import java.util.Comparator
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import com.comcast.cdn.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

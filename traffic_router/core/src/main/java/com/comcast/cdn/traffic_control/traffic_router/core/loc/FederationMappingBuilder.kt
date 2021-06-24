@@ -14,9 +14,10 @@
  */
 package com.comcast.cdn.traffic_control.traffic_router.core.loc
 
-import com.fasterxml.jackson.databind.JsonNodeimport
-
-com.fasterxml.jackson.databind.ObjectMapperimport org.apache.log4j.Logger org.springframework.web.bind.annotation .RequestMapping
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.apache.log4j.Logger
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import com.comcast.cdn.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

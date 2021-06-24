@@ -425,9 +425,14 @@ import org.apache.tomcat.util.net.SSLUtil
 import secure.KeyManagerTest.TestSNIServerName
 import java.lang.management.ManagementFactory
 import secure.CertificateDataConverterTest
-import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementationimport
-
-org.apache.log4j.Loggerimport org.xbill.DNS.Messageimport org.xbill.DNS.Sectionimport java.lang.Exceptionimport java.util.concurrent.Futureimport java.util.concurrent.ThreadPoolExecutorimport java.util.concurrent.TimeoutException
+import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplementation
+import org.apache.log4j.Logger
+import org.xbill.DNS.Message
+import org.xbill.DNS.Section
+import java.lang.Exception
+import java.util.concurrent.Future
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeoutException
 abstract class AbstractProtocol : Protocol {
     protected var shutdownRequested = false
     private var executorService: ThreadPoolExecutor? = null

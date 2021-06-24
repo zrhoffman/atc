@@ -14,9 +14,9 @@
  */
 package com.comcast.cdn.traffic_control.traffic_router.core.ds
 
-import com.fasterxml.jackson.annotation.JsonPropertyimport
-
-java.util.ArrayList org.springframework.web.bind.annotation .RequestMapping
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.ArrayList
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import com.comcast.cdn.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

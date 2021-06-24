@@ -19,7 +19,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder
 import java.net.URL
 import javax.servlet.http.HttpServletRequest
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import com.comcast.cdn.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

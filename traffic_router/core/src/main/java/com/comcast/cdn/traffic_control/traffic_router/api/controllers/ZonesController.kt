@@ -16,7 +16,7 @@ package com.comcast.cdn.traffic_control.traffic_router.api.controllers
 
 import org.springframework.stereotype.Controller
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import com.comcast.cdn.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

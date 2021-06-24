@@ -18,7 +18,7 @@ import com.comcast.cdn.traffic_control.traffic_router.core.util.Fetcher
 import java.net.HttpCookie
 import java.net.HttpURLConnection
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import com.comcast.cdn.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping
