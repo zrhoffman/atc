@@ -12,95 +12,91 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.comcast.cdn.traffic_control.traffic_router.core.status.model;
-
-import java.util.List;
+package com.comcast.cdn.traffic_control.traffic_router.core.status.model
 
 /**
  * Model for a CacheLocation.
  */
-public class LocationModel {
-    private String locationID;
-    private String description;
-    private double latitude;
-    private double longitude;
-    
-    List<CacheModel> caches;
+class LocationModel {
+    private var locationID: String? = null
+    private var description: String? = null
+    private var latitude = 0.0
+    private var longitude = 0.0
+    var caches: MutableList<CacheModel?>? = null
 
     /**
      * Gets description.
-     * 
+     *
      * @return the description
      */
-    public String getDescription() {
-        return description;
+    fun getDescription(): String? {
+        return description
     }
 
     /**
      * Gets latitude.
-     * 
+     *
      * @return the latitude
      */
-    public double getLatitude() {
-        return latitude;
+    fun getLatitude(): Double {
+        return latitude
     }
 
     /**
      * Gets locationID.
-     * 
+     *
      * @return the locationID
      */
-    public String getLocationID() {
-        return locationID;
+    fun getLocationID(): String? {
+        return locationID
     }
 
     /**
      * Gets longitude.
-     * 
+     *
      * @return the longitude
      */
-    public double getLongitude() {
-        return longitude;
+    fun getLongitude(): Double {
+        return longitude
     }
 
     /**
      * Sets description.
-     * 
+     *
      * @param description
-     *            the description to set
+     * the description to set
      */
-    public void setDescription(final String description) {
-        this.description = description;
+    fun setDescription(description: String?) {
+        this.description = description
     }
 
     /**
      * Sets latitude.
-     * 
+     *
      * @param latitude
-     *            the latitude to set
+     * the latitude to set
      */
-    public void setLatitude(final double latitude) {
-        this.latitude = latitude;
+    fun setLatitude(latitude: Double) {
+        this.latitude = latitude
     }
 
     /**
      * Sets locationID.
-     * 
+     *
      * @param locationID
-     *            the locationID to set
+     * the locationID to set
      */
-    public void setLocationID(final String locationID) {
-        this.locationID = locationID;
+    fun setLocationID(locationID: String?) {
+        this.locationID = locationID
     }
 
     /**
      * Sets longitude.
-     * 
+     *
      * @param longitude
-     *            the longitude to set
+     * the longitude to set
      */
-    public void setLongitude(final double longitude) {
-        this.longitude = longitude;
+    fun setLongitude(longitude: Double) {
+        this.longitude = longitude
     }
 }
