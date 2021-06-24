@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package secureimport
+package secure
 
 import com.comcast.cdn.traffic_control.traffic_router.shared.Certificate
 import com.fasterxml.jackson.core.type.TypeReference

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.comcast.cdn.traffic_control.traffic_router.core.httpimportimport
+package com.comcast.cdn.traffic_control.traffic_router.core.http
 
 org.apache.log4j.Loggerimport java.lang.Booleanimport java.util.*import javax.servlet.FilterChainimport
 

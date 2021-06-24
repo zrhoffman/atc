@@ -1,4 +1,4 @@
-package com.comcast.cdn.traffic_control.traffic_router.core.secureimport
+package com.comcast.cdn.traffic_control.traffic_router.core.secure
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper

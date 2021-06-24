@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.comcast.cdn.traffic_control.traffic_router.secureimport
+package com.comcast.cdn.traffic_control.traffic_router.secure
 
 import org.apache.log4j.Logger
 import org.bouncycastle.asn1.x500.X500Name

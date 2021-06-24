@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.comcast.cdn.traffic_control.traffic_router.tomcatimport
+package com.comcast.cdn.traffic_control.traffic_router.tomcat
 
 import org.apache.catalina.Lifecycle
 import org.apache.log4j.Logger

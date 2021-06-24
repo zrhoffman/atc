@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.comcast.cdn.traffic_control.traffic_router.core.locimportimport
+package com.comcast.cdn.traffic_control.traffic_router.core.loc
 
 org.apache.commons.codec.digest.DigestUtilsimport org.apache.commons.io.IOUtilsimport org.apache.log4j.Loggerimport java.io.Fileimport java.io.OutputStreamimport java.lang.Exceptionimport java.net.HttpURLConnectionimport java.net.URLimport java.nio.file.Filesimport java.util.*
 import java.util.concurrent.ScheduledFuture

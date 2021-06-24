@@ -1,4 +1,4 @@
-package com.comcast.cdn.traffic_control.traffic_router.core.dsimportimport
+package com.comcast.cdn.traffic_control.traffic_router.core.ds
 
 com.fasterxml.jackson.core.JsonFactoryimport com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.core.type.TypeReferenceimport

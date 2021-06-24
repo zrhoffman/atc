@@ -1,4 +1,4 @@
-package com.comcast.cdn.traffic_control.traffic_router.core.dsimport
+package com.comcast.cdn.traffic_control.traffic_router.core.ds
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*

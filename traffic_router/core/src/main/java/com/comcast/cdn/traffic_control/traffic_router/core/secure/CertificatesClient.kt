@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.comcast.cdn.traffic_control.traffic_router.core.secureimportimport
+package com.comcast.cdn.traffic_control.traffic_router.core.secure
 
 com.fasterxml.jackson.core.type.TypeReferenceimport com.fasterxml.jackson.databind.ObjectMapperimport org.apache.log4j.Logger
 import java.lang.Exceptionimport

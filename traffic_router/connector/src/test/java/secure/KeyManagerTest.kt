@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package secureimport
+package secure
 
 import com.comcast.cdn.traffic_control.traffic_router.secure.KeyManager
 import org.hamcrest.MatcherAssert

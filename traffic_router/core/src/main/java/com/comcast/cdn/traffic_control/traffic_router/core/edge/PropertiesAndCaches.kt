@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.comcast.cdn.traffic_control.traffic_router.core.edgeimport
+package com.comcast.cdn.traffic_control.traffic_router.core.edge
 
 import java.util.ArrayList
 
