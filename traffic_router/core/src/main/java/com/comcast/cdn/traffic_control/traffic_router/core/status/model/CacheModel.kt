@@ -187,10 +187,6 @@ class CacheModel {
         this.availBW = availBW
     }
 
-    fun setCacheOnline(cacheOnline: Boolean) {
-        this.cacheOnline = cacheOnline
-    }
-
     fun isCacheOnline(): Boolean {
         return cacheOnline
     }
