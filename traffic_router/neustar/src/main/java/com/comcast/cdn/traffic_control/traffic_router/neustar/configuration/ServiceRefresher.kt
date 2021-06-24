@@ -24,6 +24,7 @@ class ServiceRefresher : Runnable {
 
     @Autowired
     var neustarGeolocationService: NeustarGeolocationService? = null
+
     @Override
     fun run() {
         try {

@@ -456,6 +456,7 @@ class SteeringGeolocationComparatorTest {
     private var seattleComparator: SteeringGeolocationComparator? = null
     private var denverComparator: SteeringGeolocationComparator? = null
     private var bostonComparator: SteeringGeolocationComparator? = null
+
     @Before
     fun before() {
         seattleGeolocation = Geolocation(47.0, -122.0)

@@ -440,6 +440,7 @@ import java.lang.Exception
 @Category(ExternalTest::class)
 class LocationsTest {
     private var closeableHttpClient: CloseableHttpClient? = null
+
     @Before
     @Throws(LifecycleException::class)
     fun before() {

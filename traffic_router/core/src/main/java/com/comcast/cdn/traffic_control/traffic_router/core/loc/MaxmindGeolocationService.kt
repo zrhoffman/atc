@@ -434,6 +434,7 @@ class MaxmindGeolocationService : GeolocationService {
     private var initialized = false
     private var databaseReader: DatabaseReader? = null
     private var databaseFile: File? = null
+
     @Throws(GeolocationException::class)
     private fun getCityResponse(databaseReader: DatabaseReader?, address: String?): CityResponse? {
         return try {

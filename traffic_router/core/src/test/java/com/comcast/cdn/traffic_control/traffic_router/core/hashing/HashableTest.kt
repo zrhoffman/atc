@@ -440,6 +440,7 @@ class HashableTest {
 
     @InjectMocks
     private val defaultHashable: DefaultHashable? = null
+
     @Before
     fun before() {
         MockitoAnnotations.initMocks(this)

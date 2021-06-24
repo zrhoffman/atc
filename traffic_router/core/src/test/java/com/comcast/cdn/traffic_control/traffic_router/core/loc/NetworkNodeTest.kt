@@ -441,6 +441,7 @@ class NetworkNodeTest {
     private val deepNetMap: MutableMap<String?, MutableList<String?>?>? = HashMap()
     private var root: NetworkNode? = null
     private var deepRoot: NetworkNode? = null
+
     @Before
     @Throws(Exception::class)
     fun setUp() {

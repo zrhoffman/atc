@@ -439,6 +439,7 @@ class AnonymousIpTest {
     val configNoWhitelist: File? = File("src/test/resources/anonymous_ip_no_whitelist.json")
     val mmdb: String? = "src/test/resources/GeoIP2-Anonymous-IP.mmdb"
     var databaseFile: File? = File(mmdb)
+
     @Before
     @Throws(Exception::class)
     fun setUp() {

@@ -456,6 +456,7 @@ class NameServerTest {
     private var trafficRouter: TrafficRouter? = null
     private var ar: Record? = null
     private var ns: NSRecord? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

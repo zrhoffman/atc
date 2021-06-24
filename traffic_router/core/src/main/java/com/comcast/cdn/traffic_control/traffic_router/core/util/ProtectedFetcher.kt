@@ -435,6 +435,7 @@ class ProtectedFetcher(authorizationEndpoint: String?, data: String?, timeout: I
     private var authorizationEndpoint: String? = null
     private var data: String? = null
     private var cookie: HttpCookie? = null
+
     @Throws(IOException::class)
     override fun getConnection(
         url: String?,

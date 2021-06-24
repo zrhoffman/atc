@@ -431,6 +431,7 @@ import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplemen
 
 class GeolocationDatabaseUpdater : AbstractServiceUpdater() {
     private var maxmindGeolocationService: MaxmindGeolocationService? = null
+
     @Throws(IOException::class)
     override fun verifyDatabase(dbFile: File?): Boolean {
         return maxmindGeolocationService.verifyDatabase(dbFile)

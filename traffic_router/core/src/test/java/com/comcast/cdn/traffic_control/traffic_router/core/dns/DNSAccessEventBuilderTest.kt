@@ -432,6 +432,7 @@ import java.util.*
 class DNSAccessEventBuilderTest {
     private var client: InetAddress? = null
     private var resolver: InetAddress? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

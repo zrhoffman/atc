@@ -28,6 +28,7 @@ class TrafficRouterConfigurationListenerTest {
 
     @InjectMocks
     var trafficRouterConfigurationListener: TrafficRouterConfigurationListener? = null
+
     @Before
     fun before() {
         initMocks(this)
@@ -39,6 +40,7 @@ class TrafficRouterConfigurationListenerTest {
         val scheduledFuture: ScheduledFuture = mock(ScheduledFuture::class.java)
         `when`(scheduledFuture.isDone()).thenAnswer(object : Answer<Boolean?>() {
             var doneCheckCount = 0
+
             @Override
             @Throws(Throwable::class)
             fun answer(invocation: InvocationOnMock?): Boolean? {

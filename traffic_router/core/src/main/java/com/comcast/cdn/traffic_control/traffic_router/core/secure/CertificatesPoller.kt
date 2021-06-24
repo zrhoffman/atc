@@ -430,6 +430,7 @@ import org.apache.log4j.Logger
 import java.lang.Exception
 import java.util.ArrayList
 import java.util.concurrent.ScheduledFuture
+
 class CertificatesPoller : ConfigurationListener {
     private val executor: ScheduledExecutorService?
     private var future: ScheduledFuture<*>? = null

@@ -28,6 +28,7 @@ class TrafficRouterConfigurationListener : ConfigurationListener {
     @Autowired
     var serviceRefresher: ServiceRefresher? = null
     private var scheduledFuture: ScheduledFuture<*>? = null
+
     @Override
     fun configurationChanged() {
         var restarting = false

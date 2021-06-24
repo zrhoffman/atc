@@ -436,6 +436,7 @@ object ZoneTestRecords {
     var zsk1: KeyPair? = null
     var ksk2: KeyPair? = null
     var zsk2: KeyPair? = null
+
     @Throws(Exception::class)
     fun generateKeyPairs(): MutableList<KeyPair?>? {
         val keyPairGenerator = KeyPairGenerator.getInstance("RSA")

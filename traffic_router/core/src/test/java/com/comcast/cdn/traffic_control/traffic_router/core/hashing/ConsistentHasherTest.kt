@@ -447,6 +447,7 @@ class ConsistentHasherTest {
     @InjectMocks
     var consistentHasher: ConsistentHasher? = null
     var trafficRouter: TrafficRouter? = null
+
     @Before
     fun before() {
         hashable1.generateHashes("hashId1", 100)

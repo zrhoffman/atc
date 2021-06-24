@@ -430,6 +430,7 @@ class CertificateDataConverterTest {
     private var certificateDataConverter: CertificateDataConverter? = null
     private var certificateData: CertificateData? = null
     private val certDate: Date? = null
+
     @Before
     @PrepareForTest(Instant::class)
     @Throws(Exception::class)

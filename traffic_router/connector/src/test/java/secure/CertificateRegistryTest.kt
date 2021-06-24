@@ -433,6 +433,7 @@ class CertificateRegistryTest {
     private var handshakeData1: HandshakeData? = null
     private var handshakeData2: HandshakeData? = null
     private var handshakeData3: HandshakeData? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

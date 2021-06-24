@@ -440,6 +440,7 @@ class DeliveryServiceHTTPRoutingMissesTest {
     private var httpRequest: HTTPRequest? = null
     private var track: StatTracker.Track? = null
     private var bypassDestination: JsonNode? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

@@ -434,6 +434,7 @@ import java.util.ArrayList
 
 class FederationRegistryTest {
     private var federations: MutableList<Federation?>? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

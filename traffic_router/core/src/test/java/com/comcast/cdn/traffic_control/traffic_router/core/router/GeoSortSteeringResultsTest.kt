@@ -440,6 +440,7 @@ class GeoSortSteeringResultsTest {
     private var steeringResults: MutableList<SteeringResult?>? = null
     private var clientLocation: Geolocation? = null
     private var deliveryService: DeliveryService? = null
+
     @Before
     fun before() {
         trafficRouter = Mockito.mock(TrafficRouter::class.java)

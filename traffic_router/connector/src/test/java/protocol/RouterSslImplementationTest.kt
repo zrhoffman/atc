@@ -442,6 +442,7 @@ class RouterSslImplementationTest {
     )
     var sslHostConfigCertificate: SSLHostConfigCertificate? = SSLHostConfigCertificate(sslHostConfig, type)
     var sslutil = PowerMockito.mock(RouterSslUtil::class.java)
+
     @Test
     @Throws(Exception::class)
     fun itReturnsSSLSupport() {

@@ -482,6 +482,7 @@ abstract class Pkcs {
 
     @Throws(IOException::class, GeneralSecurityException::class)
     protected abstract fun decodeKeySpec(data: String?): KeySpec?
+
     @Throws(IOException::class, GeneralSecurityException::class)
     private fun toKeySpec(data: String?): KeySpec? {
         return decodeKeySpec(stripHeaderAndFooter(data))

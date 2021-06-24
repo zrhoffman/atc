@@ -436,6 +436,7 @@ class TrafficRouterHTTPRoutingMissesTest {
     private var trafficRouter: TrafficRouter? = null
     private var track: StatTracker.Track? = null
     private var cacheRegister: CacheRegister? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

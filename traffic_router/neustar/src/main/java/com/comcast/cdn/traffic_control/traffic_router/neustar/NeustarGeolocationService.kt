@@ -22,6 +22,7 @@ class NeustarGeolocationService : GeolocationService {
 
     @Autowired
     private val neustarDatabaseDirectory: File? = null
+
     @Override
     @Throws(GeolocationException::class)
     fun location(ip: String?): Geolocation? {

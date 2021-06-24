@@ -446,6 +446,7 @@ import java.nio.file.Files
 class ZoneManagerTest {
     private var trafficRouterManager: TrafficRouterManager? = null
     private val netMap: MutableMap<String?, InetAddress?>? = HashMap()
+
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -534,6 +535,7 @@ class ZoneManagerTest {
 
     companion object {
         private var context: ApplicationContext? = null
+
         @BeforeClass
         @Throws(Exception::class)
         fun setUpBeforeClass() {

@@ -448,6 +448,7 @@ class ConsistentHashTest {
     var steeringDeliveryServiceId: String? = null
     var consistentHashRegex: String? = null
     var steeredDeliveryServices: MutableList<String?>? = ArrayList()
+
     @Before
     @Throws(Exception::class)
     fun before() {

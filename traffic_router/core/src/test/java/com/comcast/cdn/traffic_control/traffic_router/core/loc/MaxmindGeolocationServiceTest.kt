@@ -439,6 +439,7 @@ import java.lang.Exception
 @RunWith(PowerMockRunner::class)
 class MaxmindGeolocationServiceTest {
     private var service: MaxmindGeolocationService? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

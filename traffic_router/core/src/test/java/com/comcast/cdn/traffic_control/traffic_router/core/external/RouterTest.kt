@@ -461,6 +461,7 @@ class RouterTest {
     private val testHttpPort = System.getProperty("testHttpServerPort", "8889")
     private var trustStore: KeyStore? = null
     private val routerDnsPort = Integer.valueOf(System.getProperty("dns.udp.port", "1053"))
+
     @Before
     @Throws(Exception::class)
     fun before() {

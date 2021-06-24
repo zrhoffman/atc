@@ -561,6 +561,7 @@ abstract class AbstractServiceUpdater {
 
     @Throws(IOException::class, JsonUtilsException::class)
     abstract fun verifyDatabase(dbFile: File?): Boolean
+
     @Throws(IOException::class, JsonUtilsException::class)
     abstract fun loadDatabase(): Boolean
     fun setDatabaseName(databaseName: String?) {
@@ -722,6 +723,7 @@ abstract class AbstractServiceUpdater {
     protected var sourceCompressed = true
     protected var tmpPrefix: String? = "loc"
     protected var tmpSuffix: String? = ".dat"
+
     @Throws(IOException::class)
     protected open fun downloadDatabase(url: String?, existingDb: File?): File? {
         AbstractServiceUpdater.Companion.LOGGER.info("[" + javaClass.simpleName + "] Downloading database: " + url)

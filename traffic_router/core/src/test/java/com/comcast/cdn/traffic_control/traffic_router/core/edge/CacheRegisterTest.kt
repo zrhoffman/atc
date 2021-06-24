@@ -434,6 +434,7 @@ import org.mockito.Mockito
 
 class CacheRegisterTest {
     private val cacheRegister: CacheRegister? = CacheRegister()
+
     @Before
     fun before() {
         val deliveryService1 = Mockito.mock(DeliveryService::class.java)

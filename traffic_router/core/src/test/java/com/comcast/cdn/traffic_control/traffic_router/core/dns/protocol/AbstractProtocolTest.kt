@@ -441,6 +441,7 @@ class AbstractProtocolTest {
     private var nameServer: NameServer? = null
     private var header: Header? = null
     var client: InetAddress? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

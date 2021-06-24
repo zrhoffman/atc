@@ -432,6 +432,7 @@ class KeyManagerTest {
     private var keyManager: KeyManager? = null
     private var x509Certificate: X509Certificate? = null
     private var privateKey: PrivateKey? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

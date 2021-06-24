@@ -434,6 +434,7 @@ import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplemen
 class SteeringController {
     @Autowired
     var steeringRegistry: SteeringRegistry? = null
+
     @RequestMapping
     @ResponseBody
     fun getSteering(): ResponseEntity<MutableCollection<Steering?>?>? {

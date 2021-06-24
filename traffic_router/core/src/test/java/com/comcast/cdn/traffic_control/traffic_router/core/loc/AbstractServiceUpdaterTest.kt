@@ -442,6 +442,7 @@ class AbstractServiceUpdaterTest {
     private var databasesDirectory: Path? = null
     private var databasePath: Path? = null
     private var databaseFile: File? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

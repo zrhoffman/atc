@@ -437,6 +437,7 @@ import java.net.URLEncoder
 @Category(ExternalTest::class)
 class DeliveryServicesTest {
     private var closeableHttpClient: CloseableHttpClient? = null
+
     @Before
     @Throws(LifecycleException::class)
     fun before() {

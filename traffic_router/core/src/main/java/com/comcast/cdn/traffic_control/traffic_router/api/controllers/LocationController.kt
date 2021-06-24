@@ -434,6 +434,7 @@ import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplemen
 class LocationController {
     @Autowired
     private val dataExporter: DataExporter? = null
+
     @RequestMapping(value = ["/{locID}/caches"], method = [RequestMethod.GET])
     @ResponseBody
     fun getCaches(@PathVariable("locID") locId: String?): MutableMap<String?, MutableList<CacheModel?>?>? {

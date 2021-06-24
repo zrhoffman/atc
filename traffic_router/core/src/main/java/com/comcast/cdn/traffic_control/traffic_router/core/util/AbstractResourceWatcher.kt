@@ -431,6 +431,7 @@ import org.apache.log4j.Logger
 import java.io.File
 import java.lang.Exception
 import java.net.URL
+
 abstract class AbstractResourceWatcher : AbstractServiceUpdater() {
     private var authorizationUrl: URL? = null
     private var postData: String? = null
@@ -481,6 +482,7 @@ abstract class AbstractResourceWatcher : AbstractServiceUpdater() {
     }
 
     protected abstract fun verifyData(data: String?): Boolean
+
     @Throws(IOException::class)
     override fun loadDatabase(): Boolean {
         val existingDB = databasesDirectory.resolve(databaseName).toFile()

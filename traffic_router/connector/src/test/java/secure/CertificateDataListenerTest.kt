@@ -427,6 +427,7 @@ import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplemen
 @PrepareForTest(CertificateRegistry::class)
 class CertificateDataListenerTest {
     private var certificateRegistry: CertificateRegistry? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

@@ -24,6 +24,7 @@ class NeustarGeolocationServiceTest {
 
     @InjectMocks
     var service: NeustarGeolocationService? = NeustarGeolocationService()
+
     @Before
     @Throws(Exception::class)
     fun before() {

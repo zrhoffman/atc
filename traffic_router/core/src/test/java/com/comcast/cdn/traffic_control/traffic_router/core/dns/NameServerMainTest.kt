@@ -438,6 +438,7 @@ class NameServerMainTest {
     private var p1: Protocol? = null
     private var p2: Protocol? = null
     private var main: NameServerMain? = null
+
     @Before
     @Throws(Exception::class)
     fun setUp() {

@@ -935,6 +935,7 @@ class ZoneManager(
             return CacheBuilder.from(spec).recordStats().removalListener(removalListener).build(
                 object : CacheLoader<ZoneKey?, Zone?>() {
                     val writeZone = if (cacheType == ZoneCacheType.STATIC) true else false
+
                     @Throws(IOException::class, GeneralSecurityException::class)
                     override fun load(zoneKey: ZoneKey?): Zone? {
                         ZoneManager.Companion.LOGGER.debug("loading " + cacheType + " " + zoneKey.javaClass.simpleName + " " + zoneKey.getName())

@@ -435,6 +435,7 @@ import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplemen
 class DeepCoverageZoneController {
     @Autowired
     var trafficRouterManager: TrafficRouterManager? = null
+
     @RequestMapping(value = ["/cachelocation"])
     @ResponseBody
     fun getCacheLocationForIp(

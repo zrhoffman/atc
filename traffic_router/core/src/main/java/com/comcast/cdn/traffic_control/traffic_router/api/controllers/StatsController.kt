@@ -434,6 +434,7 @@ import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplemen
 class StatsController {
     @Autowired
     private val dataExporter: DataExporter? = null
+
     @GetMapping
     @ResponseBody
     fun getStats(): MutableMap<String?, Any?>? {

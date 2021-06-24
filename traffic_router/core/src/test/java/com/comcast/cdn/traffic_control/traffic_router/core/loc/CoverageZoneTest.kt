@@ -439,6 +439,7 @@ import java.util.ArrayList
 @PrepareForTest(TrafficRouter::class)
 class CoverageZoneTest {
     private var trafficRouter: TrafficRouter? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

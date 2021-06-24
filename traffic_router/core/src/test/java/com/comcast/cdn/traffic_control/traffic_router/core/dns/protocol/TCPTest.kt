@@ -453,6 +453,7 @@ class TCPTest {
     private var client: InetAddress? = null
     private var `in`: ByteArrayInputStream? = null
     private var out: ByteArrayOutputStream? = null
+
     @Before
     @Throws(Exception::class)
     fun setUp() {

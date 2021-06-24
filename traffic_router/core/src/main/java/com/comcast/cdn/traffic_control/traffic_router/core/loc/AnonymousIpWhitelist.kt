@@ -430,6 +430,7 @@ import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplemen
 
 class AnonymousIpWhitelist {
     private val whitelist: SuperNode?
+
     @Throws(JsonUtilsException::class, NetworkNodeException::class)
     fun init(config: JsonNode?) {
         if (config.isArray()) {

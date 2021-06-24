@@ -427,6 +427,7 @@ import java.util.*
 
 class ConfigHandlerTest {
     private var handler: ConfigHandler? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

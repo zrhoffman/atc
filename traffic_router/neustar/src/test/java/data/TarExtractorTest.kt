@@ -77,6 +77,7 @@ class TarExtractorTest {
 
     internal inner class SimpleFilenameFilter : FileFilter {
         var name: String? = null
+
         @Override
         fun accept(pathname: File?): Boolean {
             return name.equals(pathname.getName())

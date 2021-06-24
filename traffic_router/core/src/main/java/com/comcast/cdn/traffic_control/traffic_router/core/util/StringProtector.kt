@@ -434,6 +434,7 @@ class StringProtector(passwd: String?) {
     private val base64: Base64? = Base64(true)
     private val encryptor: Cipher?
     private val decryptor: Cipher?
+
     @Throws(GeneralSecurityException::class, UnsupportedEncodingException::class)
     fun encrypt(property: ByteArray?): ByteArray? {
         return encryptor.doFinal(property)

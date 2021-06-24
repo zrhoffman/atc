@@ -442,6 +442,7 @@ class DNSRoutingMissesTest {
     private var request: DNSRequest? = null
     private var trafficRouter: TrafficRouter? = null
     private var track: StatTracker.Track? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

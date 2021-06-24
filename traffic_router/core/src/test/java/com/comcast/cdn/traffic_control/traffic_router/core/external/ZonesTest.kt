@@ -438,6 +438,7 @@ import java.lang.Exception
 @Category(ExternalTest::class)
 class ZonesTest {
     var httpClient: CloseableHttpClient? = null
+
     @Before
     @Throws(LifecycleException::class)
     fun before() {

@@ -428,6 +428,7 @@ import javax.servlet.http.HttpServletRequest
 @PrepareForTest(Date::class, HTTPAccessEventBuilder::class, HTTPAccessRecord::class, System::class)
 class HTTPAccessEventBuilderTest {
     private var request: HttpServletRequest? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

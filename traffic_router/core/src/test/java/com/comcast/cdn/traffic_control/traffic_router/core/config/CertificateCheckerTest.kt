@@ -429,6 +429,7 @@ class CertificateCheckerTest {
     private var deliveryServicesJson: JsonNode? = null
     private var certificateDataList: MutableList<CertificateData?>? = null
     private var certificateData: CertificateData? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

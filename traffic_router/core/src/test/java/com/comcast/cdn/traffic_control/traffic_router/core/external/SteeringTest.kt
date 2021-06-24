@@ -437,6 +437,7 @@ class SteeringTest {
     var validLocations: MutableList<String?>? = ArrayList()
     var routerHttpPort = System.getProperty("routerHttpPort", "8888")
     var testHttpPort = System.getProperty("testHttpServerPort", "8889")
+
     @Throws(IOException::class)
     fun getJsonForResourcePath(resourcePath: String?): JsonNode? {
         val objectMapper = ObjectMapper(JsonFactory())

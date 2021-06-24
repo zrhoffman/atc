@@ -433,6 +433,7 @@ import org.junit.Test
 class AnonymousIpWhitelistTest {
     var ip4whitelist: AnonymousIpWhitelist? = null
     var ip6whitelist: AnonymousIpWhitelist? = null
+
     @Before
     @Throws(IOException::class, JsonUtilsException::class, NetworkNodeException::class)
     fun setup() {

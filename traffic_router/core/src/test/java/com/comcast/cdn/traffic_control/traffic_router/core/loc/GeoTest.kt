@@ -440,6 +440,7 @@ import java.nio.file.Files
 class GeoTest {
     private var geolocationDatabaseUpdater: GeolocationDatabaseUpdater? = null
     private var maxmindGeolocationService: MaxmindGeolocationService? = null
+
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -470,6 +471,7 @@ class GeoTest {
     companion object {
         private val LOGGER = Logger.getLogger(GeoTest::class.java)
         private var context: ApplicationContext? = null
+
         @BeforeClass
         @Throws(Exception::class)
         fun setUpBeforeClass() {

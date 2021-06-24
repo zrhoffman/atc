@@ -35,6 +35,7 @@ class NeustarDatabaseUpdaterTest {
     @InjectMocks
     var neustarDatabaseUpdater: NeustarDatabaseUpdater? = null
     private var mockTmpDir: File? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

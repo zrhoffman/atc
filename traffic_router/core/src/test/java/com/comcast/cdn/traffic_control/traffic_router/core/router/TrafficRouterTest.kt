@@ -443,6 +443,7 @@ class TrafficRouterTest {
     private var trafficRouter: TrafficRouter? = null
     private var deliveryService: DeliveryService? = null
     private var federationRegistry: FederationRegistry? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

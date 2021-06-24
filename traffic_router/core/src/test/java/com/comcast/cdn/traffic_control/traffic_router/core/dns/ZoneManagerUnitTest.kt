@@ -431,6 +431,7 @@ import java.util.*
 @PrepareForTest(ZoneManager::class, SignatureManager::class)
 class ZoneManagerUnitTest {
     var zoneManager: ZoneManager? = null
+
     @Before
     @Throws(Exception::class)
     fun before() {

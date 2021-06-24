@@ -431,6 +431,7 @@ class RouterFilter : OncePerRequestFilter() {
     private val statTracker: StatTracker? = null
     private var staticContentWhiteList: MutableList<String?>? = null
     private var doNotLog = false
+
     @Throws(IOException::class, ServletException::class)
     public override fun doFilterInternal(
         request: HttpServletRequest?,

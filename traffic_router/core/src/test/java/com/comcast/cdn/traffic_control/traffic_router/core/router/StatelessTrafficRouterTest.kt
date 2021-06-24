@@ -440,6 +440,7 @@ class StatelessTrafficRouterTest {
     private var trafficRouterManager: TrafficRouterManager? = null
     private var geolocationDatabaseUpdater: GeolocationDatabaseUpdater? = null
     private var networkUpdater: NetworkUpdater? = null
+
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -472,6 +473,7 @@ class StatelessTrafficRouterTest {
     companion object {
         private val LOGGER = Logger.getLogger(StatelessTrafficRouterTest::class.java)
         private var context: ApplicationContext? = null
+
         @BeforeClass
         @Throws(Exception::class)
         fun setUpBeforeClass() {

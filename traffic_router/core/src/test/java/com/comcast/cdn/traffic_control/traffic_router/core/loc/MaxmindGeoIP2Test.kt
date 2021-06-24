@@ -433,6 +433,7 @@ import java.lang.Exception
 
 class MaxmindGeoIP2Test {
     private var maxmindGeolocationService: MaxmindGeolocationService? = null
+
     @Before
     @Throws(Exception::class)
     fun setUp() {

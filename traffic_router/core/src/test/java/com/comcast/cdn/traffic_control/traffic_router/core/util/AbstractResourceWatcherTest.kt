@@ -444,6 +444,7 @@ class AbstractResourceWatcherTest {
     private var trafficRouterManager: TrafficRouterManager? = null
     private var steeringRegistry: SteeringRegistry? = null
     private var oldFedUrl: String? = null
+
     @Before
     @Throws(InterruptedException::class)
     fun setUp() {
@@ -527,6 +528,7 @@ class AbstractResourceWatcherTest {
     companion object {
         private val LOGGER = Logger.getLogger(AbstractResourceWatcherTest::class.java)
         private var context: ApplicationContext? = null
+
         @BeforeClass
         fun setUpBeforeClass() {
             MatcherAssert.assertThat(

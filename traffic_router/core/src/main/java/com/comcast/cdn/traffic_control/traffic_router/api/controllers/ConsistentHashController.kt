@@ -435,6 +435,7 @@ import com.comcast.cdn.traffic_control.traffic_router.protocol.RouterSslImplemen
 class ConsistentHashController {
     @Autowired
     var trafficRouterManager: TrafficRouterManager? = null
+
     @RequestMapping(value = ["/cache/coveragezone"])
     @ResponseBody
     fun hashCoverageZoneCache(

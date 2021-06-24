@@ -436,6 +436,7 @@ import java.net.UnknownHostException
 
 class AnonymousIpDatabaseServiceTest {
     private var anonymousIpService: AnonymousIpDatabaseService? = null
+
     @Before
     @Throws(Exception::class)
     fun setup() {

@@ -445,6 +445,7 @@ open class NetworkNode @JvmOverloads constructor(
     private val geolocation: Geolocation? = null
     var children: MutableMap<NetworkNode?, NetworkNode?>? = null
     private var deepCacheNames: MutableSet<String?>? = null
+
     @Throws(NetworkNodeException::class)
     open fun getNetwork(ip: String?): NetworkNode? {
         return getNetwork(NetworkNode(ip))

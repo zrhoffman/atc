@@ -27,6 +27,7 @@ class PeriodicUpdateConfigurationTest {
 
     @Autowired
     var neustarOldDatabaseDirectory: File? = null
+
     @Test
     fun itUsesCorrectDirectoriesForDataDownload() {
         assertThat(neustarDatabaseDirectory.getAbsolutePath(), equalTo("/opt/traffic_router/db/neustar"))

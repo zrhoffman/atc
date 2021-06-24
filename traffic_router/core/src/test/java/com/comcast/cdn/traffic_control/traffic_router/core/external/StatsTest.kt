@@ -429,6 +429,7 @@ import java.util.*
 @Category(ExternalTest::class)
 class StatsTest {
     var httpClient: CloseableHttpClient? = null
+
     @Before
     @Throws(LifecycleException::class)
     fun before() {

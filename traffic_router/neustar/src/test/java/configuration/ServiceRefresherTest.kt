@@ -25,6 +25,7 @@ class ServiceRefresherTest {
 
     @InjectMocks
     var serviceRefresher: ServiceRefresher? = null
+
     @Before
     fun before() {
         initMocks(this)

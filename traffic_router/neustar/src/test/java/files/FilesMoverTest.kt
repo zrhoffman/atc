@@ -26,6 +26,7 @@ class FilesMoverTest {
     var newFile2: File? = null
     var oldFolder: File? = null
     var filesMover: FilesMover? = FilesMover()
+
     @Before
     @Throws(Exception::class)
     fun before() {
