@@ -15,5 +15,5 @@
 package com.comcast.cdn.traffic_control.traffic_router.configuration
 
 interface ConfigurationListener {
-    open fun configurationChanged()
+    fun configurationChanged()
 }
