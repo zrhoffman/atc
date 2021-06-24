@@ -14,7 +14,6 @@
  */
 package com.comcast.cdn.traffic_control.traffic_router.geolocation
 
-import com.comcast.cdn.traffic_control.traffic_router.geolocation.GeolocationException
 import java.io.File
 import java.io.IOException
 
@@ -28,7 +27,7 @@ interface GeolocationService {
      * if the IP Address cannot be located.
      */
     @Throws(GeolocationException::class)
-    open fun location(ip: String?): Geolocation?
+    fun location(ip: String?): Geolocation?
 
     /**
      * Forces a reload of the geolocation database.
@@ -36,7 +35,7 @@ interface GeolocationService {
      * @throws IOException
      */
     @Throws(IOException::class)
-    open fun reloadDatabase()
+    fun reloadDatabase()
 
     /**
      * Verifies the specified database is valid.
@@ -47,13 +46,13 @@ interface GeolocationService {
      * if the database is not valid.
      */
     @Throws(IOException::class)
-    open fun verifyDatabase(dbFile: File?): Boolean
+    fun verifyDatabase(dbFile: File?): Boolean
 
     /**
      * Exposes whether this GeolocationService has loaded
      *
      * @return whether this GeolocationService has loaded
      */
-    open fun isInitialized(): Boolean
-    open fun setDatabaseFile(databaseFile: File?)
+    fun isInitialized(): Boolean
+    fun setDatabaseFile(databaseFile: File?)
 }

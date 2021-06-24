@@ -14,6 +14,10 @@
  */
 package com.comcast.cdn.traffic_control.traffic_router.geolocation
 
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 
@@ -31,10 +35,10 @@ class Geolocation
     private var countryCode: String? = null
     private var countryName: String? = null
     private var defaultLocation = false
-    fun getProperties(): MutableMap<String?, String?>? {
+    fun getProperties(): MutableMap<String?, String?> {
         val map: MutableMap<String?, String?> = HashMap()
-        map["latitude"] = java.lang.Double.toString(latitude)
-        map["longitude"] = java.lang.Double.toString(longitude)
+        map["latitude"] = latitude.toString()
+        map["longitude"] = longitude.toString()
         map["postalCode"] = postalCode
         map["city"] = city
         map["countryCode"] = countryCode
@@ -53,27 +57,33 @@ class Geolocation
         return if (other != null) {
             val dLat = Math.toRadians(getLatitude() - other.latitude)
             val dLon = Math.toRadians(getLongitude() - other.longitude)
-            val a = (Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                    + (Math.cos(Math.toRadians(getLatitude())) * Math.cos(Math.toRadians(other.latitude))
-                    * Math.sin(dLon / 2) * Math.sin(dLon / 2)))
-            val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-            Geolocation.Companion.MEAN_EARTH_RADIUS * c
+            val a = (sin(dLat / 2) * sin(dLat / 2)
+                    + (cos(Math.toRadians(getLatitude())) * cos(Math.toRadians(other.latitude))
+                    * sin(dLon / 2) * sin(dLon / 2)))
+            val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+            MEAN_EARTH_RADIUS * c
         } else {
             Double.POSITIVE_INFINITY
         }
     }
 
-    override fun equals(obj: Any?): Boolean {
-        return if (this === obj) {
-            true
-        } else if (obj is Geolocation) {
-            val rhs = obj as Geolocation?
-            EqualsBuilder()
-                .append(getLatitude(), rhs.getLatitude())
-                .append(getLongitude(), rhs.getLongitude())
-                .isEquals
-        } else {
-            false
+    override fun equals(other: Any?): Boolean {
+        return when {
+            this === other -> {
+                true
+            }
+            other === null -> {
+                false
+            }
+            other is Geolocation -> {
+                EqualsBuilder()
+                    .append(getLatitude(), other.getLatitude())
+                    .append(getLongitude(), other.getLongitude())
+                    .isEquals
+            }
+            else -> {
+                false
+            }
         }
     }
 

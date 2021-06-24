@@ -15,8 +15,8 @@
 package com.comcast.cdn.traffic_control.traffic_router.geolocation
 
 class GeolocationException : Exception {
-    constructor(reason: String?) : super(reason) {}
-    constructor(message: String?, cause: Throwable?) : super(message, cause) {}
+    constructor(reason: String?) : super(reason)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
 
     companion object {
         private const val serialVersionUID = 1L
