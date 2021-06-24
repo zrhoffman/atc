@@ -14,7 +14,6 @@
  */
 package com.comcast.cdn.traffic_control.traffic_router.utils
 
-import com.comcast.cdn.traffic_control.traffic_router.utils.HttpsProperties
 import org.apache.log4j.Logger
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -28,12 +27,12 @@ class HttpsProperties {
 
     companion object {
         private val log = Logger.getLogger(HttpsProperties::class.java)
-        private val HTTPS_PROPERTIES_FILE: String? = "/opt/traffic_router/conf/https.properties"
+        private const val HTTPS_PROPERTIES_FILE: String = "/opt/traffic_router/conf/https.properties"
         private fun loadHttpsProperties(): MutableMap<String?, String?>? {
             return try {
                 val httpsProperties: MutableMap<String?, String?> = HashMap()
-                Files.readAllLines(Paths.get(HttpsProperties.Companion.HTTPS_PROPERTIES_FILE)).forEach(
-                    Consumer { propString: String? ->
+                Files.readAllLines(Paths.get(HTTPS_PROPERTIES_FILE)).forEach(
+                    Consumer { propString: String ->
                         if (!propString.startsWith("#")) { // Ignores comments in properties file
                             val prop: Array<String?> = propString.split("=".toRegex()).toTypedArray()
                             httpsProperties[prop[0]] = prop[1]
@@ -41,13 +40,13 @@ class HttpsProperties {
                     })
                 httpsProperties
             } catch (e: Exception) {
-                HttpsProperties.Companion.log.error("Error loading https properties file.")
+                log.error("Error loading https properties file.")
                 null
             }
         }
     }
 
     init {
-        httpsPropertiesMap = HttpsProperties.Companion.loadHttpsProperties()
+        httpsPropertiesMap = loadHttpsProperties()
     }
 }
