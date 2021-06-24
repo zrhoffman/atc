@@ -15,11 +15,11 @@
 package com.comcast.cdn.traffic_control.traffic_router.shared
 
 interface DeliveryServiceCertificatesMBean {
-    open fun getCertificateDataList(): MutableList<CertificateData?>?
-    open fun setCertificateDataList(certificateDataList: MutableList<CertificateData?>?)
-    open fun setCertificateDataListString(certificateDataListString: String?)
+    fun getCertificateDataList(): MutableList<CertificateData?>?
+    fun setCertificateDataList(certificateDataList: MutableList<CertificateData?>?)
+    fun setCertificateDataListString(certificateDataListString: String?)
 
     companion object {
-        val OBJECT_NAME: String? = "traffic-router:name=DeliveryServiceCertificates"
+        const val OBJECT_NAME: String = "traffic-router:name=DeliveryServiceCertificates"
     }
 }

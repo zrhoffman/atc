@@ -27,11 +27,11 @@ import javax.management.ObjectName
 class TomcatLifecycleListener : LifecycleListener {
     private var certificateDataListener: CertificateDataListener? = CertificateDataListener()
     override fun lifecycleEvent(event: LifecycleEvent?) {
-        if (Lifecycle.AFTER_INIT_EVENT != event.getType()) {
+        if (Lifecycle.AFTER_INIT_EVENT != event!!.type) {
             return
         }
         try {
-            TomcatLifecycleListener.Companion.log.info("Registering delivery service certificates mbean")
+            log.info("Registering delivery service certificates mbean")
             val objectName = ObjectName(DeliveryServiceCertificatesMBean.Companion.OBJECT_NAME)
             val platformMBeanServer = ManagementFactory.getPlatformMBeanServer()
             platformMBeanServer.registerMBean(DeliveryServiceCertificates(), objectName)
