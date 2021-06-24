@@ -12,47 +12,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.comcast.cdn.traffic_control.traffic_router.geolocation
 
-package com.comcast.cdn.traffic_control.traffic_router.geolocation;
+import java.io.File
+import java.io.IOException
 
-import java.io.File;
-import java.io.IOException;
-
-public interface GeolocationService {
-
+interface GeolocationService {
     /**
      * Provides a geospatial location for a specified IP Address.
-     * 
+     *
      * @param ip
      * @return the location of the specified IP Address
      * @throws GeolocationException
-     *             if the IP Address cannot be located.
+     * if the IP Address cannot be located.
      */
-    Geolocation location(String ip) throws GeolocationException;
+    @Throws(GeolocationException::class)
+    fun location(ip: String?): Geolocation?
 
     /**
      * Forces a reload of the geolocation database.
-     * 
+     *
      * @throws IOException
      */
-    void reloadDatabase() throws IOException;
+    @Throws(IOException::class)
+    fun reloadDatabase()
 
     /**
      * Verifies the specified database is valid.
-     * 
+     *
      * @param dbFile
-     *            the database file.
+     * the database file.
      * @throws IOException
-     *             if the database is not valid.
+     * if the database is not valid.
      */
-    boolean verifyDatabase(File dbFile) throws IOException;
+    @Throws(IOException::class)
+    fun verifyDatabase(dbFile: File?): Boolean
 
     /**
      * Exposes whether this GeolocationService has loaded
-     * 
+     *
      * @return whether this GeolocationService has loaded
      */
-    boolean isInitialized();
-
-    void setDatabaseFile(File databaseFile);
+    fun isInitialized(): Boolean
+    fun setDatabaseFile(databaseFile: File?)
 }

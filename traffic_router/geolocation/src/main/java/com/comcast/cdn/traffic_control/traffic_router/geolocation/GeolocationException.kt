@@ -12,18 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.comcast.cdn.traffic_control.traffic_router.geolocation
 
-package com.comcast.cdn.traffic_control.traffic_router.geolocation;
+class GeolocationException : Exception {
+    constructor(reason: String?) : super(reason)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
 
-public class GeolocationException extends Exception {
-
-    private static final long serialVersionUID = 1L;
-
-    public GeolocationException(final String reason) {
-        super(reason);
-    }
-
-    public GeolocationException(final String message, final Throwable cause) {
-        super(message, cause);
+    companion object {
+        private const val serialVersionUID = 1L
     }
 }
