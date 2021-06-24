@@ -14,7 +14,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "https-only-test": ["edge-cache-001.https-only-test.thecdn.example.com"]
+        "https-only-test": [
+          "edge-cache-001.https-only-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-001": {
@@ -31,7 +33,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "https-only-test": ["edge-cache-001.https-only-test.thecdn.example.com"]
+        "https-only-test": [
+          "edge-cache-001.https-only-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-002": {
@@ -48,7 +52,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "https-only-test": ["edge-cache-002.https-only-test.thecdn.example.com"]
+        "https-only-test": [
+          "edge-cache-002.https-only-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-010": {
@@ -65,13 +71,19 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-1": ["edge-cache-010.steering-test-1.thecdn.example.com"],
-        "steering-target-2": ["edge-cache-010.steering-target-2.thecdn.example.com"],
+        "steering-test-1": [
+          "edge-cache-010.steering-test-1.thecdn.example.com"
+        ],
+        "steering-target-2": [
+          "edge-cache-010.steering-target-2.thecdn.example.com"
+        ],
         "steering-target-1": [
           "edge-cache-010.steering-target-1.thecdn.example.com",
           "edge-cache-010.steering-target-1-b-b.thecdn.example.com"
         ],
-        "http-only-test": ["edge-cache-010.http-only-test.thecdn.example.com"]
+        "http-only-test": [
+          "edge-cache-010.http-only-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-011": {
@@ -88,13 +100,19 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-1": ["edge-cache-011.steering-test-1.thecdn.example.com"],
-        "steering-target-2": ["edge-cache-011.steering-target-2.thecdn.example.com"],
+        "steering-test-1": [
+          "edge-cache-011.steering-test-1.thecdn.example.com"
+        ],
+        "steering-target-2": [
+          "edge-cache-011.steering-target-2.thecdn.example.com"
+        ],
         "steering-target-1": [
           "edge-cache-011.steering-target-1.thecdn.example.com",
           "edge-cache-011.steering-target-1-b-b.thecdn.example.com"
         ],
-        "http-only-test": ["edge-cache-011.http-only-test.thecdn.example.com"]
+        "http-only-test": [
+          "edge-cache-011.http-only-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-012": {
@@ -111,14 +129,22 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-1": ["edge-cache-012.steering-test-1.thecdn.example.com"],
-        "steering-target-2": ["edge-cache-012.steering-target-2.thecdn.example.com"],
+        "steering-test-1": [
+          "edge-cache-012.steering-test-1.thecdn.example.com"
+        ],
+        "steering-target-2": [
+          "edge-cache-012.steering-target-2.thecdn.example.com"
+        ],
         "steering-target-1": [
           "edge-cache-012.steering-target-1.thecdn.example.com",
           "edge-cache-012.steering-target-1-b-b.thecdn.example.com"
         ],
-        "http-only-test": ["edge-cache-012.http-only-test.thecdn.example.com"],
-        "https-additional": ["edge-cache-012.http-only-test.thecdn.example.com"]
+        "http-only-test": [
+          "edge-cache-012.http-only-test.thecdn.example.com"
+        ],
+        "https-additional": [
+          "edge-cache-012.http-only-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-020": {
@@ -135,9 +161,15 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-2": ["edge-cache-020.steering-test-2.thecdn.example.com"],
-        "steering-target-4": ["edge-cache-020.steering-target-4.thecdn.example.com"],
-        "steering-target-3": ["edge-cache-020.steering-target-3.thecdn.example.com"]
+        "steering-test-2": [
+          "edge-cache-020.steering-test-2.thecdn.example.com"
+        ],
+        "steering-target-4": [
+          "edge-cache-020.steering-target-4.thecdn.example.com"
+        ],
+        "steering-target-3": [
+          "edge-cache-020.steering-target-3.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-021": {
@@ -154,9 +186,15 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-2": ["edge-cache-021.steering-test-2.thecdn.example.com"],
-        "steering-target-4": ["edge-cache-021.steering-target-4.thecdn.example.com"],
-        "steering-target-3": ["edge-cache-021.steering-target-3.thecdn.example.com"]
+        "steering-test-2": [
+          "edge-cache-021.steering-test-2.thecdn.example.com"
+        ],
+        "steering-target-4": [
+          "edge-cache-021.steering-target-4.thecdn.example.com"
+        ],
+        "steering-target-3": [
+          "edge-cache-021.steering-target-3.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-022": {
@@ -173,9 +211,15 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-2": ["edge-cache-022.steering-test-2.thecdn.example.com"],
-        "steering-target-4": ["edge-cache-022.steering-target-4.thecdn.example.com"],
-        "steering-target-3": ["edge-cache-022.steering-target-3.thecdn.example.com"]
+        "steering-test-2": [
+          "edge-cache-022.steering-test-2.thecdn.example.com"
+        ],
+        "steering-target-4": [
+          "edge-cache-022.steering-target-4.thecdn.example.com"
+        ],
+        "steering-target-3": [
+          "edge-cache-022.steering-target-3.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-030": {
@@ -192,15 +236,25 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-1": ["edge-cache-030.steering-test-1.thecdn.example.com"],
-        "steering-target-2": ["edge-cache-030.steering-target-2.thecdn.example.com"],
-        "steering-test-2": ["edge-cache-030.steering-test-2.thecdn.example.com"],
+        "steering-test-1": [
+          "edge-cache-030.steering-test-1.thecdn.example.com"
+        ],
+        "steering-target-2": [
+          "edge-cache-030.steering-target-2.thecdn.example.com"
+        ],
+        "steering-test-2": [
+          "edge-cache-030.steering-test-2.thecdn.example.com"
+        ],
         "steering-target-1": [
           "edge-cache-030.steering-target-1.thecdn.example.com",
           "edge-cache-030.steering-target-1-b-b.thecdn.example.com"
         ],
-        "steering-target-4": ["edge-cache-030.steering-target-4.thecdn.example.com"],
-        "steering-target-3": ["edge-cache-030.steering-target-3.thecdn.example.com"]
+        "steering-target-4": [
+          "edge-cache-030.steering-target-4.thecdn.example.com"
+        ],
+        "steering-target-3": [
+          "edge-cache-030.steering-target-3.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-031": {
@@ -217,15 +271,25 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-1": ["edge-cache-031.steering-test-1.thecdn.example.com"],
-        "steering-target-2": ["edge-cache-031.steering-target-2.thecdn.example.com"],
-        "steering-test-2": ["edge-cache-031.steering-test-2.thecdn.example.com"],
+        "steering-test-1": [
+          "edge-cache-031.steering-test-1.thecdn.example.com"
+        ],
+        "steering-target-2": [
+          "edge-cache-031.steering-target-2.thecdn.example.com"
+        ],
+        "steering-test-2": [
+          "edge-cache-031.steering-test-2.thecdn.example.com"
+        ],
         "steering-target-1": [
           "edge-cache-031.steering-target-1.thecdn.example.com",
           "edge-cache-031.steering-target-1-b-b.thecdn.example.com"
         ],
-        "steering-target-4": ["edge-cache-031.steering-target-4.thecdn.example.com"],
-        "steering-target-3": ["edge-cache-031.steering-target-3.thecdn.example.com"]
+        "steering-target-4": [
+          "edge-cache-031.steering-target-4.thecdn.example.com"
+        ],
+        "steering-target-3": [
+          "edge-cache-031.steering-target-3.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-032": {
@@ -242,15 +306,25 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-1": ["edge-cache-032.steering-test-1.thecdn.example.com"],
-        "steering-target-2": ["edge-cache-032.steering-target-2.thecdn.example.com"],
-        "steering-test-2": ["edge-cache-032.steering-test-2.thecdn.example.com"],
+        "steering-test-1": [
+          "edge-cache-032.steering-test-1.thecdn.example.com"
+        ],
+        "steering-target-2": [
+          "edge-cache-032.steering-target-2.thecdn.example.com"
+        ],
+        "steering-test-2": [
+          "edge-cache-032.steering-test-2.thecdn.example.com"
+        ],
         "steering-target-1": [
           "edge-cache-032.steering-target-1.thecdn.example.com",
           "edge-cache-032.steering-target-1-b-b.thecdn.example.com"
         ],
-        "steering-target-4": ["edge-cache-032.steering-target-4.thecdn.example.com"],
-        "steering-target-3": ["edge-cache-032.steering-target-3.thecdn.example.com"]
+        "steering-target-4": [
+          "edge-cache-032.steering-target-4.thecdn.example.com"
+        ],
+        "steering-target-3": [
+          "edge-cache-032.steering-target-3.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-040": {
@@ -267,9 +341,15 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-1": ["edge-cache-040.steering-test-1.thecdn.example.com"],
-        "steering-target-2": ["edge-cache-040.steering-target-2.thecdn.example.com"],
-        "steering-test-2": ["edge-cache-040.steering-test-2.thecdn.example.com"],
+        "steering-test-1": [
+          "edge-cache-040.steering-test-1.thecdn.example.com"
+        ],
+        "steering-target-2": [
+          "edge-cache-040.steering-target-2.thecdn.example.com"
+        ],
+        "steering-test-2": [
+          "edge-cache-040.steering-test-2.thecdn.example.com"
+        ],
         "federation-test": [
           "edge.federation-test.thecdn.example.com",
           "edge.dee-ehs-06.thecdn.example.com"
@@ -278,8 +358,12 @@
           "edge-cache-040.steering-target-1.thecdn.example.com",
           "edge-cache-040.steering-target-1-b-b.thecdn.example.com"
         ],
-        "steering-target-4": ["edge-cache-040.steering-target-4.thecdn.example.com"],
-        "steering-target-3": ["edge-cache-040.steering-target-3.thecdn.example.com"]
+        "steering-target-4": [
+          "edge-cache-040.steering-target-4.thecdn.example.com"
+        ],
+        "steering-target-3": [
+          "edge-cache-040.steering-target-3.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-041": {
@@ -296,9 +380,15 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-1": ["edge-cache-041.steering-test-1.thecdn.example.com"],
-        "steering-target-2": ["edge-cache-041.steering-target-2.thecdn.example.com"],
-        "steering-test-2": ["edge-cache-041.steering-test-2.thecdn.example.com"],
+        "steering-test-1": [
+          "edge-cache-041.steering-test-1.thecdn.example.com"
+        ],
+        "steering-target-2": [
+          "edge-cache-041.steering-target-2.thecdn.example.com"
+        ],
+        "steering-test-2": [
+          "edge-cache-041.steering-test-2.thecdn.example.com"
+        ],
         "federation-test": [
           "edge.federation-test.thecdn.example.com",
           "edge.dee-ehs-06.thecdn.example.com"
@@ -307,8 +397,12 @@
           "edge-cache-041.steering-target-1.thecdn.example.com",
           "edge-cache-041.steering-target-1-b-b.thecdn.example.com"
         ],
-        "steering-target-4": ["edge-cache-041.steering-target-4.thecdn.example.com"],
-        "steering-target-3": ["edge-cache-041.steering-target-3.thecdn.example.com"]
+        "steering-target-4": [
+          "edge-cache-041.steering-target-4.thecdn.example.com"
+        ],
+        "steering-target-3": [
+          "edge-cache-041.steering-target-3.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-042": {
@@ -325,9 +419,15 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "steering-test-1": ["edge-cache-042.steering-test-1.thecdn.example.com"],
-        "steering-target-2": ["edge-cache-042.steering-target-2.thecdn.example.com"],
-        "steering-test-2": ["edge-cache-042.steering-test-2.thecdn.example.com"],
+        "steering-test-1": [
+          "edge-cache-042.steering-test-1.thecdn.example.com"
+        ],
+        "steering-target-2": [
+          "edge-cache-042.steering-target-2.thecdn.example.com"
+        ],
+        "steering-test-2": [
+          "edge-cache-042.steering-test-2.thecdn.example.com"
+        ],
         "federation-test": [
           "edge.federation-test.thecdn.example.com",
           "edge.dee-ehs-06.thecdn.example.com"
@@ -336,8 +436,12 @@
           "edge-cache-042.steering-target-1.thecdn.example.com",
           "edge-cache-042.steering-target-1-b-b.thecdn.example.com"
         ],
-        "steering-target-4": ["edge-cache-042.steering-target-4.thecdn.example.com"],
-        "steering-target-3": ["edge-cache-042.steering-target-3.thecdn.example.com"]
+        "steering-target-4": [
+          "edge-cache-042.steering-target-4.thecdn.example.com"
+        ],
+        "steering-target-3": [
+          "edge-cache-042.steering-target-3.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-070": {
@@ -354,7 +458,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "http-to-https-test": ["edge-cache-070.http-to-https-test.thecdn.example.com"]
+        "http-to-https-test": [
+          "edge-cache-070.http-to-https-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-071": {
@@ -371,7 +477,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "http-to-https-test": ["edge-cache-071.http-to-https-test.thecdn.example.com"]
+        "http-to-https-test": [
+          "edge-cache-071.http-to-https-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-072": {
@@ -388,7 +496,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "http-to-https-test": [ "edge-cache-072.http-to-https-test.thecdn.example.com"]
+        "http-to-https-test": [
+          "edge-cache-072.http-to-https-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-080": {
@@ -405,7 +515,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "http-and-https-test": ["edge-cache-080.http-and-https-test.thecdn.example.com"]
+        "http-and-https-test": [
+          "edge-cache-080.http-and-https-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-081": {
@@ -422,7 +534,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "http-and-https-test": ["edge-cache-081.http-and-https-test.thecdn.example.com"]
+        "http-and-https-test": [
+          "edge-cache-081.http-and-https-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-082": {
@@ -439,7 +553,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "http-and-https-test": [ "edge-cache-082.http-and-https-test.thecdn.example.com"]
+        "http-and-https-test": [
+          "edge-cache-082.http-and-https-test.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-090": {
@@ -456,7 +572,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "https-nocert": ["edge-cache-090.https-nocert.thecdn.example.com"]
+        "https-nocert": [
+          "edge-cache-090.https-nocert.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-091": {
@@ -473,7 +591,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "https-nocert": ["edge-cache-091.https-nocert.thecdn.example.com"]
+        "https-nocert": [
+          "edge-cache-091.https-nocert.thecdn.example.com"
+        ]
       }
     },
     "edge-cache-092": {
@@ -490,7 +610,9 @@
       "hashCount": 1000,
       "interfaceName": "bond0",
       "deliveryServices": {
-        "https-nocert": ["edge-cache-092.https-nocert.thecdn.example.com"]
+        "https-nocert": [
+          "edge-cache-092.https-nocert.thecdn.example.com"
+        ]
       }
     }
   },
@@ -540,11 +662,13 @@
     "https-only-test": {
       "sslEnabled": "true",
       "protocol": {
-        "acceptHttp" : "false",
-        "acceptHttps" : "true",
-        "redirectToHttps" : "false"
+        "acceptHttp": "false",
+        "acceptHttps": "true",
+        "redirectToHttps": "false"
       },
-      "domains": ["https-only-test.thecdn.example.com"],
+      "domains": [
+        "https-only-test.thecdn.example.com"
+      ],
       "missLocation": {
         "long": "-87.627778",
         "lat": "41.881944"
@@ -564,13 +688,17 @@
       "coverageZoneOnly": "false",
       "routingName": "tr",
       "regionalGeoBlocking": "false",
-      "matchsets": [{
-        "protocol": "HTTP",
-        "matchlist": [{
-          "regex": ".*\\.https-only-test\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "HTTP",
+          "matchlist": [
+            {
+              "regex": ".*\\.https-only-test\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "soa": {
         "expire": "604800",
         "minimum": "30",
@@ -583,12 +711,16 @@
     "steering-test-1": {
       "sslEnabled": "false",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "false",
-        "redirectToHttps" : "false"
+        "acceptHttp": "true",
+        "acceptHttps": "false",
+        "redirectToHttps": "false"
       },
-      "requestHeaders": ["X-MoneyTrace"],
-      "domains": ["steering-test-1.thecdn.example.com"],
+      "requestHeaders": [
+        "X-MoneyTrace"
+      ],
+      "domains": [
+        "steering-test-1.thecdn.example.com"
+      ],
       "missLocation": {
         "long": "-87.627778",
         "lat": "41.881944"
@@ -601,10 +733,12 @@
       },
       "ttl": "3600",
       "ip6RoutingEnabled": "true",
-      "bypassDestination": {"HTTP": {
-        "port": "80",
-        "fqdn": "steering-test-1.overflowcdn.net"
-      }},
+      "bypassDestination": {
+        "HTTP": {
+          "port": "80",
+          "fqdn": "steering-test-1.overflowcdn.net"
+        }
+      },
       "dispersion": {
         "limit": 1,
         "shuffled": "true"
@@ -612,13 +746,17 @@
       "coverageZoneOnly": "false",
       "routingName": "tr",
       "regionalGeoBlocking": "false",
-      "matchsets": [{
-        "protocol": "HTTP",
-        "matchlist": [{
-          "regex": ".*\\.steering-test-1\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "HTTP",
+          "matchlist": [
+            {
+              "regex": ".*\\.steering-test-1\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "soa": {
         "expire": "604800",
         "minimum": "30",
@@ -645,28 +783,36 @@
     "steering-target-2": {
       "sslEnabled": "false",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "false",
-        "redirectToHttps" : "false"
+        "acceptHttp": "true",
+        "acceptHttps": "false",
+        "redirectToHttps": "false"
       },
-      "bypassDestination": {"HTTP": {
-        "port": "80",
-        "fqdn": "steering-target-2.overflowcdn.net"
-      }},
+      "bypassDestination": {
+        "HTTP": {
+          "port": "80",
+          "fqdn": "steering-target-2.overflowcdn.net"
+        }
+      },
       "dispersion": {
         "limit": 1,
         "shuffled": "true"
       },
-      "domains": ["steering-target-2.thecdn.example.com"],
+      "domains": [
+        "steering-target-2.thecdn.example.com"
+      ],
       "coverageZoneOnly": "false",
       "routingName": "tr",
-      "matchsets": [{
-        "protocol": "HTTP",
-        "matchlist": [{
-          "regex": ".*\\.steering-target-2\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "HTTP",
+          "matchlist": [
+            {
+              "regex": ".*\\.steering-target-2\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "regionalGeoBlocking": "false",
       "ttls": {
         "AAAA": "3600",
@@ -692,24 +838,30 @@
     "steering-test-2": {
       "sslEnabled": "false",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "false",
-        "redirectToHttps" : "false"
+        "acceptHttp": "true",
+        "acceptHttps": "false",
+        "redirectToHttps": "false"
       },
       "dispersion": {
         "limit": 2,
         "shuffled": "true"
       },
-      "domains": ["test.thecdn.example.com"],
+      "domains": [
+        "test.thecdn.example.com"
+      ],
       "coverageZoneOnly": "false",
       "routingName": "tr",
-      "matchsets": [{
-        "protocol": "HTTP",
-        "matchlist": [{
-          "regex": ".*\\.test\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "HTTP",
+          "matchlist": [
+            {
+              "regex": ".*\\.test\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "regionalGeoBlocking": "false",
       "ttls": {
         "AAAA": "3600",
@@ -739,28 +891,38 @@
     "federation-test": {
       "sslEnabled": "false",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "false",
-        "redirectToHttps" : "false"
+        "acceptHttp": "true",
+        "acceptHttps": "false",
+        "redirectToHttps": "false"
       },
-      "bypassDestination": {"DNS": {"ttl": "30"}},
-      "domains": ["federation-test.thecdn.example.com"],
+      "bypassDestination": {
+        "DNS": {
+          "ttl": "30"
+        }
+      },
+      "domains": [
+        "federation-test.thecdn.example.com"
+      ],
       "coverageZoneOnly": "false",
       "routingName": "edge",
       "matchsets": [
         {
           "protocol": "DNS",
-          "matchlist": [{
-            "regex": ".*\\.federation-test\\..*",
-            "match-type": "HOST"
-          }]
+          "matchlist": [
+            {
+              "regex": ".*\\.federation-test\\..*",
+              "match-type": "HOST"
+            }
+          ]
         },
         {
           "protocol": "DNS",
-          "matchlist": [{
-            "regex": ".*\\.dee-ehs-06\\..*",
-            "match-type": "HOST"
-          }]
+          "matchlist": [
+            {
+              "regex": ".*\\.dee-ehs-06\\..*",
+              "match-type": "HOST"
+            }
+          ]
         }
       ],
       "ttls": {
@@ -782,21 +944,23 @@
       },
       "geolocationProvider": "maxmindGeolocationService",
       "ttl": "30",
-      "staticDnsEntries": [{
-        "name": "mm",
-        "value": "foo.bar.baz.net.",
-        "type": "CNAME",
-        "ttl": "30"
-      }],
+      "staticDnsEntries": [
+        {
+          "name": "mm",
+          "value": "foo.bar.baz.net.",
+          "type": "CNAME",
+          "ttl": "30"
+        }
+      ],
       "maxDnsIpsForLocation": "0",
       "ip6RoutingEnabled": "true"
     },
     "steering-target-1": {
       "sslEnabled": "false",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "false",
-        "redirectToHttps" : "false"
+        "acceptHttp": "true",
+        "acceptHttps": "false",
+        "redirectToHttps": "false"
       },
       "requestHeaders": [
         "User-Agent",
@@ -807,23 +971,29 @@
         "limit": 1,
         "shuffled": "true"
       },
-      "domains": ["steering-target-1.thecdn.example.com"],
+      "domains": [
+        "steering-target-1.thecdn.example.com"
+      ],
       "coverageZoneOnly": "false",
       "routingName": "tr",
       "matchsets": [
         {
           "protocol": "HTTP",
-          "matchlist": [{
-            "regex": ".*\\.steering-target-1\\..*",
-            "match-type": "HOST"
-          }]
+          "matchlist": [
+            {
+              "regex": ".*\\.steering-target-1\\..*",
+              "match-type": "HOST"
+            }
+          ]
         },
         {
           "protocol": "HTTP",
-          "matchlist": [{
-            "regex": ".*\\.steering-target-1-b-b\\..*",
-            "match-type": "HOST"
-          }]
+          "matchlist": [
+            {
+              "regex": ".*\\.steering-target-1-b-b\\..*",
+              "match-type": "HOST"
+            }
+          ]
         }
       ],
       "regionalGeoBlocking": "false",
@@ -851,28 +1021,36 @@
     "steering-target-4": {
       "sslEnabled": "false",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "false",
-        "redirectToHttps" : "false"
+        "acceptHttp": "true",
+        "acceptHttps": "false",
+        "redirectToHttps": "false"
       },
-      "bypassDestination": {"HTTP": {
-        "port": "80",
-        "fqdn": "steering-target-4.overflowcdn.net"
-      }},
+      "bypassDestination": {
+        "HTTP": {
+          "port": "80",
+          "fqdn": "steering-target-4.overflowcdn.net"
+        }
+      },
       "dispersion": {
         "limit": 1,
         "shuffled": "true"
       },
-      "domains": ["steering-target-4.thecdn.example.com"],
+      "domains": [
+        "steering-target-4.thecdn.example.com"
+      ],
       "coverageZoneOnly": "false",
       "routingName": "tr",
-      "matchsets": [{
-        "protocol": "HTTP",
-        "matchlist": [{
-          "regex": ".*\\.steering-target-4\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "HTTP",
+          "matchlist": [
+            {
+              "regex": ".*\\.steering-target-4\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "regionalGeoBlocking": "false",
       "ttls": {
         "AAAA": "3600",
@@ -898,28 +1076,36 @@
     "steering-target-3": {
       "sslEnabled": "false",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "false",
-        "redirectToHttps" : "false"
+        "acceptHttp": "true",
+        "acceptHttps": "false",
+        "redirectToHttps": "false"
       },
-      "bypassDestination": {"HTTP": {
-        "port": "80",
-        "fqdn": "steering-target-3.overflowcdn.net"
-      }},
+      "bypassDestination": {
+        "HTTP": {
+          "port": "80",
+          "fqdn": "steering-target-3.overflowcdn.net"
+        }
+      },
       "dispersion": {
         "limit": 1,
         "shuffled": "true"
       },
-      "domains": ["steering-target-3.thecdn.example.com"],
+      "domains": [
+        "steering-target-3.thecdn.example.com"
+      ],
       "coverageZoneOnly": "false",
       "routingName": "tr",
-      "matchsets": [{
-        "protocol": "HTTP",
-        "matchlist": [{
-          "regex": ".*\\.steering-target-3\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "HTTP",
+          "matchlist": [
+            {
+              "regex": ".*\\.steering-target-3\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "regionalGeoBlocking": "false",
       "ttls": {
         "AAAA": "3600",
@@ -927,7 +1113,11 @@
         "A": "3600",
         "NS": "3600"
       },
-      "geoEnabled": [{"countryCode": "US"}],
+      "geoEnabled": [
+        {
+          "countryCode": "US"
+        }
+      ],
       "missLocation": {
         "long": "-87.627778",
         "lat": "41.881944"
@@ -946,11 +1136,13 @@
     "https-nocert": {
       "sslEnabled": "true",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "true",
-        "redirectToHttps" : "false"
+        "acceptHttp": "true",
+        "acceptHttps": "true",
+        "redirectToHttps": "false"
       },
-      "domains": ["https-nocert.thecdn.example.com"],
+      "domains": [
+        "https-nocert.thecdn.example.com"
+      ],
       "missLocation": {
         "long": "-87.627778",
         "lat": "41.881944"
@@ -970,13 +1162,17 @@
       "coverageZoneOnly": "false",
       "routingName": "tr",
       "regionalGeoBlocking": "false",
-      "matchsets": [{
-        "protocol": "HTTP",
-        "matchlist": [{
-          "regex": ".*\\.https-nocert\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "HTTP",
+          "matchlist": [
+            {
+              "regex": ".*\\.https-nocert\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "soa": {
         "expire": "604800",
         "minimum": "30",
@@ -989,11 +1185,13 @@
     "https-additional": {
       "sslEnabled": "true",
       "protocol": {
-        "acceptHttp" : "false",
-        "acceptHttps" : "true",
-        "redirectToHttps" : "false"
+        "acceptHttp": "false",
+        "acceptHttps": "true",
+        "redirectToHttps": "false"
       },
-      "domains": ["https-additional.thecdn.example.com"],
+      "domains": [
+        "https-additional.thecdn.example.com"
+      ],
       "missLocation": {
         "long": "-87.627778",
         "lat": "41.881944"
@@ -1013,13 +1211,17 @@
       "coverageZoneOnly": "false",
       "routingName": "tr",
       "regionalGeoBlocking": "false",
-      "matchsets": [{
-        "protocol": "HTTP",
-        "matchlist": [{
-          "regex": ".*\\.https-additional\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "HTTP",
+          "matchlist": [
+            {
+              "regex": ".*\\.https-additional\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "soa": {
         "expire": "604800",
         "minimum": "30",
@@ -1029,15 +1231,16 @@
       },
       "geolocationProvider": "maxmindGeolocationService"
     },
-
     "http-and-https-test": {
       "sslEnabled": "true",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "true",
-        "redirectToHttps" : "false"
+        "acceptHttp": "true",
+        "acceptHttps": "true",
+        "redirectToHttps": "false"
       },
-      "domains": ["http-and-https-test.thecdn.example.com"],
+      "domains": [
+        "http-and-https-test.thecdn.example.com"
+      ],
       "missLocation": {
         "long": "-87.627778",
         "lat": "41.881944"
@@ -1057,13 +1260,17 @@
       "coverageZoneOnly": "false",
       "routingName": "tr",
       "regionalGeoBlocking": "false",
-      "matchsets": [{
-        "protocol": "HTTP",
-        "matchlist": [{
-          "regex": ".*\\.http-and-https-test\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "HTTP",
+          "matchlist": [
+            {
+              "regex": ".*\\.http-and-https-test\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "soa": {
         "expire": "604800",
         "minimum": "30",
@@ -1076,11 +1283,13 @@
     "http-to-https-test": {
       "sslEnabled": "true",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "true",
-        "redirectToHttps" : "true"
+        "acceptHttp": "true",
+        "acceptHttps": "true",
+        "redirectToHttps": "true"
       },
-      "domains": ["http-to-https-test.thecdn.example.com"],
+      "domains": [
+        "http-to-https-test.thecdn.example.com"
+      ],
       "missLocation": {
         "long": "-87.627778",
         "lat": "41.881944"
@@ -1100,13 +1309,17 @@
       "coverageZoneOnly": "false",
       "routingName": "tr",
       "regionalGeoBlocking": "false",
-      "matchsets": [{
-        "protocol": "HTTP",
-        "matchlist": [{
-          "regex": ".*\\.http-to-https-test\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "HTTP",
+          "matchlist": [
+            {
+              "regex": ".*\\.http-to-https-test\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "soa": {
         "expire": "604800",
         "minimum": "30",
@@ -1119,11 +1332,13 @@
     "http-only-test": {
       "sslEnabled": "true",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "false",
-        "redirectToHttps" : "false"
+        "acceptHttp": "true",
+        "acceptHttps": "false",
+        "redirectToHttps": "false"
       },
-      "domains": ["http-only-test.thecdn.example.com"],
+      "domains": [
+        "http-only-test.thecdn.example.com"
+      ],
       "missLocation": {
         "long": "-87.627778",
         "lat": "41.881944"
@@ -1143,13 +1358,17 @@
       "coverageZoneOnly": "false",
       "routingName": "tr",
       "regionalGeoBlocking": "false",
-      "matchsets": [{
-        "protocol": "HTTP",
-        "matchlist": [{
-          "regex": ".*\\.http-only-test\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "HTTP",
+          "matchlist": [
+            {
+              "regex": ".*\\.http-only-test\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "soa": {
         "expire": "604800",
         "minimum": "30",
@@ -1162,11 +1381,13 @@
     "https-dns-test": {
       "sslEnabled": "true",
       "protocol": {
-        "acceptHttp" : "true",
-        "acceptHttps" : "true",
-        "redirectToHttps" : "false"
+        "acceptHttp": "true",
+        "acceptHttps": "true",
+        "redirectToHttps": "false"
       },
-      "domains": ["https-dns-test.thecdn.example.com"],
+      "domains": [
+        "https-dns-test.thecdn.example.com"
+      ],
       "missLocation": {
         "long": "-87.627778",
         "lat": "41.881944"
@@ -1186,13 +1407,17 @@
       "coverageZoneOnly": "false",
       "routingName": "edge",
       "regionalGeoBlocking": "false",
-      "matchsets": [{
-        "protocol": "DNS",
-        "matchlist": [{
-          "regex": ".*\\.http-dns-test\\..*",
-          "match-type": "HOST"
-        }]
-      }],
+      "matchsets": [
+        {
+          "protocol": "DNS",
+          "matchlist": [
+            {
+              "regex": ".*\\.http-dns-test\\..*",
+              "match-type": "HOST"
+            }
+          ]
+        }
+      ],
       "soa": {
         "expire": "604800",
         "minimum": "30",

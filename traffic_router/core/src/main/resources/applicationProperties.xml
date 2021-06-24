@@ -14,24 +14,24 @@
 	limitations under the License.
  -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
-	default-init-method="init" default-destroy-method="destroy">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+       default-init-method="init" default-destroy-method="destroy">
 
-	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="placeholderPrefix" value="$[" />
-		<property name="placeholderSuffix" value="]" />
-		<property name="ignoreResourceNotFound" value="true"/>
-		<property name="ignoreUnresolvablePlaceholders" value="true" />
-		<property name="locations">
-			<list>
-				<value>file:${deploy.dir:/opt/traffic_router}/conf/cache.properties</value>
-				<value>file:${deploy.dir:/opt/traffic_router}/conf/traffic_monitor.properties</value>
-				<value>file:${deploy.dir:/opt/traffic_router}/conf/traffic_ops.properties</value>
-				<value>file:${deploy.dir:/opt/traffic_router}/conf/dns.properties</value>
-				<value>file:${deploy.dir:/opt/traffic_router}/conf/http.properties</value>
-			</list>
-		</property>
-	</bean>
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="placeholderPrefix" value="$["/>
+        <property name="placeholderSuffix" value="]"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="locations">
+            <list>
+                <value>file:${deploy.dir:/opt/traffic_router}/conf/cache.properties</value>
+                <value>file:${deploy.dir:/opt/traffic_router}/conf/traffic_monitor.properties</value>
+                <value>file:${deploy.dir:/opt/traffic_router}/conf/traffic_ops.properties</value>
+                <value>file:${deploy.dir:/opt/traffic_router}/conf/dns.properties</value>
+                <value>file:${deploy.dir:/opt/traffic_router}/conf/http.properties</value>
+            </list>
+        </property>
+    </bean>
 
 </beans>

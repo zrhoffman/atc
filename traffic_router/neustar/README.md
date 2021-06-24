@@ -19,17 +19,18 @@
 
 ## Neustar Geolocation Provider
 
-This module provides a bean "neustarGeolocationService" that implements the GeolocationService interface defined
-in the geolocation maven submodule. You can configure delivery services in traffic ops to use this module.
+This module provides a bean "neustarGeolocationService" that implements the GeolocationService interface defined in the
+geolocation maven submodule. You can configure delivery services in traffic ops to use this module.
 
-The default build does not include this into the Traffic Router war. You must add the 'neustar' profile id to your
-maven build command. This module depends on the Neustar bff-reader library. See below for more details.
+The default build does not include this into the Traffic Router war. You must add the 'neustar' profile id to your maven
+build command. This module depends on the Neustar bff-reader library. See below for more details.
 
 ### Dependencies
 
 This module depends on
- * Neustar Database Reader library bff-reader
- * Neustar Database files
+
+* Neustar Database Reader library bff-reader
+* Neustar Database files
 
 ## Getting the Neustar Database Reader library
 
