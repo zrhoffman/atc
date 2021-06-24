@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.comcast.cdn.traffic_control.traffic_router.shared
 
-package com.comcast.cdn.traffic_control.traffic_router.shared;
+interface DeliveryServiceCertificatesMBean {
+    fun getCertificateDataList(): MutableList<CertificateData?>?
+    fun setCertificateDataList(certificateDataList: MutableList<CertificateData?>?)
+    fun setCertificateDataListString(certificateDataListString: String?)
 
-import java.util.List;
-
-public interface DeliveryServiceCertificatesMBean {
-	String OBJECT_NAME = "traffic-router:name=DeliveryServiceCertificates";
-	List<CertificateData> getCertificateDataList();
-	void setCertificateDataList(List<CertificateData> certificateDataList);
-	void setCertificateDataListString(String certificateDataListString);
+    companion object {
+        const val OBJECT_NAME: String = "traffic-router:name=DeliveryServiceCertificates"
+    }
 }
