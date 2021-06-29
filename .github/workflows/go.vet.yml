@@ -40,7 +40,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@master
-    - name: go-version
+    - name: Print Go version
+      id: go-version
       run: echo "::set-output name=value::$(cat GO_VERSION)"
     - uses: actions/setup-go@v2
       with:

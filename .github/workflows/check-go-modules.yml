@@ -44,8 +44,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
-      - name: Download Go
-        run: .github/actions/check-go-modules/entrypoint.sh download_go
+      - name: Print Go version
+        id: go-version
+        run: echo "::set-output name=value::$(cat GO_VERSION)"
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ steps.go-version.outputs.value }} # The Go version to download (if necessary) and use.
       - name: Vendor dependencies
         id: vendor-dependencies
         run: .github/actions/check-go-modules/entrypoint.sh vendor_dependencies
