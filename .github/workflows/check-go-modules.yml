@@ -20,7 +20,7 @@ name: Check Go modules
 on:
   push:
     paths:
-      - .github/check-go-modules/**
+      - .github/actions/check-go-modules/**
       - .github/workflows/check-go-modules.yml
       - go.mod
       - go.sum
@@ -29,7 +29,7 @@ on:
   create:
   pull_request:
     paths:
-      - .github/check-go-modules/**
+      - .github/actions/check-go-modules/**
       - .github/workflows/check-go-modules.yml
       - go.mod
       - go.sum
