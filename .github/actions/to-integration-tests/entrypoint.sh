@@ -60,11 +60,11 @@ start_traffic_vault() {
 	#	exit 1;
 	#fi
 
-	while ! $pg_isready -h "$DB_SERVER" -p "$DB_PORT" -d "$DB_NAME"; do
+	#while ! $pg_isready -h "$DB_SERVER" -p "$DB_PORT" -d "$DB_NAME"; do
 
-		echo "waiting for db on $DB_SERVER:$DB_PORT";
-		sleep 3;
-	done
+	#	echo "waiting for db on $DB_SERVER:$DB_PORT";
+	#	sleep 3;
+	#done
 
 	cd /opt/traffic_ops/app;
 
