@@ -51,7 +51,7 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
-	sudo apt-get -y install postgresql13
+	sudo apt-get -y install postgresql
 
 	sleep 30
 
