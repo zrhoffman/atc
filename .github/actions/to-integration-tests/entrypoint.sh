@@ -51,7 +51,7 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
-	rpm -ql postgresql13
+	dnf -y install "https://download.postgresql.org/pub/repos/yum/reporpms/EL-${RHEL_VERSION%%.*}-x86_64/pgdg-redhat-repo-latest.noarch.rpm";
 	#pg_isready=$(rpm -ql postgresql13 | grep bin/pg_isready);
 	#if [[ ! -x $pg_isready ]]; then
 	#	echo "Can't find pg_ready in postgresql13" >&2;
