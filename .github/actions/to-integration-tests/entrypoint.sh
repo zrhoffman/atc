@@ -51,24 +51,7 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
-	dnf -y install "https://download.postgresql.org/pub/repos/yum/reporpms/EL-${RHEL_VERSION%%.*}-x86_64/pgdg-redhat-repo-latest.noarch.rpm";
-	#pg_isready=$(rpm -ql postgresql13 | grep bin/pg_isready);
-	#if [[ ! -x $pg_isready ]]; then
-	#	echo "Can't find pg_ready in postgresql13" >&2;
-	#	echo "PATH: $PATH" >&2;
-	#	find / -name "*postgresql*";
-	#	exit 1;
-	#fi
-
-	#while ! $pg_isready -h "$DB_SERVER" -p "$DB_PORT" -d "$DB_NAME"; do
-
-	#	echo "waiting for db on $DB_SERVER:$DB_PORT";
-	#	sleep 3;
-	#done
-
-	cd /opt/traffic_ops/app;
-
-	/adduser.pl "$TO_ADMIN_USER" "$TO_ADMIN_PASSWORD" "admin" "root" | psql -v ON_ERROR_STOP=1 -U "$DB_USER" -h "$DB_SERVER" -d "$DB_NAME";
+	sudo apt-get -y install postgresql
 
 }
 truncate -s0 "${ciab_dir}/traffic.vault.logs";
