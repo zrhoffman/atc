@@ -51,6 +51,10 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
+	sudo apt-get -y install postgresql13
+
+	sleep 30
+
 }
 truncate -s0 "${ciab_dir}/traffic.vault.logs";
 start_traffic_vault & disown
