@@ -51,6 +51,16 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
+	pg_isready=/usr/pgsql-13/bin/pg_isready
+	DB_PORT=5432
+	DB_SERVER=db
+	DB_NAME=traffic_ops
+
+	while ! $pg_isready -h "$DB_SERVER" -p "$DB_PORT" -d "$DB_NAME"; do
+		echo "waiting for db on $DB_SERVER:$DB_PORT";
+		sleep 3;
+	done
+
 }
 truncate -s0 "${ciab_dir}/traffic.vault.logs";
 start_traffic_vault & disown
@@ -68,10 +78,7 @@ if [[ ! -e "$repo_dir" ]]; then
 fi
 
 cd "${repo_dir}/traffic_ops/traffic_ops_golang"
-
-if  [[ ! -d "${GITHUB_WORKSPACE}/vendor/golang.org" ]]; then
-	go mod vendor
-fi
+go mod vendor -v
 go build .
 
 echo "
