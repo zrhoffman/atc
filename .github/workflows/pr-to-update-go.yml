@@ -39,6 +39,12 @@ jobs:
       - name: Install dependencies
         if: ${{ steps.checkout.outcome == 'success' }}
         run: pip install .github/actions/pr-to-update-go
+      - name: PR to Update Go
+        if: ${{ steps.checkout.outcome == 'success' }}
+        run: python3 -m pr_to_update_go --update_version_only=true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GO_VERSION_FILE: GO_VERSION
       - name: Check Go Version
         run: echo "::set-output name=value::$(cat GO_VERSION)"
         id: go-version
