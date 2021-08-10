@@ -53,6 +53,8 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: ${{ steps.go-version.outputs.value }}
+      - name: What Go we got
+        run: go env && go version && command -V go
       - name: PR to Update Go
         if: ${{ steps.checkout.outcome == 'success' }}
         run: python3 -m pr_to_update_go
