@@ -51,7 +51,7 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
-	source ${GITHUB_WORKSPACE}/infrastructure/cdn-in-a-box/traffic_ops/variables.env
+	source ${CIAB}/traffic_ops/variables.env
 
 	echo ${TV_DB_NAME}
 	echo ${TV_DB_PORT}
