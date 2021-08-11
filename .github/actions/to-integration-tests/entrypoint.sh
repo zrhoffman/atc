@@ -51,7 +51,7 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
-	${GITHUB_WORKSPACE}/infrastructure/cdn-in-a-box/traffic_ops/docker-entrypoint.sh postgres &
+	${GITHUB_WORKSPACE}/grove/docker/docker-entrypoint.sh postgres &
 
 }
 truncate -s0 "${ciab_dir}/traffic.vault.logs";
