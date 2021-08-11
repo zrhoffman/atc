@@ -51,16 +51,18 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
-	DB_PORT=5432
-	DB_SERVER=db
-	DB_NAME=traffic_ops
+	#DB_PORT=5432
+	#DB_SERVER=db
+	#DB_NAME=traffic_ops
 
-	$pg_isready=$(rpm -ql postgresql13 | grep bin/pg_isready);
+	docker-entrypoint.sh postgres &
 
-	while ! $pg_isready -h "$DB_SERVER" -p "$DB_PORT" -d "$DB_NAME"; do
-		echo "waiting for db on $DB_SERVER:$DB_PORT";
-		sleep 3;
-	done
+	#$pg_isready=$(rpm -ql postgresql13 | grep bin/pg_isready);
+
+	#while ! $pg_isready -h "$DB_SERVER" -p "$DB_PORT" -d "$DB_NAME"; do
+	#	echo "waiting for db on $DB_SERVER:$DB_PORT";
+	#	sleep 3;
+	#done
 
 }
 truncate -s0 "${ciab_dir}/traffic.vault.logs";
