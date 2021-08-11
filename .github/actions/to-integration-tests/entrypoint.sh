@@ -51,13 +51,7 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
-	source ${CIAB}/traffic_ops/variables.env
-
-	echo ${TV_DB_NAME}
-	echo ${TV_DB_PORT}
-	echo ${TV_BACKEND}
-
-
+	echo ${CIAB}
 
 }
 truncate -s0 "${ciab_dir}/traffic.vault.logs";
