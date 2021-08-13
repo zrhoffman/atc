@@ -51,6 +51,8 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
+	service postgres start;
+
 	echo ${CIAB}
 
 }
