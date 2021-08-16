@@ -51,7 +51,7 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
-	echo ${CIAB}
+	pg_ctl -D /usr/local/var/postgres start
 
 }
 truncate -s0 "${ciab_dir}/traffic.vault.logs";
@@ -129,6 +129,7 @@ A22D22wvfs7CE3cUz/8UnvLM3kbTTu1WbbBbrHjAV47sAHjW/ckTqeo=
 
 resources="$(dirname "$0")"
 envsubst <"${resources}/cdn.json" >cdn.conf
+
 cp "${resources}/database.json" database.conf
 
 export $(<"${ciab_dir}/variables.env" sed '/^#/d') # defines TV_ADMIN_USER/PASSWORD
