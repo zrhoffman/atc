@@ -52,7 +52,7 @@ start_traffic_vault() {
 	BASH_LINES
 
 	TODB_USERNAME=traffic_ops
-	TODB_USERNAME_PASSWORD=traffic_ops
+	TODB_USERNAME_PASSWORD=traffic_vault
     TODB_NAME=traffic_ops
 
 	psql -U postgres -h localhost -c "CREATE USER $TODB_USERNAME WITH ENCRYPTED PASSWORD '$TODB_USERNAME_PASSWORD';"
