@@ -16,20 +16,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
-set -o errexit -o nounset -o xtrace
+set -o errexit -o nounset -o pipefail -o xtrace
 trap 'echo "Error on line ${LINENO} of ${0}"; exit 1' ERR
 
 export DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1
-echo before env
-env
-echo after env
+
 pkg_command=(./pkg -v)
 if [[ -n "$GITHUB_BASE_REF" ]]; then
-	ref="$(git merge-base "$INPUT_BASE_COMMIT" "$GITHUB_SHA")...${GITHUB_SHA}"
+	sudo apt-get install jq
+	pr_number="$(<<<"$GITHUB_REF" grep -o '[0-9]\+')"
+	files_changed="$(curl -v "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}/files" | jq -r '[].filename')"
 else
-	ref="$GITHUB_SHA"
+	files_changed="$(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA")"
 fi
-if ! git diff --name-only "$ref" --exit-code -- GO_VERSION; then
+if <<<"$files_changed" grep '^GO_VERSION$'; then
 	pkg_command+=(-b)
 fi
 
