@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,10 +16,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
-name: 'build-rpms'
-description: 'Builds RPMs for a single ATC component'
-runs:
-  using: 'composite'
-  steps:
-    - run: ${{ github.action_path }}/build-rpms.sh
-      shell: bash
+set -o errexit -o nounset -o pipefail -o xtrace
+trap 'echo "Error on line ${LINENO} of ${0}"; exit 1' ERR
+
+export DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1
+
+pkg_command=(./pkg -v)
+if [[ -n "$GITHUB_BASE_REF" ]]; then
+	sudo apt-get install jq
+	pr_number="$(<<<"$GITHUB_REF" grep -o '[0-9]\+')"
+	files_changed="$(curl -v "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}/files" | jq -r '[].filename')"
+else
+	files_changed="$(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA")"
+fi
+if <<<"$files_changed" grep '^GO_VERSION$'; then
+	pkg_command+=(-b)
+fi
+
+if [[ -z "${ATC_COMPONENT:-}" ]]; then
+	echo 'Missing environment variable ATC_COMPONENT' >/dev/stderr
+	exit 1
+fi
+ATC_COMPONENT+='_build'
+
+"${pkg_command[@]}" "$ATC_COMPONENT"
