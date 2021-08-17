@@ -23,6 +23,7 @@ export DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1
 
 pkg_command=(./pkg -v)
 if [[ -n "$GITHUB_BASE_REF" ]]; then
+	git fetch origin
 	base_branch_latest_commit="$(git rev-parse "$GITHUB_BASE_REF")"
 	ref="$(git merge-base "${base_branch_latest_commit}" "$GITHUB_SHA")...${GITHUB_SHA}"
 else
