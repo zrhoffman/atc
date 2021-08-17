@@ -20,12 +20,12 @@ set -o errexit -o nounset -o xtrace
 trap 'echo "Error on line ${LINENO} of ${0}"; exit 1' ERR
 
 export DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1
-
+echo before env
+env
+echo after env
 pkg_command=(./pkg -v)
 if [[ -n "$GITHUB_BASE_REF" ]]; then
-	git fetch origin
-	base_branch_latest_commit="$(git rev-parse "$GITHUB_BASE_REF")"
-	ref="$(git merge-base "${base_branch_latest_commit}" "$GITHUB_SHA")...${GITHUB_SHA}"
+	ref="$(git merge-base "$INPUT_BASE_COMMIT" "$GITHUB_SHA")...${GITHUB_SHA}"
 else
 	ref="$GITHUB_SHA"
 fi
