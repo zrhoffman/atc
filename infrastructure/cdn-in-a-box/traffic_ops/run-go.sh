@@ -41,8 +41,8 @@
 # TODO:  Unused -- should be removed?  TRAFFIC_VAULT_PASS
 # Setting the monitor shell option enables job control, which we need in order
 # to bring traffic_ops_golang back to the foreground.
-trap 'echo "Error on line ${LINENO} of ${0}"; exit 1' ERR
-set -o errexit -o monitor -o pipefail -o xtrace;
+#trap 'echo "Error on line ${LINENO} of ${0}"; exit 1' ERR
+set -o monitor -o pipefail -o xtrace;
 
 # Check that env vars are set
 envvars=( DB_SERVER DB_PORT DB_ROOT_PASS DB_USER DB_USER_PASS ADMIN_USER ADMIN_PASS TV_AES_KEY_LOCATION TV_DB_NAME TV_DB_PORT TV_DB_SERVER TV_DB_USER TV_DB_USER_PASS)
@@ -106,9 +106,9 @@ chmod -R a+rw "$X509_CA_PERSIST_DIR";
 # Write config files
 . /config.sh;
 
-pg_isready=$(rpm -ql postgresql13 | grep bin/pg_isready);
+pg_isready=$(rpm -ql postgresql96 | grep bin/pg_isready);
 if [[ ! -x $pg_isready ]]; then
-	echo "Can't find pg_ready in postgresql13" >&2;
+	echo "Can't find pg_ready in postgresql96" >&2;
 	echo "PATH: $PATH" >&2;
 	find / -name "*postgresql*";
 	exit 1;

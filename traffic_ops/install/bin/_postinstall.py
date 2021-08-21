@@ -1090,7 +1090,7 @@ def invoke_db_admin_pl(action, root, tv): # type: (str, str, bool) -> None
 	os.chdir(path)
 	cmd = [os.path.join(path, "db/admin"), "--env=production", action]
 	if tv:
-		cmd = [os.path.join(path, "db/admin"), "--trafficvault","--env=production", action]
+		cmd = [os.path.join(path, "db/admin"), "--env=production", action]
 	proc = subprocess.Popen(
 		cmd,
 		stderr=subprocess.PIPE,

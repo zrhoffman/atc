@@ -38,21 +38,21 @@ RUN set -o nounset -o errexit && \
 		use_repo=''; \
 		enable_repo=''; \
 		llvm_version=5.0; \
-		# needed for llvm-toolset-7-clang, which is needed for postgresql13-devel-13.2-1PGDG, required by TO rpm
+		# needed for llvm-toolset-7-clang, which is needed for postgresql96-devel-19.6-1PGDG, required by TO rpm
 		dnf -y install gcc centos-release-scl-rh; \
 	else \
-		use_repo='--repo=pgdg13'; \
+		use_repo='--repo=pgdg96'; \
 		enable_repo='--enablerepo=powertools'; \
 		llvm_version=''; \
 	fi; \
 	dnf -y install "https://download.postgresql.org/pub/repos/yum/reporpms/EL-${RHEL_VERSION%%.*}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"; \
 	dnf -y install epel-release; \
 	dnf -y install \
-		# libicu is required by postgresql13
+		# libicu is required by postgresql96
 		libicu \
-		# libicu-devel, clang-devel, and llvm-devel are required by postgresql13-devel
+		# libicu-devel, clang-devel, and llvm-devel are required by postgresql96-devel
 		libicu-devel clang-devel llvm${llvm_version}-devel; \
-	dnf -y $use_repo -- install postgresql13 postgresql13-devel; \
+	dnf -y $use_repo -- install postgresql96 postgresql96-devel; \
 	dnf -y $enable_repo install \
 		bind-utils           \
 		gettext              \
@@ -88,6 +88,10 @@ RUN set -o nounset -o errexit && \
 		perl-WWW-Curl;       \
 	dnf clean all
 
+RUN dnf -y install golang git && \
+    go get -u github.com/kevinburke/goose/cmd/goose && \
+    mv /root/go/bin/goose /usr/bin/
+
 FROM trafficops-dependencies AS trafficops
 
 EXPOSE 443
@@ -120,6 +124,13 @@ EXPOSE 443
 CMD /run-go.sh
 HEALTHCHECK --interval=10s --timeout=1s \
 	CMD bash -c 'source /to-access.sh && [[ "$(curl -sk "https://${TO_FQDN}/api/${TO_API_VERSION}/ping" | jq .ping)" == \"pong\" ]]'
+
+COPY traffic_ops/install/bin/_postinstall.py \
+     traffic_ops/install/bin/postinstall \
+     traffic_ops/install/bin/input.json \
+     /opt/traffic_ops/install/bin/
+
+COPY traffic_ops/app/db/trafficvault/dbconf.yml /opt/traffic_ops/app/db/trafficvault/
 
 FROM trafficops-dependencies as get-delve
 
