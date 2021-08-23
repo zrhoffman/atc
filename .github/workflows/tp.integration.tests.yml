@@ -58,7 +58,7 @@ jobs:
           - "4444:4444"
         options: --health-cmd=/opt/bin/check-grid.sh --health-interval=5s --health-timeout=15s --health-retries=5
       chromium:
-        image: ossalternatives/selenium-node-chromium
+        image: ossalternatives/selenium-node-chromium:ungoogled
         env:
           HUB_HOST: hub
           HUB_PORT: 4444
