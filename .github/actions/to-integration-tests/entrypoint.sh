@@ -56,7 +56,7 @@ start_traffic_vault() {
     TODB_NAME=traffic_ops
 
 	psql -U postgres -h localhost -c "CREATE USER $TODB_USERNAME WITH ENCRYPTED PASSWORD '$TODB_USERNAME_PASSWORD';"
-    createdb $TODB_NAME --owner $TODB_USERNAME -U postgres -h localhost
+    #createdb $TODB_NAME --owner $TODB_USERNAME -U postgres -h localhost
 
 }
 truncate -s0 "${ciab_dir}/traffic.vault.logs";
