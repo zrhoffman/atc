@@ -51,12 +51,7 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
-	TODB_USERNAME=traffic_ops
-	TODB_USERNAME_PASSWORD=traffic_vault
-    TODB_NAME=traffic_ops
-
-	psql -U postgres -h localhost -c "CREATE USER $TODB_USERNAME WITH ENCRYPTED PASSWORD '$TODB_USERNAME_PASSWORD';"
-    #createdb $TODB_NAME --owner $TODB_USERNAME -U postgres -h localhost
+	psql -d postgresql://traffic_ops:twelve@postgres:5432/traffic_ops < db/create_tables.sql >/dev/null
 
 }
 truncate -s0 "${ciab_dir}/traffic.vault.logs";
