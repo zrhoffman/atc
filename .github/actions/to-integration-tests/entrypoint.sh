@@ -51,7 +51,7 @@ start_traffic_vault() {
 		sed -i '/to-access\.sh\|^to-enroll/d' /etc/riak/{prestart.d,poststart.d}/*
 	BASH_LINES
 
-	psql -d postgresql://traffic_vault1:twelve@localhost:5432/traffic_vault --username=traffic_vault --port=5432
+	psql -d traffic_vault://traffic_vault:twelve@localhost:5432/traffic_vault
 
 }
 truncate -s0 "${ciab_dir}/traffic.vault.logs";
