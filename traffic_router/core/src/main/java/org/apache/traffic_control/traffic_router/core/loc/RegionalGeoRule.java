@@ -27,7 +27,7 @@ public class RegionalGeoRule {
 
     public static final String WHITE_LIST_NODE_LOCATION = "w";
 
-    public static enum PostalsType {
+    public enum PostalsType {
         EXCLUDE, INCLUDE, UNDEFINED
     }
 
@@ -98,7 +98,7 @@ public class RegionalGeoRule {
 
         try {
             final NetworkNode nn = whiteListRoot.getNetwork(ip);
-            if (nn.getLoc() == WHITE_LIST_NODE_LOCATION) {
+            if (nn.getLoc() != null && nn.getLoc().equals(WHITE_LIST_NODE_LOCATION)) {
                 return true;
             }
         } catch (NetworkNodeException e) {

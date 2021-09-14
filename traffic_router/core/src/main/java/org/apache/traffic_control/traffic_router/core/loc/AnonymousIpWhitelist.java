@@ -52,7 +52,7 @@ public class AnonymousIpWhitelist {
 
 		try {
 			final NetworkNode nn = whitelist.getNetwork(address);
-			if (nn.getLoc() == AnonymousIp.WHITE_LIST_LOC) {
+			if (nn.getLoc() != null && nn.getLoc().equals(AnonymousIp.WHITE_LIST_LOC)) {
 				return true;
 			}
 		} catch (NetworkNodeException e) {
