@@ -110,7 +110,7 @@ Install the Dependencies
 	|                                    |                     |                            |                        | - gcc                     |                           |                          |          |                              |                          |
 	|                                    |                     |                            |                        | - make                    |                           |                          |          |                              |                          |
 	+------------------------------------+---------------------+----------------------------+------------------------+---------------------------+---------------------------+--------------------------+----------+------------------------------+--------------------------+
-	| Arch Linux (pacman_)               | - git               | - go                       | - go                   | - npm                     | - jdk8-openjdk            | - go                     | - go     | - go                         | - python-pip             |
+	| Arch Linux (pacman_)               | - git               | - go                       | - go                   | - npm                     | - jdk11-openjdk           | - go                     | - go     | - go                         | - python-pip             |
 	|                                    | - rpm-tools         |                            |                        | - make                    | - maven                   |                          |          |                              | - python-sphinx          |
 	|                                    | - diff              |                            |                        | - grunt-cli               |                           |                          |          |                              | - make                   |
 	|                                    | - rsync             |                            |                        | - ruby                    |                           |                          |          |                              |                          |
@@ -120,7 +120,7 @@ Install the Dependencies
 	|                                    | - rpm-build         |                            |                        | - make                    |                           |                          |          |                              |                          |
 	|                                    | - rsync             |                            |                        | - gcc-g++                 |                           |                          |          |                              |                          |
 	+------------------------------------+---------------------+----------------------------+------------------------+---------------------------+---------------------------+--------------------------+----------+------------------------------+--------------------------+
-	| Windows (chocolatey_)\ [5]_        |                     | - golang                   | - golang               | - nodejs                  | - openjdk8                | - golang                 | - golang | - golang                     | - python                 |
+	| Windows (chocolatey_)\ [5]_        |                     | - golang                   | - golang               | - nodejs                  | - openjdk11               | - golang                 | - golang | - golang                     | - python                 |
 	|                                    |                     |                            |                        |                           | - maven                   |                          |          |                              | - pip                    |
 	|                                    |                     |                            |                        |                           |                           |                          |          |                              | - make                   |
 	+------------------------------------+---------------------+----------------------------+------------------------+---------------------------+---------------------------+--------------------------+----------+------------------------------+--------------------------+
@@ -136,9 +136,6 @@ Install the Dependencies
 .. [4] If you are on CentOS, you need to `download Go directly <https://golang.org/dl/>`_ instead of using a package manager in order to get the latest Go version. For most users, the desired architecture is AMD64/x86_64.
 
 .. [5] If you are on Windows, you need to install both the Cygwin packages and the Chocolatey packages in order to build the Apache Traffic Control RPMs natively.
-
-.. |AdoptOpenJDK instructions| replace:: add the AdoptOpenJDK tap and install the ``adoptopenjdk8`` cask
-.. _AdoptOpenJDK instructions: https://github.com/AdoptOpenJDK/homebrew-openjdk#other-versions
 
 After installing the packages using your platform's package manager,
 

@@ -35,7 +35,7 @@ System Requirements
 ===================
 * Centos 7.9 or CentOS 8.2
 * OpenSSL >= 1.0.2 installed
-* JDK >= 8.0 installed or available in an accessible :manpage:`yum(8)` repository
+* JDK >= 11 installed or available in an accessible :manpage:`yum(8)` repository
 * :abbr:`APR (Apache Portable Runtime)` >= 1.4.8-3 installed or available in an accessible :manpage:`yum(8)` repository
 * Tomcat Native >= 1.2.16 installed or available in an accessible :manpage:`yum(8)` repository
 * tomcat >= 8.5-30 installed or available in an accessible :manpage:`yum(8)` repository (This package is created automatically by the Traffic Router build process)
@@ -52,7 +52,7 @@ The :file:`term-{version string}.rpm` package should have been created when Traf
 
 Update the traffic_router Package
 ---------------------------------
-If ``openssl``, ``apr``, ``tomcat-native``, ``java-1.8.0-openjdk``, ``java-1.8.0-openjdk-devel`` and ``tomcat_tr`` packages are all in an available :manpage:`yum(8)` repository then an upgrade can be performed by running ``yum update traffic_router`` as the root user or with :manpage:`sudo(8)`. This will first cause the ``apr``, ``tomcat-native``, ``java-1.8.0-openjdk``, ``java-1.8.0-openjdk-devel`` and ``tomcat`` packages to be installed. When the ``tomcat`` package runs, it will cause any older versions of ``traffic_router`` or ``tomcat`` to be uninstalled. This is because the previous versions of the ``traffic_router`` package included an untracked installation of ``tomcat``.
+If ``openssl``, ``apr``, ``tomcat-native``, ``java-11-openjdk``, ``java-11-openjdk-devel`` and ``tomcat_tr`` packages are all in an available :manpage:`yum(8)` repository then an upgrade can be performed by running ``yum update traffic_router`` as the root user or with :manpage:`sudo(8)`. This will first cause the ``apr``, ``tomcat-native``, ``java-11-openjdk``, ``java-11-openjdk-devel`` and ``tomcat`` packages to be installed. When the ``tomcat`` package runs, it will cause any older versions of ``traffic_router`` or ``tomcat`` to be uninstalled. This is because the previous versions of the ``traffic_router`` package included an untracked installation of ``tomcat``.
 
 Restore Property Files
 ----------------------

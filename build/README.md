@@ -76,7 +76,7 @@ At the conclusion of the build,  all rpms are copied into the __$WORKSPACE/dist_
 * go 1.7 or higher
 
 #### traffic_monitor and traffic_router:
-* java-1.8.0-openjdk and java-1.8.0-openjdk-devel
+* java-11-openjdk and java-11-openjdk-devel
 * apache-maven 3.3.1 or higher
 
 #### traffic_monitor_golang:
