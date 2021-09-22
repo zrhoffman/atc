@@ -37,7 +37,7 @@ import (
 )
 
 const (
-	UserAgent     = "Traffic Router Load Tests"
+	UserAgent = "Traffic Router Load Tests"
 )
 
 type TOConfig struct {
@@ -85,7 +85,12 @@ func init() {
 
 func TestMain(m *testing.M) {
 	getTOConfig()
-	flag.String("", "", "write profiles to `dir`")
+	ipv4Only := flag.Bool("4", false, "test IPv4 addresses only")
+	ipv6Only := flag.Bool("6", false, "test IPv4 addresses only")
+	cdnName := flag.String("cdn", "", "the name of a CDN to search for Delivery Services")
+	deliveryServiceName := flag.String("ds", "", "the name (XMLID) of a Delivery Service to use for tests")
+	trafficRouterName := flag.String("hostname", "", "the hostname of a Traffic Router to use")
+	flag.Parse()
 
 	var err error
 	toSession, _, err = client.LoginWithAgent(toConfig.TOURL, toConfig.TOUser, toConfig.TOPassword, toConfig.TOInsecure, UserAgent, true, time.Second*time.Duration(toConfig.TOTimeout))
@@ -93,7 +98,7 @@ func TestMain(m *testing.M) {
 		log.Fatalf("logging into Traffic Ops server %s: %s", toConfig.TOURL, err.Error())
 	}
 
-	trafficRouters, err := getTrafficRouters()
+	trafficRouters, err := getTrafficRouters(*trafficRouterName, tc.CDNName(*cdnName))
 	if err != nil {
 		log.Fatalf("could not get Traffic Routers: %s", err.Error())
 	}
@@ -106,10 +111,11 @@ func TestMain(m *testing.M) {
 				continue
 			}
 			ipv4, ipv6 := serverInterface.GetDefaultAddress()
-			for _, ipAddress := range []string{ipv4, ipv6} {
-				if ipAddress != "" {
-					ipAddresses = append(ipAddresses, ipAddress)
-				}
+			if ipv4 != "" && !*ipv6Only {
+				ipAddresses = append(ipAddresses, ipv4)
+			}
+			if ipv6 != "" && !*ipv4Only {
+				ipAddresses = append(ipAddresses, "["+ipv6+"]")
 			}
 		}
 		if len(ipAddresses) < 1 {
@@ -117,7 +123,7 @@ func TestMain(m *testing.M) {
 			continue
 		}
 		dsTypeName := tc.DSTypeHTTP
-		httpDSes := getDSesOfType(*trafficRouter.CDNID, dsTypeName)
+		httpDSes := getDSes(*trafficRouter.CDNID, dsTypeName, tc.DeliveryServiceName(*deliveryServiceName))
 		if len(httpDSes) < 1 {
 			log.Printf("at least 1 Delivery Service with type '%s' is required to run HTTP load tests on Traffic Router '%s', but %d were found", dsTypeName, *trafficRouter.HostName, len(httpDSes))
 		}
@@ -137,12 +143,13 @@ func TestMain(m *testing.M) {
 	}
 	benchmark := Benchmark{
 		RequestsPerSecondThreshold: 2000,
-		BenchmarkTime:              300,
-		ThreadCount:                12,
-		ClientIP:                   nil,
-		PathCount:                  10000,
-		MaxPathLength:              100,
-		TrafficRouters:             trafficRouterDetails,
+		//BenchmarkTime:              300,
+		BenchmarkTime:  10,
+		ThreadCount:    12,
+		ClientIP:       nil,
+		PathCount:      10000,
+		MaxPathLength:  100,
+		TrafficRouters: trafficRouterDetails,
 	}
 
 	trafficRouterIndex := 0
@@ -232,26 +239,41 @@ func BenchmarkHttpDSes(b *testing.B) {
 	time.Sleep(time.Second * 3)
 }
 
-func getTrafficRouters() ([]tc.ServerV40, error) {
+func getTrafficRouters(trafficRouterName string, cdnName tc.CDNName) ([]tc.ServerV40, error) {
 	requestOptions := client.RequestOptions{QueryParameters: url.Values{
 		"type":   {tc.RouterTypeName},
 		"status": {tc.CacheStatusOnline.String()},
 	}}
+	if trafficRouterName != "" {
+		requestOptions.QueryParameters.Set("hostName", trafficRouterName)
+	}
+	if cdnName != "" {
+		cdnRequestOptions := client.RequestOptions{QueryParameters: url.Values{
+			"name": {string(cdnName)},
+		}}
+		cdnResponse, _, err := toSession.GetCDNs(cdnRequestOptions)
+		if err != nil {
+			return nil, fmt.Errorf("requesting a CDN named '%s': %s", cdnName, err.Error())
+		}
+		cdns := cdnResponse.Response
+		if len(cdns) != 1 {
+			return nil, fmt.Errorf("did not find exactly 1 CDN with name '%s'", cdnName)
+		}
+		requestOptions.QueryParameters.Set("cdn", string(cdnName))
+	}
 	response, _, err := toSession.GetServers(requestOptions)
 	if err != nil {
 		return nil, fmt.Errorf("requesting %s-status Traffic Routers: %s", requestOptions.QueryParameters["status"], err.Error())
 	}
 	trafficRouters := response.Response
 	if len(trafficRouters) < 1 {
-		return trafficRouters, fmt.Errorf("no %s Traffic Routers were found", requestOptions.QueryParameters["status"])
+		return trafficRouters, fmt.Errorf("no Traffic Routers were found with these criteria: %v", requestOptions.QueryParameters)
 	}
 	return trafficRouters, nil
 }
 
-func getDSesOfType(cdnId int, dsTypeName tc.DSType) []tc.DeliveryServiceV40 {
-	requestOptions := client.RequestOptions{QueryParameters: url.Values{
-		"cdn":  {strconv.Itoa(cdnId)},
-		"name": {dsTypeName.String()}}}
+func getDSes(cdnId int, dsTypeName tc.DSType, dsName tc.DeliveryServiceName) []tc.DeliveryServiceV40 {
+	requestOptions := client.RequestOptions{QueryParameters: url.Values{"name": {dsTypeName.String()}}}
 	var dsType tc.Type
 	{
 		response, _, err := toSession.GetTypes(requestOptions)
@@ -266,9 +288,13 @@ func getDSesOfType(cdnId int, dsTypeName tc.DSType) []tc.DeliveryServiceV40 {
 	}
 
 	requestOptions = client.RequestOptions{QueryParameters: url.Values{
+		"cdn":    {strconv.Itoa(cdnId)},
 		"type":   {strconv.Itoa(dsType.ID)},
 		"status": {tc.CacheStatusOnline.String()},
 	}}
+	if dsName != "" {
+		requestOptions.QueryParameters.Set("xmlId", dsName.String())
+	}
 	response, _, err := toSession.GetDeliveryServices(requestOptions)
 	if err != nil {
 		log.Fatalf("getting Delivery Services with type '%s' (type ID %d): %s", dsType.Name, dsType.ID, err.Error())
