@@ -20,17 +20,25 @@ package main
  */
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
+	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
+	"strings"
 	"testing"
+	"text/tabwriter"
 	"time"
 
+	go_log "github.com/apache/trafficcontrol/lib/go-log"
 	"github.com/apache/trafficcontrol/lib/go-tc"
+	"github.com/apache/trafficcontrol/lib/go-util"
 	client "github.com/apache/trafficcontrol/traffic_ops/v4-client"
 
 	"github.com/kelseyhightower/envconfig"
@@ -49,10 +57,18 @@ type TOConfig struct {
 }
 
 type TRDetails struct {
-	Hostname    string
-	IPAddresses []string
-	Port        int
-	DSHost      string
+	Hostname           string
+	IPAddresses        []string
+	ClientIP           string
+	ClientIPAddressMap IPAddressMap
+	Port               int
+	DSHost             string
+	CDNName            tc.CDNName
+}
+
+type IPAddressMap struct {
+	Zones []string
+	Map   map[string]tc.CoverageZoneLocation
 }
 
 type Benchmark struct {
@@ -64,6 +80,7 @@ type Benchmark struct {
 	MaxPathLength              int
 	DSType                     tc.Type
 	TrafficRouters             []TRDetails
+	CoverageZoneLocation       string
 }
 
 var (
@@ -72,40 +89,156 @@ var (
 	count     int
 )
 
-func getTOConfig() {
+func getTOConfig(t *testing.T) {
 	err := envconfig.Process("", &toConfig)
 	if err != nil {
-		log.Fatalf("reading configuration from the environment: %s", err.Error())
+		t.Fatalf("reading configuration from the environment: %s", err.Error())
 	}
 }
 
+
+var ipv4Only *bool
+var ipv6Only *bool
+var cdnName *string
+var deliveryServiceName *string
+var trafficRouterName *string
+var clientIPAddress *string
+var useCoverageZone *bool
+var coverageZoneLocation *string
+var requestsPerSecondThreshold *int
+var benchmarkTime *int
+var threadCount *int
+var pathCount *int
+var maxPathLength *int
+
 func init() {
 	rand.Seed(time.Now().UnixNano())
+	ipv4Only = flag.Bool("4", false, "test IPv4 addresses only")
+	ipv6Only = flag.Bool("6", false, "test IPv4 addresses only")
+	cdnName = flag.String("cdn", "", "the name of a CDN to search for Delivery Services")
+	deliveryServiceName = flag.String("ds", "", "the name (XMLID) of a Delivery Service to use for tests")
+	trafficRouterName = flag.String("hostname", "", "the hostname of a Traffic Router to use")
+	clientIPAddress = flag.String("ip_address", "", "spoof your client IP address to Traffic Router's geolocation")
+	useCoverageZone = flag.Bool("coverage_zone", false, "whether to use an IP address from the Traffic Router's Coverage Zone File")
+	coverageZoneLocation = flag.String("coverage_zone_location", "", "the Coverage Zone location to use (implies coverage_zone=true)")
+	requestsPerSecondThreshold = flag.Int("requests_threshold", 8000, "the minimum number of requests per second a Traffic Router must successfully respond to")
+	benchmarkTime = flag.Int("benchmark_time", 10, "the duration of each load test in seconds")
+	threadCount = flag.Int("thread_count", 12, "the number of threads to use for each test")
+	pathCount = flag.Int("path_count", 10000, "the number of paths to generate for use in requests to Delivery Services")
+	maxPathLength = flag.Int("max_path_length", 100, "the maximum length for each generated path")
 }
 
-func TestMain(m *testing.M) {
-	getTOConfig()
-	ipv4Only := flag.Bool("4", false, "test IPv4 addresses only")
-	ipv6Only := flag.Bool("6", false, "test IPv4 addresses only")
-	cdnName := flag.String("cdn", "", "the name of a CDN to search for Delivery Services")
-	deliveryServiceName := flag.String("ds", "", "the name (XMLID) of a Delivery Service to use for tests")
-	trafficRouterName := flag.String("hostname", "", "the hostname of a Traffic Router to use")
-	flag.Parse()
+func getCoverageZoneURL(cdnName tc.CDNName) (string, error) {
+	snapshot, _, err := toSession.GetCRConfig(string(cdnName), client.RequestOptions{})
+	if err != nil {
+		return "", fmt.Errorf("getting the Snapshot of CDN '%s': %s", cdnName, err.Error())
+	}
+	czPollingURLInterface, ok := snapshot.Response.Config[tc.CoverageZonePollingURL]
+	czPollingURL := czPollingURLInterface.(string)
+	if !ok {
+		return "", fmt.Errorf("parameters %s was not found in the Snapshot of CDN '%s'", tc.CoverageZonePollingURL, cdnName)
+	}
+	return czPollingURL, nil
+}
 
+func getCoverageZoneFile(czPollingURL string) (tc.CoverageZoneFile, error) {
+	czMap := tc.CoverageZoneFile{}
+	czMapRequest, err := http.NewRequest("GET", czPollingURL, nil)
+	if err != nil {
+		return czMap, fmt.Errorf("creating HTTP request for URL %s: %s", czPollingURL, err.Error())
+	}
+	czMapRequest.Header.Set("User-Agent", UserAgent)
+	httpClient := http.Client{}
+	czMapResponse, err := httpClient.Do(czMapRequest)
+	if err != nil {
+		return czMap, fmt.Errorf("getting Coverage Zone File from URL %s: %s", czPollingURL, err.Error())
+	}
+	defer go_log.Close(czMapResponse.Body, "closing the Coverage Zone File response")
+	czMapBytes, err := ioutil.ReadAll(czMapResponse.Body)
+	if err != nil {
+		return czMap, fmt.Errorf("reading Coverage Zone File bytes: %s", err.Error())
+	}
+	if err = json.Unmarshal(czMapBytes, &czMap); err != nil {
+		return czMap, fmt.Errorf("unmarshalling Coverage Zone Map bytes: %s", err.Error())
+	}
+	return czMap, nil
+}
+
+func (i *IPAddressMap) buildFromCoverageZoneMap(czMap tc.CoverageZoneFile) error {
+	i.Zones = make([]string, len(czMap.CoverageZones))
+	i.Map = map[string]tc.CoverageZoneLocation{}
+	zoneIndex := 0
+	for location, networks := range czMap.CoverageZones {
+		coverageZoneLocation := tc.CoverageZoneLocation{
+			Network:  make([]string, 2*len(networks.Network)),
+			Network6: make([]string, 2*len(networks.Network6)),
+		}
+		for index, ipAddress := range networks.Network {
+			_, ipNet, err := net.ParseCIDR(ipAddress)
+			if err != nil {
+				return fmt.Errorf("parsing IP address %s in CIDR notation: %s", ipAddress, err.Error())
+			}
+			coverageZoneLocation.Network[index*2] = util.FirstIP(ipNet).To4().String()
+			coverageZoneLocation.Network[index*2+1] = util.LastIP(ipNet).To4().String()
+		}
+		for index, ipAddress6 := range networks.Network6 {
+			_, ipNet, err := net.ParseCIDR(ipAddress6)
+			if err != nil {
+				return fmt.Errorf("parsing IP address %s in CIDR notation: %s", ipAddress6, err.Error())
+			}
+			coverageZoneLocation.Network6[index*2] = util.FirstIP(ipNet).To16().String()
+			coverageZoneLocation.Network6[index*2+1] = util.LastIP(ipNet).To16().String()
+		}
+		i.Map[location] = coverageZoneLocation
+		i.Zones[zoneIndex] = location
+		zoneIndex++
+	}
+	return nil
+}
+
+func buildIPAddressMap(cdnName tc.CDNName) (IPAddressMap, error) {
+	ipAddressMap := IPAddressMap{}
+	czPollingURL, err := getCoverageZoneURL(cdnName)
+	if err != nil {
+		return ipAddressMap, fmt.Errorf("getting Coverage Zone Polling URL from the Snapshot of CDN '%s': %s", cdnName, err.Error())
+	}
+	czMap, err := getCoverageZoneFile(czPollingURL)
+	if err != nil {
+		return ipAddressMap, fmt.Errorf("getting Coverage Zone File: %s", err.Error())
+	}
+	if err = ipAddressMap.buildFromCoverageZoneMap(czMap); err != nil {
+		return ipAddressMap, fmt.Errorf("building IP Address Map from Coverage Zone File: %s", err.Error())
+	}
+
+	return ipAddressMap, nil
+}
+
+func TestLoad(t *testing.T) {
 	var err error
+	if err = flag.Set("test.v", "true"); err != nil {
+		t.Errorf("settings flags 'test.v': %s", err.Error())
+	}
+	flag.Parse()
+	getTOConfig(t)
+
+	if *coverageZoneLocation != "" {
+		*useCoverageZone = true
+	}
+	ipAddressMaps := map[tc.CDNName]IPAddressMap{}
+
 	toSession, _, err = client.LoginWithAgent(toConfig.TOURL, toConfig.TOUser, toConfig.TOPassword, toConfig.TOInsecure, UserAgent, true, time.Second*time.Duration(toConfig.TOTimeout))
 	if err != nil {
-		log.Fatalf("logging into Traffic Ops server %s: %s", toConfig.TOURL, err.Error())
+		t.Fatalf("logging into Traffic Ops server %s: %s", toConfig.TOURL, err.Error())
 	}
 
 	trafficRouters, err := getTrafficRouters(*trafficRouterName, tc.CDNName(*cdnName))
 	if err != nil {
-		log.Fatalf("could not get Traffic Routers: %s", err.Error())
+		t.Fatalf("could not get Traffic Routers: %s", err.Error())
 	}
 
-	trafficRouterDetails := []TRDetails{}
-	ipAddresses := []string{}
+	var trafficRouterDetailsList []TRDetails
 	for _, trafficRouter := range trafficRouters {
+		var ipAddresses []string
 		for _, serverInterface := range trafficRouter.Interfaces {
 			if !serverInterface.Monitor {
 				continue
@@ -123,77 +256,138 @@ func TestMain(m *testing.M) {
 			continue
 		}
 		dsTypeName := tc.DSTypeHTTP
-		httpDSes := getDSes(*trafficRouter.CDNID, dsTypeName, tc.DeliveryServiceName(*deliveryServiceName))
+		httpDSes := getDSes(t, *trafficRouter.CDNID, dsTypeName, tc.DeliveryServiceName(*deliveryServiceName))
 		if len(httpDSes) < 1 {
 			log.Printf("at least 1 Delivery Service with type '%s' is required to run HTTP load tests on Traffic Router '%s', but %d were found", dsTypeName, *trafficRouter.HostName, len(httpDSes))
 		}
 		dsURL, err := url.Parse(httpDSes[0].ExampleURLs[0])
 		if err != nil {
-			log.Fatalf("parsing Delivery Service URL %s: %s", dsURL, err.Error())
+			t.Fatalf("parsing Delivery Service URL %s: %s", dsURL, err.Error())
 		}
-		trafficRouterDetails = append(trafficRouterDetails, TRDetails{
+		cdnName := tc.CDNName(*trafficRouter.CDNName)
+
+		trafficRouterDetails := TRDetails{
 			Hostname:    *trafficRouter.HostName,
 			IPAddresses: ipAddresses,
+			ClientIP:    *clientIPAddress,
 			Port:        *trafficRouter.TCPPort,
 			DSHost:      dsURL.Host,
-		})
+			CDNName:     cdnName,
+		}
+		if *useCoverageZone {
+			_, ok := ipAddressMaps[cdnName]
+			if !ok {
+				ipAddressMaps[cdnName], err = buildIPAddressMap(cdnName)
+				if err != nil {
+					t.Fatalf("building IP Address map for CDN '%s': %s", cdnName, err.Error())
+				}
+			}
+			trafficRouterDetails.ClientIPAddressMap = ipAddressMaps[cdnName]
+		}
+		trafficRouterDetailsList = append(trafficRouterDetailsList, trafficRouterDetails)
 	}
-	if len(trafficRouterDetails) < 1 {
-		log.Fatalf("no Traffic Router with at least 1 HTTP Delivery Service and at least 1 monitored service address was found")
+	if len(trafficRouterDetailsList) < 1 {
+		t.Fatalf("no Traffic Router with at least 1 HTTP Delivery Service and at least 1 monitored service address was found")
 	}
+
 	benchmark := Benchmark{
-		RequestsPerSecondThreshold: 2000,
-		//BenchmarkTime:              300,
-		BenchmarkTime:  10,
-		ThreadCount:    12,
-		ClientIP:       nil,
-		PathCount:      10000,
-		MaxPathLength:  100,
-		TrafficRouters: trafficRouterDetails,
+		RequestsPerSecondThreshold: *requestsPerSecondThreshold,
+		BenchmarkTime:              *benchmarkTime,
+		ThreadCount:                *threadCount,
+		PathCount:                  *pathCount,
+		MaxPathLength:              *maxPathLength,
+		TrafficRouters:             trafficRouterDetailsList,
+		CoverageZoneLocation:       *coverageZoneLocation,
 	}
 
-	trafficRouterIndex := 0
-	trafficRouter := benchmark.TrafficRouters[trafficRouterIndex]
-	ipAddressIndex := 0
-	ipAddress := trafficRouter.IPAddresses[ipAddressIndex]
-	trafficRouterURL := fmt.Sprintf("http://%s:%d/", ipAddress, trafficRouter.Port)
-	//trafficRouterURL = "http://172.17.0.1:3080/" // TODO: remove this
+	passedTests := 0
+	failedTests := 0
 
-	redirects, failures := 0, 0
-	redirectsChannels := make([]chan int, benchmark.ThreadCount)
-	failuresChannels := make([]chan int, benchmark.ThreadCount)
-	for threadIndex := 0; threadIndex < benchmark.ThreadCount; threadIndex++ {
-		redirectsChannels[threadIndex] = make(chan int)
-		failuresChannels[threadIndex] = make(chan int)
-		go benchmark.Run(redirectsChannels[threadIndex], failuresChannels[threadIndex], trafficRouterIndex, trafficRouterURL, ipAddressIndex)
-	}
+	fmt.Printf("Passing criteria: Routing at least %d requests per second\n", benchmark.RequestsPerSecondThreshold)
+	writer := tabwriter.NewWriter(os.Stdout, 20, 8, 1, '\t', tabwriter.AlignRight)
+	fmt.Fprintf(writer, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", "Traffic Router", "Protocol", "Delivery Service", "Passed?", "Requests Per Second", "Redirects", "Failures")
+	for trafficRouterIndex, trafficRouter := range benchmark.TrafficRouters {
+		for ipAddressIndex, ipAddress := range trafficRouter.IPAddresses {
+			trafficRouterURL := fmt.Sprintf("http://%s:%d/", ipAddress, trafficRouter.Port)
 
-	for threadIndex := 0; threadIndex < benchmark.ThreadCount; threadIndex++ {
-		redirects += <-redirectsChannels[threadIndex]
-		failures += <-failuresChannels[threadIndex]
+			isIPv4 := strings.Contains(ipAddress, ".")
+			if trafficRouter.ClientIP == "" && trafficRouter.ClientIPAddressMap.Zones != nil {
+				if benchmark.CoverageZoneLocation != "" {
+					location := trafficRouter.ClientIPAddressMap.Map[benchmark.CoverageZoneLocation]
+					trafficRouter.ClientIP = location.GetFirstIPAddressOfType(isIPv4)
+				}
+				if trafficRouter.ClientIP == "" {
+					for _, location := range trafficRouter.ClientIPAddressMap.Map {
+						trafficRouter.ClientIP = location.GetFirstIPAddressOfType(isIPv4)
+						if trafficRouter.ClientIP != "" {
+							break
+						}
+					}
+				}
+			}
+
+			redirects, failures := 0, 0
+			redirectsChannels := make([]chan int, benchmark.ThreadCount)
+			failuresChannels := make([]chan int, benchmark.ThreadCount)
+			for threadIndex := 0; threadIndex < benchmark.ThreadCount; threadIndex++ {
+				redirectsChannels[threadIndex] = make(chan int)
+				failuresChannels[threadIndex] = make(chan int)
+				go benchmark.Run(t, redirectsChannels[threadIndex], failuresChannels[threadIndex], trafficRouterIndex, trafficRouterURL, ipAddressIndex)
+			}
+
+			for threadIndex := 0; threadIndex < benchmark.ThreadCount; threadIndex++ {
+				redirects += <-redirectsChannels[threadIndex]
+				failures += <-failuresChannels[threadIndex]
+			}
+			protocol := "IPv6"
+			if isIPv4 {
+				protocol = "IPv4"
+			}
+			var passed string
+			requestsPerSecond := redirects / benchmark.BenchmarkTime
+			if requestsPerSecond > benchmark.RequestsPerSecondThreshold {
+				passedTests++
+				passed = "Yes"
+			} else {
+				failedTests++
+				passed = "No"
+			}
+			fmt.Fprintf(writer, "%s\t%s\t%s\t%s\t%d\t%d\t%d\n", trafficRouter.Hostname, protocol, trafficRouter.DSHost, passed, requestsPerSecond, redirects, failures)
+			writer.Flush()
+		}
 	}
-	fmt.Printf("%d redirects and %d failures\n", redirects, failures)
+	summary := fmt.Sprintf("%d out of %d load tests passed", passedTests, passedTests+failedTests)
+	if failedTests < 1 {
+		t.Logf(summary)
+	} else {
+		t.Fatal(summary)
+	}
 }
 
-func (b Benchmark) Run(redirectsChannel chan int, failuresChannel chan int, trafficRouterIndex int, trafficRouterURL string, ipAddressIndex int) {
+func (b *Benchmark) Run(t *testing.T, redirectsChannel chan int, failuresChannel chan int, trafficRouterIndex int, trafficRouterURL string, ipAddressIndex int) {
 	paths := generatePaths(b.PathCount, b.MaxPathLength)
 	stopTime := time.Now().Add(time.Duration(b.BenchmarkTime) * time.Second)
 	redirects, failures := 0, 0
 	var req *http.Request
 	var resp *http.Response
 	var err error
-	httpClient := &http.Client{
+	httpClient := http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
 	}
+	trafficRouter := b.TrafficRouters[trafficRouterIndex]
 	for time.Now().Before(stopTime) {
 		requestURL := trafficRouterURL + paths[rand.Intn(len(paths))]
 		if req, err = http.NewRequest("GET", requestURL, nil); err != nil {
-			log.Fatalf("creating GET request to Traffic Router '%s' (IP address %s): %s",
-				b.TrafficRouters[trafficRouterIndex].Hostname, b.TrafficRouters[trafficRouterIndex].IPAddresses[ipAddressIndex], err.Error())
+			t.Fatalf("creating GET request to Traffic Router '%s' (IP address %s): %s",
+				trafficRouter.Hostname, trafficRouter.IPAddresses[ipAddressIndex], err.Error())
 		}
-		req.Host = b.TrafficRouters[trafficRouterIndex].DSHost
+		req.Header.Set("User-Agent", UserAgent)
+		if trafficRouter.ClientIP != "" {
+			req.Header.Set(tc.X_MM_CLIENT_IP, trafficRouter.ClientIP)
+		}
+		req.Host = trafficRouter.DSHost
 		resp, err = httpClient.Do(req)
 		if err == nil && resp.StatusCode >= http.StatusMultipleChoices && resp.StatusCode < http.StatusBadRequest {
 			redirects++
@@ -224,11 +418,11 @@ func generatePaths(pathCount, maxPathLength int) []string {
 	paths := make([]string, pathCount)
 	for index = 0; index < pathCount; index++ {
 		pathLength := rand.Intn(maxPathLength)
-		url := make([]rune, pathLength)
+		generatedURL := make([]rune, pathLength)
 		for runeIndex := 0; runeIndex < pathLength; runeIndex++ {
-			url[runeIndex] = alphabet[rand.Intn(alphabetSize)]
+			generatedURL[runeIndex] = alphabet[rand.Intn(alphabetSize)]
 		}
-		paths[index] = string(url)
+		paths[index] = string(generatedURL)
 	}
 	return paths
 }
@@ -272,17 +466,17 @@ func getTrafficRouters(trafficRouterName string, cdnName tc.CDNName) ([]tc.Serve
 	return trafficRouters, nil
 }
 
-func getDSes(cdnId int, dsTypeName tc.DSType, dsName tc.DeliveryServiceName) []tc.DeliveryServiceV40 {
+func getDSes(t *testing.T, cdnId int, dsTypeName tc.DSType, dsName tc.DeliveryServiceName) []tc.DeliveryServiceV40 {
 	requestOptions := client.RequestOptions{QueryParameters: url.Values{"name": {dsTypeName.String()}}}
 	var dsType tc.Type
 	{
 		response, _, err := toSession.GetTypes(requestOptions)
 		if err != nil {
-			log.Fatalf("getting type %s: %s", requestOptions.QueryParameters["name"], err.Error())
+			t.Fatalf("getting type %s: %s", requestOptions.QueryParameters["name"], err.Error())
 		}
 		types := response.Response
 		if len(types) != 1 {
-			log.Fatalf("did not find exactly 1 type with name '%s'", requestOptions.QueryParameters["name"])
+			t.Fatalf("did not find exactly 1 type with name '%s'", requestOptions.QueryParameters["name"])
 		}
 		dsType = types[0]
 	}
@@ -297,7 +491,7 @@ func getDSes(cdnId int, dsTypeName tc.DSType, dsName tc.DeliveryServiceName) []t
 	}
 	response, _, err := toSession.GetDeliveryServices(requestOptions)
 	if err != nil {
-		log.Fatalf("getting Delivery Services with type '%s' (type ID %d): %s", dsType.Name, dsType.ID, err.Error())
+		t.Fatalf("getting Delivery Services with type '%s' (type ID %d): %s", dsType.Name, dsType.ID, err.Error())
 	}
 	httpDSes := response.Response
 	return httpDSes
