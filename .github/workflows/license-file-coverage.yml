@@ -74,9 +74,15 @@ jobs:
           set -o errexit -o nounset -o xtrace
           cd "$PKGSITE_DIR"
           if [[ ! -e vendor/modules.txt ]]; then
+            go mod tidy
             go mod vendor
           else
-            echo "Modules are already downloaded."
+            echo "Modules are already downloaded but doing it anyway."
+            go mod tidy
+            go mod vendor
+            echo before diff
+            git diff -- go.mod go.sum
+            echo after diff
           fi
       - name: Run the License file coverage check
         run: |
