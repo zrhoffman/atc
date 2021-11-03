@@ -38,5 +38,5 @@ runs:
   using: 'composite'
   steps:
     - id: entrypoint
-      run: ${{ github.action_path }}/entrypoint.sh
+      run: env
       shell: bash
