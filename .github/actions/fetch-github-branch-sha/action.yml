@@ -29,12 +29,15 @@ inputs:
     required: true
 outputs:
   sha:
-    description: 'The latest git commit sha'
+    description: 'The latest git commit sha on the given branch'
+  latest-tag:
+    description: 'The latest git tag on the given branch'
 runs:
-  using: 'docker'
-  image:  'Dockerfile'
+  using: 'composite'
   args:
     - ${{ inputs.owner }}
     - ${{ inputs.repo }}
     - ${{ inputs.branch }}
 
+  steps:
+    - run: ${{ github.action_path }}/entrypoint.sh
