@@ -39,8 +39,4 @@ runs:
   steps:
     - id: entrypoint
       run: ${{ github.action_path }}/entrypoint.sh
-      with:
-        owner: ${{ inputs.owner }}
-        repo: ${{ inputs.repo }}
-        branch: ${{ inputs.branch }}
       shell: bash
