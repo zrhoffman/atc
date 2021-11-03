@@ -36,10 +36,6 @@ outputs:
     value: ${{ steps.entrypoint.outputs.latest-tag }}
 runs:
   using: 'composite'
-  args:
-    - ${{ inputs.owner }}
-    - ${{ inputs.repo }}
-    - ${{ inputs.branch }}
   steps:
     - id: entrypoint
       run: ${{ github.action_path }}/entrypoint.sh
