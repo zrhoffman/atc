@@ -38,6 +38,5 @@ runs:
     - ${{ inputs.owner }}
     - ${{ inputs.repo }}
     - ${{ inputs.branch }}
-
   steps:
     - run: ${{ github.action_path }}/entrypoint.sh
