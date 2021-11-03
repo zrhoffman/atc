@@ -30,8 +30,10 @@ inputs:
 outputs:
   sha:
     description: 'The latest git commit sha on the given branch'
+    value: ${{ steps.entrypoint.outputs.sha }}
   latest-tag:
     description: 'The latest git tag on the given branch'
+    value: ${{ steps.entrypoint.outputs.latest-tag }}
 runs:
   using: 'composite'
   args:
@@ -39,4 +41,6 @@ runs:
     - ${{ inputs.repo }}
     - ${{ inputs.branch }}
   steps:
-    - run: ${{ github.action_path }}/entrypoint.sh
+    - id: entrypoint
+      run: ${{ github.action_path }}/entrypoint.sh
+      shell: bash
