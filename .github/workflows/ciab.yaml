@@ -77,5 +77,8 @@ on:
     types: [ opened, reopened, ready_for_review, synchronize ]
 
 jobs:
-  trafficserver:
-        run: env
+  traffic_monitor:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - run: ls -lR
