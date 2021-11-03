@@ -18,13 +18,13 @@
 name: 'fetch-github-branch-sha'
 description: 'Fetches the most recent commit from a github repository branch'
 inputs:
-  owner:  
+  owner:
     description: 'The owner of the github repository ie, "apache"'
     required: true
-  repo:  
+  repo:
     description: 'The owners github repository ie, "trafficcontrol"'
     required: true
-  branch: 
+  branch:
     description: 'The repository branch to query ie, "8.1.0-branch"'
     required: true
 outputs:
@@ -39,4 +39,8 @@ runs:
   steps:
     - id: entrypoint
       run: ${{ github.action_path }}/entrypoint.sh
+      with:
+        owner: ${{ inputs.owner }}
+        repo: ${{ inputs.repo }}
+        branch: ${{ inputs.branch }}
       shell: bash
