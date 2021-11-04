@@ -38,9 +38,9 @@ runs:
   using: 'composite'
   steps:
     - id: entrypoint
-      run: |
-        INPUT_OWNER="${{ inputs.owner }}" \
-        INPUT_REPO="${{ inputs.repo }}" \
-        INPUT_BRANCH="${{ inputs.branch }}" \
-        "${{ github.action_path }}/entrypoint.sh"
+      env:
+        INPUT_OWNER: ${{ inputs.owner }}
+        INPUT_REPO: ${{ inputs.repo }}
+        INPUT_BRANCH: ${{ inputs.branch }}
+      run: "${{ github.action_path }}/entrypoint.sh"
       shell: bash
