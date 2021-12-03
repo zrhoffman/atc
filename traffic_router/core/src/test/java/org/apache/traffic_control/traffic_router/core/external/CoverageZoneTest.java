@@ -29,6 +29,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.greaterThan;
@@ -40,6 +41,7 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 
 @Category(ExternalTest.class)
+@PowerMockIgnore("javax.management.*")
 public class CoverageZoneTest {
 	private CloseableHttpClient closeableHttpClient;
 
