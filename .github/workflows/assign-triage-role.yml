@@ -29,21 +29,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@master
-        with:
-          fetch-depth: 1000
-        if: ${{ (github.repository_owner == 'apache' && github.ref == 'refs/heads/master' ) || github.event_name != 'schedule' }}
-        id: checkout
-      - name: Install Python 3.9
-        uses: actions/setup-python@v2
-        if: ${{ steps.checkout.outcome == 'success' }}
-        with: { python-version: 3.9 }
-      - name: Install assign_triage_role Python module and dependencies
-        if: ${{ steps.checkout.outcome == 'success' }}
-        run: pip install .github/actions/assign-triage-role
-      - name: Assign Triage Role
-        if: ${{ steps.checkout.outcome == 'success' }}
-        run: python3 -m assign_triage_role
-        env:
-          GIT_AUTHOR_NAME: asfgit
-          GITHUB_TOKEN: ${{ github.token }}
+        run: env
