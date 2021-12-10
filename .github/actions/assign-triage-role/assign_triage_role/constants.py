@@ -19,3 +19,5 @@ GH_TIMELINE_EVENT_TYPE_CROSS_REFERENCE: Final[str] = 'cross-referenced'
 
 TRIAGE_USER_MINIMUM_COMMITS: Final[int] = 2
 SINCE_DAYS_AGO: Final[int] = 31
+ASF_YAML_FILE: Final[str] = '.asf.yaml'
+APACHE_LICENSE_YAML: Final[str] = 'apache_license.yml'
