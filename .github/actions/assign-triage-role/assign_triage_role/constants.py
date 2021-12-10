@@ -22,7 +22,7 @@ GH_TIMELINE_EVENT_TYPE_CROSS_REFERENCE: Final[str] = 'cross-referenced'
 
 GIT_AUTHOR_EMAIL_TEMPLATE: Final[str] = '{git_author_name}@users.noreply.github.com'
 TRIAGE_USER_MINIMUM_COMMITS: Final[int] = 2
-SINCE_DAYS_AGO: Final[int] = 31
+SINCE_DAYS_AGO: Final[int] = 31 * 2
 ASF_YAML_FILE: Final[str] = '.asf.yaml'
 SINGLE_PR_TEMPLATE_FILE: Final[str] = 'templates/single_pr.md'
 SINGLE_CONTRIBUTOR_TEMPLATE_FILE: Final[str] = 'templates/single_contributor.md'
