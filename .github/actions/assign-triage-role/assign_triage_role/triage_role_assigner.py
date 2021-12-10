@@ -24,7 +24,7 @@ from github.NamedUser import NamedUser
 from github.PaginatedList import PaginatedList
 from github.Repository import Repository
 
-from assign_triage_role.constants import SINCE_DAYS_AGO, GH_TIMELINE_EVENT_TYPE_CROSS_REFERENCE, ENV_GITHUB_TOKEN, ENV_GITHUB_REPOSITORY
+from assign_triage_role.constants import SINCE_DAYS_AGO, TRIAGE_USER_MINIMUM_COMMITS, GH_TIMELINE_EVENT_TYPE_CROSS_REFERENCE, ENV_GITHUB_TOKEN, ENV_GITHUB_REPOSITORY
 
 
 class TriageRoleAssigner:
@@ -87,8 +87,25 @@ class TriageRoleAssigner:
 			prs_by_contributor[author].append((pull_request, linked_issue))
 		return prs_by_contributor
 
+	@staticmethod
+	def ones_who_meet_threshold(prs_by_contributor: dict[NamedUser, list[(Issue, Issue)]]) -> dict[str, list[(Issue, Issue)]]:
+		prs_by_contributor: dict[str, list[(Issue, Issue)]] = {
+			# use only the username as the dict key
+			contributor.login: pull_requests for contributor, pull_requests
+			# sort contributors by commit count
+			in sorted(
+				prs_by_contributor.items(),
+				key=lambda item: len(item[1]),
+				# highest commit count first
+				reverse=True)
+			# only include triage users who had at least TRIAGE_USER_MINIMUM_COMMITS Pull Requests merged in the past SINCE_DAYS_AGO days
+			if len(pull_requests) >= TRIAGE_USER_MINIMUM_COMMITS
+		}
+		return prs_by_contributor
+
 	def run(self) -> None:
 		committers: dict[str, None] = self.get_committers()
 		today: date = date.today()
 		since_day: date = today - timedelta(days=SINCE_DAYS_AGO)
 		prs_by_contributor: dict[NamedUser, list[(Issue, Issue)]] = self.prs_by_contributor(since_day, today, committers)
+		prs_by_contributor: dict[str, list[(Issue, Issue)]] = self.ones_who_meet_threshold(prs_by_contributor)
