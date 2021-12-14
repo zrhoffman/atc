@@ -28,7 +28,7 @@ require (
 	github.com/dchest/siphash v1.2.2
 	github.com/dgrijalva/jwt-go v3.2.1-0.20190620180102-5e25c22bd5d6+incompatible
 	github.com/fsnotify/fsnotify v1.5.1
-	github.com/go-acme/lego v2.7.2+incompatible
+	github.com/go-acme/lego/v3 v3.9.0
 	github.com/go-ldap/ldap/v3 v3.4.1
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/gofrs/flock v0.8.1
@@ -58,7 +58,7 @@ require (
 require (
 	github.com/Azure/go-ntlmssp v0.0.0-20200615164410-66371956d46c // indirect
 	github.com/basho/backoff v0.0.0-20150307023525-2ff7c4694083 // indirect
-	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
+	github.com/cenkalti/backoff/v4 v4.0.2 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.1 // indirect
 	github.com/goccy/go-json v0.7.10 // indirect
