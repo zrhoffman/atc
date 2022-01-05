@@ -38,6 +38,7 @@ RUN set -o errexit;\
         net-tools \
         rpm-build;\
     dnf -y install tomcat-native
+ENV JAVA_HOME=/usr/lib/jvm/jre-11-openjdk
 
 COPY LICENSE /go/src/$DIR/
 COPY traffic_router /go/src/$DIR/traffic_router
