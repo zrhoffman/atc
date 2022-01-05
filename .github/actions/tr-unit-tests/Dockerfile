@@ -19,8 +19,14 @@ RUN apk add --no-cache \
 		openjdk11 \
 		maven \
 		tomcat-native
-
-ENTRYPOINT	cd traffic_router && \
-			export JAVA_HOME="$(command -v java | xargs realpath | xargs dirname)/.." && \
-			mvn "-Dmaven.repo.local=${GITHUB_WORKSPACE}/.m2/repository" \
-				test -Djava.library.path=/usr/share/java
+RUN apk add bash
+ENTRYPOINT /bin/bash "$@"
+WORKDIR /github/workspace
+CMD set -o xtrace -o nounset && \
+	export JAVA_HOME="$(command -v java | xargs realpath | xargs dirname)/.." && \
+	mvn_command=(mvn) && \
+	if [[ "$DEBUG_ENABLE" == true ]]; then\
+		set -o nounset && \
+		mvn_command+=("-Dmaven.surefire.debug=-agentlib:jdwp=transport=dt_socket,server=n,suspend=n,address=$DEBUG_HOST:$DEBUG_PORT -DforkCount=0 -DreuseForks=false"); \
+	fi && \
+	"${mvn_command[@]}" verify -Djava.library.path=/usr/share/java
