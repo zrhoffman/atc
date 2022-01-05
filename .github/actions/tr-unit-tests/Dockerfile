@@ -29,4 +29,4 @@ CMD set -o xtrace -o nounset && \
 		set -o nounset && \
 		mvn_command+=("-Dmaven.surefire.debug=-agentlib:jdwp=transport=dt_socket,server=n,suspend=n,address=$DEBUG_HOST:$DEBUG_PORT -DforkCount=0 -DreuseForks=false"); \
 	fi && \
-	"${mvn_command[@]}" verify -Djava.library.path=/usr/share/java
+	"${mvn_command[@]}" verify -Djava.library.path=/usr/lib
