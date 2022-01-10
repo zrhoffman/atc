@@ -19,8 +19,9 @@ func init() {
 func main() {
 	flag.Parse()
 
-	conn, err := strconv.Atoi(trHost)
+	conn, err := strconv.Atoi(numConnections)
 	if err != nil {
+		log.Println(err)
 		return
 	}
 	var wg sync.WaitGroup
@@ -29,7 +30,7 @@ func main() {
 		go func(p int) {
 			defer wg.Done()
 			conf := &tls.Config{
-				//InsecureSkipVerify: true,
+				InsecureSkipVerify: true,
 			}
 
 			conn, err := tls.Dial("tcp", trHost, conf)
