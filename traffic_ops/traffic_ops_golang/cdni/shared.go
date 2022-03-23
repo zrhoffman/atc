@@ -508,6 +508,10 @@ func checkBearerToken(bearerToken string, inf *api.APIInfo) (string, error) {
 	if token.Expiration().Unix() < time.Now().Unix() {
 		return "", errors.New("token is expired")
 	}
+
+	if token.Audience() == nil || len(token.Audience()) == 0 {
+		return "", errors.New("invalid token - ucdn must be defined in audience claim")
+	}
 	if token.Audience()[0] != inf.Config.Cdni.DCdnId {
 		return "", errors.New("invalid token - incorrect dcdn")
 	}
