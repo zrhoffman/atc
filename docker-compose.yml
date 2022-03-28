@@ -114,7 +114,7 @@ services:
             context: dev/traffic_router
             args:
                 - USER=${USER:-atc}
-                - UID=${UID:-1000}
+                - UID=${UID:-0}
         depends_on:
             - trafficmonitor
         hostname: trafficrouter
