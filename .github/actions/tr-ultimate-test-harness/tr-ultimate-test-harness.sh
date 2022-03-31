@@ -116,11 +116,12 @@ fi
 http_result=0 dns_result=0
 # Compile the tests
 go test -c ./traffic_router/ultimate-test-harness
-if ! ./ultimate-test-harness.test -test.v -test.run=^TestHTTPLoad$ -http_requests_threshold=5000; then
+ultimate_test_harness_command=(docker-compose exec --workdir=/root/go/src/github.com/apache/trafficcontrol --env TO_URL=https://trafficops --env TO_USER="$TO_USER" --env TO_PASSWORD="$TO_PASSWORD" trafficops ./ultimate-test-harness.test)
+if ! "${ultimate_test_harness_command[@]}" -test.v -test.run=^TestHTTPLoad$ -http_requests_threshold=5000; then
 	http_result=1
 fi
 
-if ! ./ultimate-test-harness.test -test.v -test.run=^TestDNSLoad$ -dns_requests_threshold=20500; then
+if ! "${ultimate_test_harness_command[@]}" -test.v -test.run=^TestDNSLoad$ -dns_requests_threshold=20500; then
 	dns_result=1
 fi
 if [[ $http_result -eq 0 && $dns_result -eq 0 ]]; then echo
