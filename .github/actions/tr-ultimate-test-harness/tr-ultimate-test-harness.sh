@@ -96,13 +96,20 @@ to-req "/snapshot?cdnID=${cdn_id}" --request PUT
 
 deliveryservice=cdn.dev-ds.ciab.test
 echo "Waiting for Delivery Service ${deliveryservice} to be available..."
-if ! timeout 2m bash -c 'atc-ready -d'; then
-	if curl -v4sfH "Host: ${deliveryservice}" localhost:3080; then
+
+if ! timeout 2m <<SHELL_COMMANDS docker-compose exec -T trafficops sh; then
+	until curl -4sfH "Host: ${deliveryservice}" trafficrouter &&
+					<<<"$(dig +short -4 @trafficrouter "$deliveryservice")" grep -q '^[0-9.]\+$';
+	do
+		sleep 1;
+	done
+SHELL_COMMANDS
+	if docker-compose exec trafficops curl -v4sfH "Host: ${deliveryservice}" trafficrouter; then
 		echo curl worked;
 	else
 		echo curl did not work;
 	fi
-	if dig -4 @localhost -p 3053 "$deliveryservice"; then
+	if docker-compose exec trafficops dig -4 @trafficrouter "$deliveryservice"; then
 		echo dig worked;
 	else
 		echo dig did not work;
