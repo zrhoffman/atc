@@ -99,7 +99,7 @@ echo "Waiting for Delivery Service ${deliveryservice} to be available..."
 
 if ! timeout 2m <<SHELL_COMMANDS docker-compose exec -T trafficops sh; then
 	set -o errexit
-	apk add curl
+	apk add curl bind-tools
 	until curl -4sfH "Host: ${deliveryservice}" trafficrouter &&
 					<<<"$(dig +short -4 @trafficrouter "$deliveryservice")" grep -q '^[0-9.]\+$';
 	do
