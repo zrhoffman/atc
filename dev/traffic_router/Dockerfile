@@ -25,8 +25,6 @@ ADD https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.43/bin/apache-tomcat-9.
 ARG USER
 ARG UID
 RUN adduser -H -D ${USER} -u ${UID}
-RUN chown -R ${UID}:${UID} /opt /usr/share/java/ /root
-USER ${USER}
 RUN cd /opt && \
 	tar -xf tomcat.tgz && \
 	mv apache-tomcat-* tomcat && \
