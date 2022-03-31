@@ -106,12 +106,12 @@ if ! timeout 2m <<SHELL_COMMANDS docker-compose exec -T trafficops sh; then
 		sleep 1;
 	done
 SHELL_COMMANDS
-	if docker-compose exec -T trafficops curl -v4sfH "Host: ${deliveryservice}" trafficrouter; then
+	if docker-compose exec trafficops curl -v4sfH "Host: ${deliveryservice}" trafficrouter; then
 		echo curl worked;
 	else
 		echo curl did not work;
 	fi
-	if docker-compose exec -T trafficops dig -4 @trafficrouter "$deliveryservice"; then
+	if docker-compose exec trafficops dig -4 @trafficrouter "$deliveryservice"; then
 		echo dig worked;
 	else
 		echo dig did not work;
