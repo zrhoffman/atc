@@ -97,7 +97,6 @@ to-req "/snapshot?cdnID=${cdn_id}" --request PUT
 deliveryservice=cdn.dev-ds.ciab.test
 echo "Waiting for Delivery Service ${deliveryservice} to be available..."
 
-docker-compose exec -T trafficops apk add curl bind-tools
 if ! timeout 2m <<SHELL_COMMANDS docker-compose exec -T trafficops sh; then
 	set -o errexit
 	until curl -4sfH "Host: ${deliveryservice}" trafficrouter:3333/crs/stats &&

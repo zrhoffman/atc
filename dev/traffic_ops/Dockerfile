@@ -39,3 +39,4 @@ COPY .pgpass /root/.pgpass
 RUN chmod 0600 /root/.pgpass
 
 CMD /root/go/src/github.com/apache/trafficcontrol/dev/traffic_ops/run.sh
+RUN apk add --no-cache bind-tools curl
