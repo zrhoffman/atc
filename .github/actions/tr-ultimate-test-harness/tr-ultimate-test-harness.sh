@@ -69,6 +69,7 @@ JSON
 		ip_address="$(<<<"$docker_network" jq -r --arg CONTAINER_ID "$container_id" --arg IP_ADDRESS_FIELD "$ip_address_field" '.[0].Containers[$CONTAINER_ID][$IP_ADDRESS_FIELD]')"
 		if [[ "$ip_address" == null ]]; then
 			echo "Could not find ${ip_address_field} for ${hostname} service!"
+			continue
 			#exit 1
 		fi
 		interface="$(<<<"$interface" jq --arg IP_ADDRESS "$ip_address" '.ipAddresses += [{} | .address = $IP_ADDRESS | .serviceAddress = true]')"
