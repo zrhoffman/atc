@@ -97,6 +97,16 @@ to-req "/snapshot?cdnID=${cdn_id}" --request PUT
 deliveryservice=cdn.dev-ds.ciab.test
 echo "Waiting for Delivery Service ${deliveryservice} to be available..."
 if ! timeout 2m bash -c 'atc-ready -d'; then
+	if curl -v4sfH "Host: ${deliveryservice}" localhost:3080; then
+		echo curl worked;
+	else
+		echo curl did not work;
+	fi
+	if dig -4 @localhost -p 3053 "$deliveryservice"; then
+		echo dig worked;
+	else
+		echo dig did not work;
+	fi
 	echo "Delivery Service ${deliveryservice} was not available within 2 minutes!"
 	trap - ERR
 	echo 'Exiting...'
