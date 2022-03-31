@@ -111,6 +111,7 @@ services:
             - .:/root/go/src/github.com/apache/trafficcontrol
 
     trafficrouter:
+        privileged: true
         build:
             context: dev/traffic_router
             args:
