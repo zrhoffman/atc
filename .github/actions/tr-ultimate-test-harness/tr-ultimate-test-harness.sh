@@ -64,7 +64,7 @@ for hostname in trafficrouter edge; do
 	}
 JSON
 	)"
-	docker_network="$(docker network inspect dev.ciab.test)"
+	docker_network="$(docker network inspect trafficcontrol_default)"
 	for ip_address_field in IPv4Address IPv6Address; do
 		ip_address="$(<<<"$docker_network" jq -r --arg CONTAINER_ID "$container_id" --arg IP_ADDRESS_FIELD "$ip_address_field" '.[0].Containers[$CONTAINER_ID][$IP_ADDRESS_FIELD]')"
 		if [[ "$ip_address" == null ]]; then

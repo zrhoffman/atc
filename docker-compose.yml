@@ -26,8 +26,6 @@ services:
                 - GO_VERSION=${GO_VERSION}
         depends_on:
             - db
-        networks:
-            - ciab
         hostname: trafficops
         image: trafficops-dev
         ports:
@@ -43,8 +41,6 @@ services:
         environment:
             - POSTGRES_PASSWORD=twelve12
         hostname: db
-        networks:
-            - ciab
 
     trafficportal:
         build:
@@ -52,8 +48,6 @@ services:
         depends_on:
             - trafficops
         hostname: trafficportal
-        networks:
-            - ciab
         image: trafficportal-dev
         ports:
             - 444:443
@@ -67,8 +61,6 @@ services:
         depends_on:
             - trafficops
         hostname: tpv2
-        networks:
-            - ciab
         image: tpv2-dev
         ports:
             - 443:443
@@ -83,8 +75,6 @@ services:
         depends_on:
             - trafficops
         hostname: trafficmonitor
-        networks:
-            - ciab
         image: trafficmonitor-dev
         ports:
             - 80:80
@@ -101,8 +91,6 @@ services:
         depends_on:
             - trafficops
         hostname: edge
-        networks:
-            - ciab
         image: t3c-dev
         ports:
             - 8080:80
@@ -120,8 +108,6 @@ services:
         depends_on:
             - trafficmonitor
         hostname: trafficrouter
-        networks:
-            - ciab
         image: trafficrouter-dev
         ports:
             - 3053:53/tcp
@@ -133,7 +119,3 @@ services:
             - 5005:5005
         volumes:
             - .:/root/go/src/github.com/apache/trafficcontrol
-networks:
-    ciab:
-        name: dev.ciab.test
-        driver: bridge
