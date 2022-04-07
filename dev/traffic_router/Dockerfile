@@ -18,6 +18,12 @@ VOLUME /root/go/src/github.com/apache/trafficcontrol
 ENV JPDA_OPTS="-agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n" JAVA_HOME=/usr/lib/jvm/java-11-openjdk M2_HOME=/root/go/src/github.com/apache/trafficcontrol/.m2 CATALINA_BASE=/opt/traffic_router TRAFFIC_MONITOR_HOSTS=trafficmonitor CATALINA_OPTS=-Dlog4j.configurationFile=/opt/traffic_router/conf/log4j2.xml
 EXPOSE 3053:53/tcp 3053:53/udp 3080:80 3443:443 3333:3333 2222:3443 5005:5005
 
+RUN architecture=$(uname -m) && \
+    mkdir lib64 && \
+    # Use musl libc where the go binary expects glibc
+    # Less-generalized: ln -s /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
+    ln -s /lib/ld-musl-${architecture}.so.[0-9] /lib64/ld-linux-${architecture//_/-}.so.2
+
 RUN apk add --no-cache openjdk11 inotify-tools maven tomcat-native openssl && ln -s /usr/lib/jvm/java-11-openjdk/bin/jdb /bin/jdb
 
 ADD https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.43/bin/apache-tomcat-9.0.43.tar.gz /opt/tomcat.tgz
