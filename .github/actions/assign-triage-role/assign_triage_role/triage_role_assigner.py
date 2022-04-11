@@ -98,8 +98,9 @@ class TriageRoleAssigner(Github):
 				pr_text: dict[str] = event.raw_data["source"]["issue"]
 				if "pull_request" not in pr_text:
 					continue
-				pull_request = Issue(self.repo.__getattribute__("_requester"), event.raw_headers,
-					pr_text, completed=True)
+				if event.actor.login.endswith('[bot]'):
+					pull_request = Issue(self.repo.__getattribute__("_requester"), event.raw_headers,
+						pr_text, completed=True)
 			# Do not break, in case the Issue has ever been linked to more than 1 PR in the past
 			if pull_request is None:
 				raise Exception(
