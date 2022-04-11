@@ -72,7 +72,10 @@ class TriageRoleAssigner(Github):
 		"""
 		Gets a set of committer usernames
 		"""
-		return {user.login for user in self.repo.get_collaborators() if user.permissions.push}
+		committers = {user.login for user in self.repo.get_collaborators() if user.permissions.push}
+		if len(committers) == 0:
+			raise Exception("An empty list of committers was found. Exiting...")
+		return committers
 
 	def prs_by_contributor(self, committers: set[str]) -> dict[
 		NamedUser, list[(Issue, Issue)]]:
