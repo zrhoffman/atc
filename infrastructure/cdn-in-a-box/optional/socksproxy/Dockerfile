@@ -31,17 +31,24 @@ RUN if [[ "${RHEL_VERSION%%.*}" -eq 7 ]]; then \
 
 ARG DANTES_SRC=https://www.inet.no/dante/files/dante-1.4.3.tar.gz
 
-RUN dnf install -y net-tools bind-utils iproute wget curl automake autoconf gcc make && \
+RUN dnf install -y \
+        net-tools \
+        bind-utils \
+        iproute \
+        wget \
+        curl \
+        automake \
+        autoconf \
+        gcc \
+        make && \
     curl -Ls -o /tmp/dante.tar.gz $DANTES_SRC && \
     tar -C /usr/src -zxvpf /tmp/dante.tar.gz && \
     cd /usr/src/dante* && \
     ./configure --prefix=/usr && \
-    make -j 4 && \
+    make -j && \
     make install && \
     groupadd -g 8062 sockd  && \
     useradd -m -u 8062 -g sockd sockd && \
-    dnf remove -y automake autoconf gcc make && \
-    dnf clean all && \
     rm -rf /tmp/*  
 
 COPY optional/socksproxy/sockd.conf /etc
