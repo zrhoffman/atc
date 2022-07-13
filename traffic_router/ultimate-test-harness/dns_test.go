@@ -27,6 +27,8 @@ import (
 	"text/tabwriter"
 	"time"
 
+	"github.com/apache/trafficcontrol/lib/go-tc"
+
 	"github.com/miekg/dns"
 )
 
@@ -122,7 +124,7 @@ func (b DNSBenchmark) Run(t *testing.T, answersChannel chan int, failuresChannel
 }
 
 func TestDNSLoad(t *testing.T) {
-	var trafficRouterDetails = GetTrafficRouterDetails(t)
+	var trafficRouterDetails = GetTrafficRouterDetails(t, tc.DSTypeDNS)
 
 	benchmark := DNSBenchmark{Benchmark{
 		RequestsPerSecondThreshold: *DNSRequestsPerSecondThreshold,

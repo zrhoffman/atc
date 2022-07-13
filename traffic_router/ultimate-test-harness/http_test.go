@@ -265,7 +265,7 @@ func (b HTTPBenchmark) Run(t *testing.T, redirectsChannel chan int, failuresChan
 }
 
 func TestHTTPLoad(t *testing.T) {
-	var trafficRouterDetails = GetTrafficRouterDetails(t)
+	var trafficRouterDetails = GetTrafficRouterDetails(t, tc.DSTypeHTTP)
 
 	benchmark := HTTPBenchmark{
 		Benchmark: Benchmark{

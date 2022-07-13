@@ -71,7 +71,7 @@ func init() {
 	log.Init(os.Stderr, os.Stderr, os.Stderr, os.Stderr, os.Stderr)
 }
 
-func GetTrafficRouterDetails(t *testing.T) []*TRDetails {
+func GetTrafficRouterDetails(t *testing.T, dsTypeName tc.DSType) []*TRDetails {
 	var err error
 	var trafficRouterDetails []*TRDetails
 
@@ -101,17 +101,16 @@ func GetTrafficRouterDetails(t *testing.T) []*TRDetails {
 			log.Warnf("need at least 1 monitored service address on an interface of Traffic Router '%s' to use it for benchmarks, but %d such addresses were found\n", *trafficRouter.HostName, len(ipAddresses))
 			continue
 		}
-		dsTypeName := tc.DSTypeHTTP
-		httpDSes := getDSes(t, *trafficRouter.CDNID, dsTypeName, tc.DeliveryServiceName(*DeliveryServiceName))
-		if len(httpDSes) < 1 {
-			t.Errorf("at least 1 Delivery Service with type '%s' is required to run HTTP load tests on Traffic Router '%s', but %d were found", dsTypeName, *trafficRouter.HostName, len(httpDSes))
+		deliveryServices := getDSes(t, *trafficRouter.CDNID, dsTypeName, tc.DeliveryServiceName(*DeliveryServiceName))
+		if len(deliveryServices) < 1 {
+			t.Errorf("at least 1 Delivery Service with type '%s' is required to run %s load tests on Traffic Router '%s', but %d were found", dsTypeName, dsTypeName, *trafficRouter.HostName, len(deliveryServices))
 			continue
 		}
-		if len(httpDSes[0].ExampleURLs) < 1 {
+		if len(deliveryServices[0].ExampleURLs) < 1 {
 			log.Warnf("No Example URLs for Delivery Service '%s'. Skipping...\n", *DeliveryServiceName)
 			continue
 		}
-		dsURL, err := url.Parse(httpDSes[0].ExampleURLs[0])
+		dsURL, err := url.Parse(deliveryServices[0].ExampleURLs[0])
 		if err != nil {
 			t.Fatalf("parsing Delivery Service URL %s: %s", dsURL, err.Error())
 		}
@@ -138,7 +137,7 @@ func GetTrafficRouterDetails(t *testing.T) []*TRDetails {
 		trafficRouterDetails = append(trafficRouterDetails, &singleTrafficRouterDetails)
 	}
 	if len(trafficRouterDetails) < 1 {
-		t.Fatalf("no Traffic Router with at least 1 HTTP Delivery Service and at least 1 monitored service address was found")
+		t.Fatalf("no Traffic Router with at least 1 %s Delivery Service and at least 1 monitored service address was found", dsTypeName)
 	}
 	return trafficRouterDetails
 }
