@@ -12,9 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.traffic_control.traffic_router.configuration
 
-package org.apache.traffic_control.traffic_router.configuration;
-
-public interface ConfigurationListener {
-	void configurationChanged();
+interface ConfigurationListener {
+    open fun configurationChanged()
 }
