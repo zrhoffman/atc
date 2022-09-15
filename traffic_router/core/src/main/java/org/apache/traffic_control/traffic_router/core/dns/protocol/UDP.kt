@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.dns.protocolimportimportimport
+package org.apache.traffic_control.traffic_router.core.dns.protocolimportimport
 
 org.apache.traffic_control.traffic_router.core.dns.protocol.UDPimport org.xbill.DNS.*import java.io.IOException
 
-org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.core.dns.protocol.*import org.apache.traffic_control.traffic_router.core.dns.protocol.UDP
+import org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.core.dns.protocol.*import org.apache.traffic_control.traffic_router.core.dns.protocol.UDP
 import org.xbill.DNS.*
 import java.lang.Exceptionimport
 

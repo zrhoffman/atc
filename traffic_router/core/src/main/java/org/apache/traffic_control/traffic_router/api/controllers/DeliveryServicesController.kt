@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.api.controllersimport
+package org.apache.traffic_control.traffic_router.api.controllers
 
 import org.apache.traffic_control.traffic_router.core.request.HTTPRequestimport
 
 org.apache.traffic_control.traffic_router.core.router.TrafficRouterManagerimport org.springframework.beans.factory.annotation .Autowiredimport org.springframework.http.HttpStatusimport org.springframework.http.ResponseEntityimport org.springframework.stereotype.Controllerimport org.springframework.web.bind.annotation .RequestParamimport org.springframework.web.bind.annotation .ResponseBodyimport java.net.*import javax.servlet.http.HttpServletRequest
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.dnsimportimportimport
+package org.apache.traffic_control.traffic_router.core.dnsimportimport
 
 com.fasterxml.jackson.databind.JsonNodeimport com.fasterxml.jackson.databind.ObjectMapperimport org.apache.traffic_control.traffic_router.core.dns.*import org.apache.traffic_control.traffic_router.core.dns.ZoneManager.ZoneCacheTypeimport
 
@@ -20,7 +20,7 @@ org.apache.traffic_control.traffic_router.core.edge.CacheRegisterimport org.apac
 
 java.security.GeneralSecurityExceptionimport java.security.NoSuchAlgorithmExceptionimport java.util.concurrent.*import java.util.function.BinaryOperator
 
-org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.core.util.*
+import org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.core.util.*
 import org.xbill.DNS.*
 import org.xbill.DNS.Recordimport
 

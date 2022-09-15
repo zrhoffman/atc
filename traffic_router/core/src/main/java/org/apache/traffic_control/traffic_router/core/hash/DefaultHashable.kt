@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.hashimport
+package org.apache.traffic_control.traffic_router.core.hash
 
 import org.apache.traffic_control.traffic_router.core.hash.DefaultHashableimport
 
-org.apache.traffic_control.traffic_router.core.hash.Hashableimport org.apache.traffic_control.traffic_router.core.hash.MD5HashFunctionimport org.apache.traffic_control.traffic_router.core.hash.NumberSearcherimport java.util.* org.springframework.web.bind.annotation .RequestMapping
+import org.apache.traffic_control.traffic_router.core.hash.Hashableimport org.apache.traffic_control.traffic_router.core.hash.MD5HashFunctionimport org.apache.traffic_control.traffic_router.core.hash.NumberSearcherimport java.util.* org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

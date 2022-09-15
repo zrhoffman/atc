@@ -20,9 +20,9 @@ import java.util.concurrent.ExecutorService
 org.apache.traffic_control.traffic_router.core.dns.protocol.Protocol
 import secure.KeyManagerTest.TestSNIServerName
 import secure.CertificateDataConverterTest
-import org.apache.traffic_control.traffic_router.protocol.RouterSslImplementationimport
+import org.apache.traffic_control.traffic_router.protocol.RouterSslImplementation
 
-org.junit.*import java.lang.Exceptionimport
+import org.junit.*import java.lang.Exceptionimport
 
 java.util.ArrayList
 class NameServerMainTest {

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package secureimport
+package secure
 
 import org.apache.traffic_control.traffic_router.secure.CertificateDataListener
 import org.apache.traffic_control.traffic_router.secure.CertificateRegistry
@@ -28,7 +28,7 @@ import org.powermock.modules.junit4.PowerMockRunner
 import java.util.*
 import javax.management.*
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

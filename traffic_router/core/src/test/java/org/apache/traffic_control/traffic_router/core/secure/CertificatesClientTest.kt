@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.secureimport
+package org.apache.traffic_control.traffic_router.core.secure
 
 import org.apache.traffic_control.traffic_router.core.secure.CertificatesClient
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.Test
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

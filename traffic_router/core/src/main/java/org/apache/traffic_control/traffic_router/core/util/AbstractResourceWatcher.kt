@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.utilimportimportimport
+package org.apache.traffic_control.traffic_router.core.utilimportimport
 
 com.fasterxml.jackson.databind.JsonNodeimport org.apache.traffic_control.traffic_router.core.config.WatcherConfigimport org.apache.traffic_control.traffic_router.core.loc.AbstractServiceUpdaterimport org.apache.traffic_control.traffic_router.core.util.AbstractResourceWatcherimport org.apache.traffic_control.traffic_router.core.util.ProtectedFetcherimport org.apache.traffic_control.traffic_router.core.util.TrafficOpsUtilsimport java.net.* org.apache.logging.log4j.LogManagerimport java.io.*import java.lang.Exception
 import java.net.*
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

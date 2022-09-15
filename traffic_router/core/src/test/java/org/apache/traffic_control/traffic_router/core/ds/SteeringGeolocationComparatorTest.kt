@@ -14,9 +14,9 @@
  */
 package org.apache.traffic_control.traffic_router.core.ds
 
-import org.apache.traffic_control.traffic_router.core.edge.Cacheimport
+import org.apache.traffic_control.traffic_router.core.edge.Cache
 
-org.apache.traffic_control.traffic_router.geolocation.Geolocationimport org.junit.Assertimport org.junit.Beforeimport org.junit.Test
+import org.apache.traffic_control.traffic_router.geolocation.Geolocationimport org.junit.Assertimport org.junit.Beforeimport org.junit.Test
 class SteeringGeolocationComparatorTest {
     /*
     This test class assumes some knowledge of United States geography. For reference,

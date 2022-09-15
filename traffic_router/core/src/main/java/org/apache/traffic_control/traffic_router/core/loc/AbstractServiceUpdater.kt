@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.locimportimportimport
+package org.apache.traffic_control.traffic_router.core.locimportimport
 
 org.apache.traffic_control.traffic_router.core.loc.AbstractServiceUpdaterimport org.apache.traffic_control.traffic_router.core.router.TrafficRouterManagerimport org.apache.traffic_control.traffic_router.core.util.JsonUtilsExceptionimport java.nio.file.*import java.util.*
 import java.util.concurrent.*
@@ -24,7 +24,7 @@ java.net.*import java.nio.file.*
 import java.util.*
 import java.util.concurrent.*
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.dnsimport
+package org.apache.traffic_control.traffic_router.core.dns
 
 import org.apache.logging.log4j.LogManagerimport
 
-org.apache.traffic_control.traffic_router.core.dns.DNSAccessRecordimport org.apache.traffic_control.traffic_router.core.dns.NameServerimport org.apache.traffic_control.traffic_router.core.dns.ZoneManagerimport org.apache.traffic_control.traffic_router.core.ds.DeliveryServiceimport org.apache.traffic_control.traffic_router.core.router.TrafficRouterManagerimport org.xbill.DNS.*import java.net.InetAddressimport
+import org.apache.traffic_control.traffic_router.core.dns.DNSAccessRecordimport org.apache.traffic_control.traffic_router.core.dns.NameServerimport org.apache.traffic_control.traffic_router.core.dns.ZoneManagerimport org.apache.traffic_control.traffic_router.core.ds.DeliveryServiceimport org.apache.traffic_control.traffic_router.core.router.TrafficRouterManagerimport org.xbill.DNS.*import java.net.InetAddressimport
 
 java.util.* org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired

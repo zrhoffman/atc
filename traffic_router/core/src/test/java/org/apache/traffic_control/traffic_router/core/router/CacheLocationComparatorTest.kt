@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.routerimport
+package org.apache.traffic_control.traffic_router.core.router
 
 import org.apache.traffic_control.traffic_router.core.edge.CacheLocation
 import org.apache.traffic_control.traffic_router.core.router.LocationComparator
@@ -20,7 +20,7 @@ import org.apache.traffic_control.traffic_router.geolocation.Geolocation
 import org.junit.Assert
 import org.junit.Test
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

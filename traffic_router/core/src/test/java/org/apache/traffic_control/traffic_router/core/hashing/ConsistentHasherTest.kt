@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.hashingimport
+package org.apache.traffic_control.traffic_router.core.hashing
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.traffic_control.traffic_router.core.ds.DeliveryService
@@ -26,7 +26,7 @@ import org.junit.*
 import org.mockito.*
 import java.util.*
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

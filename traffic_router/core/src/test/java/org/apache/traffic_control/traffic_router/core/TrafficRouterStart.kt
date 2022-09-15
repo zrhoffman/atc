@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.coreimport
+package org.apache.traffic_control.traffic_router.core
 
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender
 import org.apache.logging.log4j.core.layout.PatternLayout
 import org.apache.traffic_control.traffic_router.core.CatalinaTrafficRouter
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

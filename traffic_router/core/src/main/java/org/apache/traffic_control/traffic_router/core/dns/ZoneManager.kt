@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.dnsimport
+package org.apache.traffic_control.traffic_router.core.dns
 
 import com.fasterxml.jackson.databind.JsonNodeimport
 
@@ -22,7 +22,7 @@ com.google.common.util.concurrent.ListenableFutureTaskimport org.apache.commons.
 
 org.apache.traffic_control.traffic_router.core.ds.DeliveryServiceimport org.apache.traffic_control.traffic_router.core.edge.CacheRegisterimport org.apache.traffic_control.traffic_router.core.edge.InetRecordimport org.apache.traffic_control.traffic_router.core.edge.Node.IPVersionsimport org.apache.traffic_control.traffic_router.core.edge.Resolverimport org.apache.traffic_control.traffic_router.core.request.DNSRequestimport org.apache.traffic_control.traffic_router.core.router.DNSRouteResultimport org.apache.traffic_control.traffic_router.core.router.StatTrackerimport org.apache.traffic_control.traffic_router.core.router.TrafficRouterimport org.apache.traffic_control.traffic_router.core.router.TrafficRouterManagerimport org.apache.traffic_control.traffic_router.core.util.*import org.apache.traffic_control.traffic_router.geolocation.GeolocationExceptionimport
 
-org.xbill.DNS.*import java.io.*
+import org.xbill.DNS.*import java.io.*
 import java.net.*
 import java.security.GeneralSecurityExceptionimport
 

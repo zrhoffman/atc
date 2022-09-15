@@ -38,9 +38,9 @@ import org.apache.tomcat.util.net.jsse.JSSESupport
 import org.apache.tomcat.util.net.SSLUtil
 import secure.KeyManagerTest.TestSNIServerName
 import secure.CertificateDataConverterTest
-import org.apache.traffic_control.traffic_router.protocol.RouterSslImplementationimport
+import org.apache.traffic_control.traffic_router.protocol.RouterSslImplementation
 
-org.junit.*import org.xbill.DNS.*
+import org.junit.*import org.xbill.DNS.*
 import java.lang.Exceptionimport
 
 java.lang.Recordimport java.util.*

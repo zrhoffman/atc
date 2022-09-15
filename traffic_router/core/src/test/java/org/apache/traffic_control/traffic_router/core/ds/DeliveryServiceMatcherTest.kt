@@ -14,9 +14,9 @@
  */
 package org.apache.traffic_control.traffic_router.core.ds
 
-import org.apache.traffic_control.traffic_router.core.request.HTTPRequestimport
+import org.apache.traffic_control.traffic_router.core.request.HTTPRequest
 
-org.apache.traffic_control.traffic_router.core.request.Requestimport org.hamcrest.Matchersimport org.junit.Assertimport org.junit.Testimport org.junit.runner.RunWithimport org.mockito.Mockitoimport org.powermock.core.classloader.annotations.PowerMockIgnoreimport org.powermock.core.classloader.annotations.PrepareForTestimport org.powermock.modules.junit4.PowerMockRunner
+import org.apache.traffic_control.traffic_router.core.request.Requestimport org.hamcrest.Matchersimport org.junit.Assertimport org.junit.Testimport org.junit.runner.RunWithimport org.mockito.Mockitoimport org.powermock.core.classloader.annotations.PowerMockIgnoreimport org.powermock.core.classloader.annotations.PrepareForTestimport org.powermock.modules.junit4.PowerMockRunner
 @PrepareForTest(DeliveryService::class)
 @RunWith(PowerMockRunner::class)
 @PowerMockIgnore("javax.management.*")

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sharedimport
+package shared
 
 import org.apache.traffic_control.traffic_router.shared.CertificateData
 import org.apache.traffic_control.traffic_router.shared.DeliveryServiceCertificates
@@ -28,7 +28,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 import javax.management.AttributeChangeNotification
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.configimportimportimport
+package org.apache.traffic_control.traffic_router.core.configimportimport
 
 com.fasterxml.jackson.databind.JsonNodeimport com.fasterxml.jackson.databind.ObjectMapperimport org.apache.traffic_control.traffic_router.core.config.ConfigHandlerimport org.apache.traffic_control.traffic_router.core.ds.DeliveryServiceimport org.apache.traffic_control.traffic_router.core.ds.DeliveryServiceMatcherimport org.apache.traffic_control.traffic_router.core.ds.LetsEncryptDnsChallengeWatcherimport org.apache.traffic_control.traffic_router.core.ds.SteeringWatcherimport org.apache.traffic_control.traffic_router.core.edge.Cache.DeliveryServiceReferenceimport org.apache.traffic_control.traffic_router.core.edge.CacheLocation.LocalizationMethodimport org.apache.traffic_control.traffic_router.core.loc.*import org.apache.traffic_control.traffic_router.core.monitor.TrafficMonitorWatcherimport
 
@@ -20,7 +20,7 @@ org.apache.traffic_control.traffic_router.core.request.HTTPRequestimport org.apa
 
 java.util.concurrent.atomic.AtomicBooleanimport java.util.stream.Collectors org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.core.config.ParseExceptionimport org.apache.traffic_control.traffic_router.core.edge.*import org.apache.traffic_control.traffic_router.core.request.RequestMatcherimport
 
-org.apache.traffic_control.traffic_router.core.util.*import java.lang.Exceptionimport
+import org.apache.traffic_control.traffic_router.core.util.*import java.lang.Exceptionimport
 
 java.net.*
 import java.util.*

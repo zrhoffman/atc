@@ -14,11 +14,11 @@
  */
 package org.apache.traffic_control.traffic_router.core.router
 
-import org.apache.traffic_control.traffic_router.core.edge.CacheRegisterimport
+import org.apache.traffic_control.traffic_router.core.edge.CacheRegister
 
 org.apache.traffic_control.traffic_router.core.loc.RegionalGeoResultimport org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.*import org.apache.traffic_control.traffic_router.geolocation.Geolocation
 
-org.xbill.DNS.*
+import org.xbill.DNS.*
 class StatTracker {
     class Tallies {
         fun getCzCount(): Int {

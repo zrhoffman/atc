@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.dnsimportimportimport
+package org.apache.traffic_control.traffic_router.core.dnsimportimport
 
-org.apache.traffic_control.traffic_router.core.dns.*import org.xbill.DNS.DNSSEC.DNSSECExceptionimport
+import org.apache.traffic_control.traffic_router.core.dns.*import org.xbill.DNS.DNSSEC.DNSSECExceptionimport
 
 java.io.IOExceptionimport java.security.GeneralSecurityExceptionimport java.security.PrivateKeyimport java.util.concurrent.ConcurrentHashMapimport java.util.concurrent.ConcurrentMapimport java.util.function.BiFunctionimport java.util.stream.Collectorsimport java.util.stream.StreamSupport org.apache.logging.log4j.LogManagerimport org.xbill.DNS.*
 import java.lang.Exceptionimport

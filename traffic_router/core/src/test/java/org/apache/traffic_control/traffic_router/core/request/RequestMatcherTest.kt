@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.requestimport
+package org.apache.traffic_control.traffic_router.core.request
 
 import org.apache.traffic_control.traffic_router.core.ds.DeliveryServiceMatcher
 import org.apache.traffic_control.traffic_router.core.request.HTTPRequest
@@ -24,7 +24,7 @@ import org.junit.Assert
 import org.junit.Test
 import java.util.*
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

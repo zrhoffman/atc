@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.utilimport
+package org.apache.traffic_control.traffic_router.core.util
 
 import org.apache.traffic_control.traffic_router.core.util.Fetcher
 import org.junit.Assert
@@ -33,7 +33,7 @@ import java.net.SocketTimeoutException
 import java.net.URL
 import java.net.URLConnection
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ResponseBody

@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.traffic_control.traffic_router.core.edgeimport
+package org.apache.traffic_control.traffic_router.core.edge
 
 import org.apache.traffic_control.traffic_router.core.edge.CacheLocation
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.dnsimportimportimport
+package org.apache.traffic_control.traffic_router.core.dnsimportimport
 
-org.apache.traffic_control.traffic_router.core.dns.NameServerMainimport org.springframework.context.support.ClassPathXmlApplicationContextimport java.util.concurrent.ExecutorService org.apache.logging.log4j.LogManager
+import org.apache.traffic_control.traffic_router.core.dns.NameServerMainimport org.springframework.context.support.ClassPathXmlApplicationContextimport java.util.concurrent.ExecutorService org.apache.logging.log4j.LogManager
 import org.apache.traffic_control.traffic_router.core.dns.protocol.Protocolimport
 
 java.lang.Exception org.springframework.web.bind.annotation .RequestMapping

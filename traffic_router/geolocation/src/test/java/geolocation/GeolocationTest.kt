@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package geolocationimport
+package geolocation
 
 import org.apache.traffic_control.traffic_router.geolocation.Geolocation
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

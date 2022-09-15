@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.dnsimport
+package org.apache.traffic_control.traffic_router.core.dns
 
 import org.apache.traffic_control.traffic_router.core.dns.DNSAccessRecordimport
 
-org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.ResultDetailsimport org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.ResultTypeimport org.apache.traffic_control.traffic_router.geolocation.Geolocationimport org.xbill.DNS.Messageimport java.net.InetAddress org.springframework.web.bind.annotation .RequestMapping
+import org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.ResultDetailsimport org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.ResultTypeimport org.apache.traffic_control.traffic_router.geolocation.Geolocationimport org.xbill.DNS.Messageimport java.net.InetAddress org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

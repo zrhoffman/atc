@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.locimportimportimport
+package org.apache.traffic_control.traffic_router.core.locimportimport
 
 com.maxmind.geoip2.DatabaseReaderimport com.maxmind.geoip2.exception.AddressNotFoundExceptionimport com.maxmind.geoip2.model.CityResponseimport org.apache.traffic_control.traffic_router.core.loc.MaxmindGeolocationServiceimport org.apache.traffic_control.traffic_router.geolocation.Geolocationimport org.apache.traffic_control.traffic_router.geolocation.GeolocationExceptionimport org.apache.traffic_control.traffic_router.geolocation.GeolocationServiceimport java.io.*import java.net.InetAddress
 
@@ -20,7 +20,7 @@ org.apache.logging.log4j.LogManager
 import java.io.*
 import java.lang.Exception
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

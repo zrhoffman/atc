@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.locimport
+package org.apache.traffic_control.traffic_router.core.loc
 
 import com.fasterxml.jackson.databind.JsonNodeimport
 
@@ -20,7 +20,7 @@ com.fasterxml.jackson.databind.ObjectMapperimport com.google.common.net.InetAddr
 org.apache.traffic_control.traffic_router.core.loc.AnonymousIpWhitelistimport org.apache.traffic_control.traffic_router.core.loc.NetworkNodeExceptionimport org.apache.traffic_control.traffic_router.core.request.HTTPRequestimport org.apache.traffic_control.traffic_router.core.request.Requestimport org.apache.traffic_control.traffic_router.core.router.HTTPRouteResultimport org.apache.traffic_control.traffic_router.core.router.StatTrackerimport org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.ResultTypeimport org.apache.traffic_control.traffic_router.core.router.TrafficRouterimport org.apache.traffic_control.traffic_router.core.util.*import java.io.*
 import java.net.*
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ResponseBody

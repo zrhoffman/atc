@@ -14,9 +14,9 @@
  */
 package org.apache.traffic_control.traffic_router.core.dns.keys
 
-import org.apache.traffic_control.traffic_router.core.dns.RRSetsBuilderimport
+import org.apache.traffic_control.traffic_router.core.dns.RRSetsBuilder
 
-org.apache.traffic_control.traffic_router.shared.ZoneTestRecordsimport org.hamcrest.MatcherAssertimport org.hamcrest.Matchersimport org.junit.Beforeimport org.junit.Testimport org.xbill.DNS.RRsetimport org.xbill.DNS.Type
+import org.apache.traffic_control.traffic_router.shared.ZoneTestRecordsimport org.hamcrest.MatcherAssertimport org.hamcrest.Matchersimport org.junit.Beforeimport org.junit.Testimport org.xbill.DNS.RRsetimport org.xbill.DNS.Type
 class RRSetsBuilderTest {
     @Before
     @Throws(Exception::class)

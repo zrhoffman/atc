@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.secureimport
+package org.apache.traffic_control.traffic_router.core.secure
 
 import org.apache.traffic_control.traffic_router.secure.Pkcs1
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -24,7 +24,7 @@ import java.security.Security
 import java.security.interfaces.RSAPrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

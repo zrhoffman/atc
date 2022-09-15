@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.secureimportimport
+package org.apache.traffic_control.traffic_router.core.secureimport
 
-com.fasterxml.jackson.annotation .JsonIgnorePropertiesimport com.fasterxml.jackson.annotation .JsonPropertyimport org.apache.traffic_control.traffic_router.shared.CertificateData org.springframework.web.bind.annotation .RequestMapping
+import com.fasterxml.jackson.annotation .JsonIgnorePropertiesimport com.fasterxml.jackson.annotation .JsonPropertyimport org.apache.traffic_control.traffic_router.shared.CertificateData org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

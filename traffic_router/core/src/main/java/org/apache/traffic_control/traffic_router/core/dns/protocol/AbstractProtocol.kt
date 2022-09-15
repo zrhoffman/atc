@@ -14,7 +14,7 @@
  */
 package org.apache.traffic_control.traffic_router.core.dns.protocol
 
-import org.apache.traffic_control.traffic_router.core.dns.DNSAccessEventBuilderimport
+import org.apache.traffic_control.traffic_router.core.dns.DNSAccessEventBuilder
 
 org.apache.traffic_control.traffic_router.core.dns.DNSAccessRecordimport org.apache.traffic_control.traffic_router.core.dns.NameServerimport java.net.InetAddress org.apache.logging.log4j.LogManager
 import org.apache.tomcat.util.net.SSLImplementation
@@ -25,7 +25,7 @@ import secure.KeyManagerTest.TestSNIServerName
 import secure.CertificateDataConverterTest
 import org.apache.traffic_control.traffic_router.protocol.RouterSslImplementationimport
 
-org.xbill.DNS.*import java.lang.Exceptionimport
+import org.xbill.DNS.*import java.lang.Exceptionimport
 
 java.util.concurrent.*
 abstract class AbstractProtocol : Protocol {

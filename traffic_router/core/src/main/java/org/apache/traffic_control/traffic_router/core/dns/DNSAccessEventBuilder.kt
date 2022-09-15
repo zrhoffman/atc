@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.dnsimport
+package org.apache.traffic_control.traffic_router.core.dns
 
 import org.apache.traffic_control.traffic_router.core.dns.DNSAccessEventBuilderimport
 
-org.apache.traffic_control.traffic_router.core.dns.DNSAccessRecordimport org.xbill.DNS.*import java.math.RoundingModeimport
+import org.apache.traffic_control.traffic_router.core.dns.DNSAccessRecordimport org.xbill.DNS.*import java.math.RoundingModeimport
 
 java.text.DecimalFormat org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired

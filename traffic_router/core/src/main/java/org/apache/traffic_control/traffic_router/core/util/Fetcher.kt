@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.utilimport
+package org.apache.traffic_control.traffic_router.core.util
 
 import org.apache.logging.log4j.LogManagerimport
 
-org.apache.traffic_control.traffic_router.core.util.Fetcherimport java.io.*import java.net.*
+import org.apache.traffic_control.traffic_router.core.util.Fetcherimport java.io.*import java.net.*
 import java.security.*
 import java.security.cert.CertificateExceptionimport
 

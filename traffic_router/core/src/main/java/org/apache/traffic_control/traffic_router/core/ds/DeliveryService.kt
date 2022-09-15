@@ -14,7 +14,7 @@
  */
 package org.apache.traffic_control.traffic_router.core.ds
 
-import com.fasterxml.jackson.annotation.JsonIgnoreimport
+import com.fasterxml.jackson.annotation.JsonIgnore
 
 com.fasterxml.jackson.databind.JsonNodeimport org.apache.traffic_control.traffic_router.core.request.DNSRequestimport org.apache.traffic_control.traffic_router.core.request.HTTPRequestimport org.apache.traffic_control.traffic_router.core.router.StatTrackerimport org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.ResultDetailsimport org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.ResultTypeimport org.apache.traffic_control.traffic_router.core.util.*import org.apache.traffic_control.traffic_router.geolocation.Geolocationimport
 
@@ -26,7 +26,7 @@ import org.apache.tomcat.util.net.SSLSupport
 import org.apache.tomcat.util.net.jsse.JSSESupport
 import org.apache.tomcat.util.net.SSLUtilimport
 
-org.apache.traffic_control.traffic_router.core.edge.*import org.apache.traffic_control.traffic_router.core.util.*
+import org.apache.traffic_control.traffic_router.core.edge.*import org.apache.traffic_control.traffic_router.core.util.*
 import secure.KeyManagerTest.TestSNIServerName
 import secure.CertificateDataConverterTest
 import org.apache.traffic_control.traffic_router.protocol.RouterSslImplementationimport

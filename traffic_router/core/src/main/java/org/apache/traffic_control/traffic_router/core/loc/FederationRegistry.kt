@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.locimport
+package org.apache.traffic_control.traffic_router.core.loc
 
 import org.apache.traffic_control.traffic_router.core.edge.InetRecordimport
 
-org.apache.traffic_control.traffic_router.core.loc.Federationimport org.apache.traffic_control.traffic_router.core.loc.FederationMappingimport org.apache.traffic_control.traffic_router.core.util.CidrAddress org.springframework.web.bind.annotation .RequestMapping
+import org.apache.traffic_control.traffic_router.core.loc.Federationimport org.apache.traffic_control.traffic_router.core.loc.FederationMappingimport org.apache.traffic_control.traffic_router.core.util.CidrAddress org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

@@ -14,9 +14,9 @@
  */
 package org.apache.traffic_control.traffic_router.core.ds
 
-import org.hamcrest.MatcherAssertimport
+import org.hamcrest.MatcherAssert
 
-org.hamcrest.Matchersimport org.junit.Test
+import org.hamcrest.Matchersimport org.junit.Test
 class SteeringRegistryTest {
     @Test
     @Throws(Exception::class)

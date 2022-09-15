@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.edgeimportimportimport
+package org.apache.traffic_control.traffic_router.core.edgeimportimport
 
 org.apache.commons.lang3.builder.HashCodeBuilderimport org.apache.traffic_control.traffic_router.core.edge.*import org.apache.traffic_control.traffic_router.core.edge.CacheLocation.LocalizationMethodimport
 
-org.apache.traffic_control.traffic_router.geolocation.Geolocation org.apache.commons.lang3.builder.EqualsBuilderimport org.apache.logging.log4j.LogManager
+import org.apache.traffic_control.traffic_router.geolocation.Geolocation org.apache.commons.lang3.builder.EqualsBuilderimport org.apache.logging.log4j.LogManager
 import org.apache.traffic_control.traffic_router.core.edge.*
 import org.apache.traffic_control.traffic_router.core.edge.CacheLocationimport
 

@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.locimportimport
+package org.apache.traffic_control.traffic_router.core.locimport
 
-org.apache.traffic_control.traffic_router.core.loc.RegionalGeoResult.RegionalGeoResultTypeimport org.apache.traffic_control.traffic_router.core.loc.RegionalGeoRule.PostalsType org.springframework.web.bind.annotation .RequestMapping
+import org.apache.traffic_control.traffic_router.core.loc.RegionalGeoResult.RegionalGeoResultTypeimport org.apache.traffic_control.traffic_router.core.loc.RegionalGeoRule.PostalsType org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

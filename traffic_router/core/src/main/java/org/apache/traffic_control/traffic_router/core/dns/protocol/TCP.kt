@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.dns.protocolimportimportimport
+package org.apache.traffic_control.traffic_router.core.dns.protocolimportimport
 
 org.apache.traffic_control.traffic_router.core.dns.protocol.TCPimport org.apache.traffic_control.traffic_router.core.dns.protocol.TCP.TCPSocketHandlerimport org.xbill.DNS.*import java.io.DataInputStreamimport
 
@@ -22,7 +22,7 @@ import java.lang.Exceptionimport
 
 java.net.*import java.nio.channels.Channels
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.utilimportimportimport
+package org.apache.traffic_control.traffic_router.core.utilimportimport
 
 org.apache.traffic_control.traffic_router.core.util.AbstractUpdatableimport org.apache.traffic_control.traffic_router.core.util.PeriodicResourceUpdaterimport org.apache.traffic_control.traffic_router.core.util.ResourceUrlimport java.io.*import java.util.concurrent.*
 import java.util.zip.GZIPInputStream
@@ -23,7 +23,7 @@ import java.lang.Exceptionimport
 java.net.*
 import java.util.concurrent.*
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

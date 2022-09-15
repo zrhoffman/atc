@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.externalimport
+package org.apache.traffic_control.traffic_router.core.external
 
 import org.apache.catalina.LifecycleException
 import org.apache.http.client.methods.CloseableHttpResponse
@@ -29,7 +29,7 @@ import org.junit.Test
 import org.junit.experimental.categories.Category
 import java.net.URLEncoder
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

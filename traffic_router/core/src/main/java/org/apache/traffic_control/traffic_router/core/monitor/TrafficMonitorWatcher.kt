@@ -14,9 +14,9 @@
  */
 package org.apache.traffic_control.traffic_router.core.monitor
 
-import com.fasterxml.jackson.core.JsonProcessingExceptionimport
+import com.fasterxml.jackson.core.JsonProcessingException
 
-com.fasterxml.jackson.databind.ObjectMapperimport org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.core.config.ConfigHandlerimport org.apache.traffic_control.traffic_router.core.router.TrafficRouterManagerimport org.apache.traffic_control.traffic_router.core.util.AbstractUpdatableimport org.apache.traffic_control.traffic_router.core.util.JsonUtilsExceptionimport org.apache.traffic_control.traffic_router.core.util.PeriodicResourceUpdaterimport org.springframework.context.ApplicationListenerimport org.springframework.context.event.ApplicationContextEventimport org.springframework.context.event.ContextClosedEventimport java.io.Fileimport java.io.FileInputStreamimport java.io.IOExceptionimport java.net.URIimport java.net.UnknownHostExceptionimport java.nio.file.Pathimport java.util.*
+import com.fasterxml.jackson.databind.ObjectMapperimport org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.core.config.ConfigHandlerimport org.apache.traffic_control.traffic_router.core.router.TrafficRouterManagerimport org.apache.traffic_control.traffic_router.core.util.AbstractUpdatableimport org.apache.traffic_control.traffic_router.core.util.JsonUtilsExceptionimport org.apache.traffic_control.traffic_router.core.util.PeriodicResourceUpdaterimport org.springframework.context.ApplicationListenerimport org.springframework.context.event.ApplicationContextEventimport org.springframework.context.event.ContextClosedEventimport java.io.Fileimport java.io.FileInputStreamimport java.io.IOExceptionimport java.net.URIimport java.net.UnknownHostExceptionimport java.nio.file.Pathimport java.util.*
 class TrafficMonitorWatcher : ApplicationListener<ApplicationContextEvent?> {
     private var stateUrl: String? = null
     private var configUrl: String? = null

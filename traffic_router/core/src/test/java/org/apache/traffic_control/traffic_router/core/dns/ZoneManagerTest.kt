@@ -23,9 +23,9 @@ import org.apache.traffic_control.traffic_router.core.util.IntegrationTest
 import java.io.*
 import java.net.InetAddress
 
-org.hamcrest.MatcherAssertimport org.hamcrest.core.IsCollectionContainingimport org.junit.*import org.junit.experimental.categories.Categoryimport
+org.hamcrest.MatcherAssertimport org.hamcrest.core.IsCollectionContainingimport org.junit.*import org.junit.experimental.categories.Category
 
-org.springframework.context.ApplicationContextimport org.xbill.DNS.*import java.io.*
+import org.springframework.context.ApplicationContextimport org.xbill.DNS.*import java.io.*
 import java.lang.Exceptionimport
 
 java.math.BigInteger

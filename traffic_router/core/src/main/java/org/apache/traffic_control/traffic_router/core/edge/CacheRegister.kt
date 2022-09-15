@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.edgeimport
+package org.apache.traffic_control.traffic_router.core.edge
 
 import com.fasterxml.jackson.databind.JsonNodeimport
 
-org.apache.traffic_control.traffic_router.core.ds.DeliveryServiceimport org.apache.traffic_control.traffic_router.core.ds.DeliveryServiceMatcherimport org.apache.traffic_control.traffic_router.core.edge.*import org.apache.traffic_control.traffic_router.core.request.Requestimport
+import org.apache.traffic_control.traffic_router.core.ds.DeliveryServiceimport org.apache.traffic_control.traffic_router.core.ds.DeliveryServiceMatcherimport org.apache.traffic_control.traffic_router.core.edge.*import org.apache.traffic_control.traffic_router.core.request.Requestimport
 
 java.util.*import java.util.function.Supplierimport
 

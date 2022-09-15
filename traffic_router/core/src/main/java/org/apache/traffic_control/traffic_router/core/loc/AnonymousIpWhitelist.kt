@@ -11,11 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.locimport
+package org.apache.traffic_control.traffic_router.core.loc
 
 import com.fasterxml.jackson.databind.JsonNodeimport
 
-org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.core.loc.AnonymousIpimport org.apache.traffic_control.traffic_router.core.loc.AnonymousIpWhitelistimport org.apache.traffic_control.traffic_router.core.loc.NetworkNodeimport org.apache.traffic_control.traffic_router.core.loc.NetworkNode.SuperNodeimport org.apache.traffic_control.traffic_router.core.loc.NetworkNodeExceptionimport org.apache.traffic_control.traffic_router.core.util.JsonUtilsException org.springframework.web.bind.annotation .RequestMapping
+import org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.core.loc.AnonymousIpimport org.apache.traffic_control.traffic_router.core.loc.AnonymousIpWhitelistimport org.apache.traffic_control.traffic_router.core.loc.NetworkNodeimport org.apache.traffic_control.traffic_router.core.loc.NetworkNode.SuperNodeimport org.apache.traffic_control.traffic_router.core.loc.NetworkNodeExceptionimport org.apache.traffic_control.traffic_router.core.util.JsonUtilsException org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

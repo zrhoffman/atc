@@ -14,7 +14,7 @@
  */
 package org.apache.traffic_control.traffic_router.core.ds
 
-import com.fasterxml.jackson.core.JsonFactoryimport
+import com.fasterxml.jackson.core.JsonFactory
 
 com.fasterxml.jackson.databind.ObjectMapperimport java.io.IOException com.fasterxml.jackson.core.type.TypeReference
 import org.apache.traffic_control.traffic_router.core.monitor.TrafficMonitorResourceUrl
@@ -177,7 +177,7 @@ import org.apache.traffic_control.traffic_router.protocol.LanguidNioProtocol
 import java.lang.ClassNotFoundException
 import org.apache.coyote.ProtocolHandlerimport
 
-org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.LogManager
 import org.apache.tomcat.util.net.SSLImplementation
 import org.apache.tomcat.util.net.SSLSupport
 import org.apache.tomcat.util.net.jsse.JSSESupport

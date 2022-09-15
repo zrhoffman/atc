@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.locimport
+package org.apache.traffic_control.traffic_router.core.loc
 
 import com.fasterxml.jackson.databind.ObjectMapperimport
 
-org.apache.traffic_control.traffic_router.core.loc.Federationimport org.apache.traffic_control.traffic_router.core.loc.FederationMappingimport org.apache.traffic_control.traffic_router.core.loc.FederationMappingBuilderimport org.apache.traffic_control.traffic_router.core.util.JsonUtilsimport org.apache.traffic_control.traffic_router.core.util.JsonUtilsExceptionimport java.io.IOException org.springframework.web.bind.annotation .RequestMapping
+import org.apache.traffic_control.traffic_router.core.loc.Federationimport org.apache.traffic_control.traffic_router.core.loc.FederationMappingimport org.apache.traffic_control.traffic_router.core.loc.FederationMappingBuilderimport org.apache.traffic_control.traffic_router.core.util.JsonUtilsimport org.apache.traffic_control.traffic_router.core.util.JsonUtilsExceptionimport java.io.IOException org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ResponseBody

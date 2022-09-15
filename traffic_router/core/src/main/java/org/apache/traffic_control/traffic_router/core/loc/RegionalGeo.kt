@@ -14,13 +14,13 @@
  */
 package org.apache.traffic_control.traffic_router.core.loc
 
-import com.fasterxml.jackson.databind.JsonNodeimport
+import com.fasterxml.jackson.databind.JsonNode
 
 com.fasterxml.jackson.databind.ObjectMapperimport org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.core.ds.DeliveryServiceimport org.apache.traffic_control.traffic_router.core.edge.*import org.apache.traffic_control.traffic_router.core.loc.NetworkNode.SuperNodeimport
 
 org.apache.traffic_control.traffic_router.core.loc.NetworkNodeExceptionimport org.apache.traffic_control.traffic_router.core.loc.RegionalGeoResult.RegionalGeoResultTypeimport org.apache.traffic_control.traffic_router.core.loc.RegionalGeoRule.PostalsTypeimport org.apache.traffic_control.traffic_router.core.request.HTTPRequestimport org.apache.traffic_control.traffic_router.core.request.Requestimport org.apache.traffic_control.traffic_router.core.router.HTTPRouteResultimport org.apache.traffic_control.traffic_router.core.router.StatTrackerimport org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.ResultDetailsimport org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.ResultTypeimport org.apache.traffic_control.traffic_router.core.router.TrafficRouterimport org.apache.traffic_control.traffic_router.core.util.*import org.apache.traffic_control.traffic_router.geolocation.Geolocationimport
 
-org.apache.traffic_control.traffic_router.geolocation.GeolocationExceptionimport java.io.*import java.net.*
+import org.apache.traffic_control.traffic_router.geolocation.GeolocationExceptionimport java.io.*import java.net.*
 import java.util.*
 import java.util.regex.Pattern
 

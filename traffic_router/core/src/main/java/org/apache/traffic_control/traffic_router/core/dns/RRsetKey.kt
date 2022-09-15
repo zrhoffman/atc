@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.dnsimport
+package org.apache.traffic_control.traffic_router.core.dns
 
 import org.apache.traffic_control.traffic_router.core.dns.RRsetKeyimport
 
-org.xbill.DNS.RRsetimport org.xbill.DNS.Record org.springframework.web.bind.annotation .RequestMapping
+import org.xbill.DNS.RRsetimport org.xbill.DNS.Record org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.traffic_control.traffic_router.core.edgeimportimportimport
+package org.apache.traffic_control.traffic_router.core.edgeimportimport
 
 org.apache.traffic_control.traffic_router.core.edge.InetRecordimport java.net.* org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.core.edge.Resolver
 import java.net.*
 import java.util.ArrayList
 
-org.springframework.web.bind.annotation .RequestMapping
+import org.springframework.web.bind.annotation .RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.apache.traffic_control.traffic_router.core.util.DataExporter
 import org.springframework.web.bind.annotation.GetMapping

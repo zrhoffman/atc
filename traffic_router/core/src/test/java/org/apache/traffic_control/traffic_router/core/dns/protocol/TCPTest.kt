@@ -14,9 +14,9 @@
  */
 package org.apache.traffic_control.traffic_router.core.dns.protocol
 
-import org.apache.traffic_control.traffic_router.core.dns.DNSAccessRecordimport
+import org.apache.traffic_control.traffic_router.core.dns.DNSAccessRecord
 
-org.apache.traffic_control.traffic_router.core.dns.NameServerimport org.hamcrest.MatcherAssertimport org.hamcrest.Matchersimport org.junit.Assertimport org.junit.Beforeimport org.junit.Testimport org.junit.runner.RunWithimport org.mockito.ArgumentMatchersimport org.mockito.Mockitoimport org.powermock.api.mockito.PowerMockitoimport org.powermock.core.classloader.annotations.PowerMockIgnoreimport org.powermock.core.classloader.annotations.PrepareForTestimport org.powermock.modules.junit4.PowerMockRunnerimport org.xbill.DNS.*import java.io.ByteArrayInputStreamimport
+import org.apache.traffic_control.traffic_router.core.dns.NameServerimport org.hamcrest.MatcherAssertimport org.hamcrest.Matchersimport org.junit.Assertimport org.junit.Beforeimport org.junit.Testimport org.junit.runner.RunWithimport org.mockito.ArgumentMatchersimport org.mockito.Mockitoimport org.powermock.api.mockito.PowerMockitoimport org.powermock.core.classloader.annotations.PowerMockIgnoreimport org.powermock.core.classloader.annotations.PrepareForTestimport org.powermock.modules.junit4.PowerMockRunnerimport org.xbill.DNS.*import java.io.ByteArrayInputStreamimport
 
 java.io.ByteArrayOutputStreamimport java.io.DataOutputStreamimport java.net.InetAddressimport java.net.ServerSocketimport java.net.Socketimport java.util.concurrent.ExecutorServiceimport java.util.concurrent.LinkedBlockingQueueimport java.util.concurrent.ThreadPoolExecutor
 @RunWith(PowerMockRunner::class)
