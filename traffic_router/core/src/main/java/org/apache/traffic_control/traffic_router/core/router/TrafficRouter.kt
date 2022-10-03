@@ -56,6 +56,10 @@ import org.apache.traffic_control.traffic_router.core.util.TrafficOpsUtils
 
 import org.apache.traffic_control.traffic_router.geolocation.Geolocation
 import org.apache.logging.log4j.LogManager
+import org.apache.traffic_control.traffic_router.core.util.JsonUtils.optBoolean
+import org.apache.traffic_control.traffic_router.core.util.JsonUtils.optDouble
+import org.apache.traffic_control.traffic_router.core.util.JsonUtils.optLong
+import org.apache.traffic_control.traffic_router.core.util.JsonUtils.optString
 
 import org.apache.traffic_control.traffic_router.geolocation.GeolocationException
 import org.apache.traffic_control.traffic_router.geolocation.GeolocationService
