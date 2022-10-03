@@ -15,22 +15,68 @@
 package org.apache.traffic_control.traffic_router.core.router
 
 import com.fasterxml.jackson.databind.JsonNode
+import org.apache.traffic_control.traffic_router.configuration.ConfigurationListener
+import org.apache.traffic_control.traffic_router.core.dns.DNSAccessRecord
+import org.apache.traffic_control.traffic_router.core.dns.ZoneManager
+import org.apache.traffic_control.traffic_router.core.ds.DeliveryService
+import org.apache.traffic_control.traffic_router.core.ds.SteeringGeolocationComparator
+import org.apache.traffic_control.traffic_router.core.ds.SteeringRegistry
+import org.apache.traffic_control.traffic_router.core.ds.SteeringResult
+import org.apache.traffic_control.traffic_router.core.ds.SteeringTarget
+import org.apache.traffic_control.traffic_router.core.ds.DeliveryService.DeepCachingType
+import org.apache.traffic_control.traffic_router.core.edge.Cache
+import org.apache.traffic_control.traffic_router.core.edge.CacheLocation
+import org.apache.traffic_control.traffic_router.core.edge.CacheLocation.LocalizationMethod
+import org.apache.traffic_control.traffic_router.core.edge.CacheRegister
+import org.apache.traffic_control.traffic_router.core.edge.InetRecord
+import org.apache.traffic_control.traffic_router.core.edge.Location
+import org.apache.traffic_control.traffic_router.core.edge.Node
+import org.apache.traffic_control.traffic_router.core.edge.Node.IPVersions
+import org.apache.traffic_control.traffic_router.core.edge.TrafficRouterLocation
+import org.apache.traffic_control.traffic_router.core.edge.CacheLocation.LocalizationMethod
+import org.apache.traffic_control.traffic_router.core.edge.Node.IPVersions
+import org.apache.traffic_control.traffic_router.core.hash.ConsistentHasher
+import org.apache.traffic_control.traffic_router.core.http.RouterFilter
+import org.apache.traffic_control.traffic_router.core.loc.AnonymousIp
+import org.apache.traffic_control.traffic_router.core.loc.AnonymousIpDatabaseService
+import org.apache.traffic_control.traffic_router.core.loc.FederationRegistry
+import org.apache.traffic_control.traffic_router.core.loc.MaxmindGeolocationService
+import org.apache.traffic_control.traffic_router.core.loc.NetworkNode
+import org.apache.traffic_control.traffic_router.core.loc.NetworkNodeException
+import org.apache.traffic_control.traffic_router.core.loc.RegionalGeo
+import org.apache.traffic_control.traffic_router.core.request.DNSRequest
+import org.apache.traffic_control.traffic_router.core.request.HTTPRequest
+import org.apache.traffic_control.traffic_router.core.request.Request
+import org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.ResultDetails
+import org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.ResultType
+import org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.RouteType
+import org.apache.traffic_control.traffic_router.core.util.CidrAddress
+import org.apache.traffic_control.traffic_router.core.util.JsonUtils
+import org.apache.traffic_control.traffic_router.core.util.TrafficOpsUtils
 
-org.apache.logging.log4j.LogManagerimport org.apache.traffic_control.traffic_router.configuration.ConfigurationListenerimport org.apache.traffic_control.traffic_router.core.dns.DNSAccessRecordimport org.apache.traffic_control.traffic_router.core.dns.ZoneManagerimport org.apache.traffic_control.traffic_router.core.ds.*import org.apache.traffic_control.traffic_router.core.ds.DeliveryService.DeepCachingTypeimport
+import org.apache.traffic_control.traffic_router.geolocation.Geolocation
+import org.apache.logging.log4j.LogManager
 
-org.apache.traffic_control.traffic_router.core.edge.*import org.apache.traffic_control.traffic_router.core.edge.Cacheimport
+import org.apache.traffic_control.traffic_router.geolocation.GeolocationException
+import org.apache.traffic_control.traffic_router.geolocation.GeolocationService
+import org.springframework.beans.BeansException
+import org.springframework.context.ApplicationContext
+import org.springframework.web.util.UriComponentsBuilder
+import org.xbill.DNS.Name
+import org.xbill.DNS.Type
+import org.xbill.DNS.Zone
+import java.io.IOException
+import java.net.InetAddress
+import java.net.MalformedURLException
+import java.net.URL
+import java.net.UnknownHostException
+import java.util.Collections
+import java.util.Locale
+import java.util.Random
 
-org.apache.traffic_control.traffic_router.core.edge.CacheLocation.LocalizationMethodimport org.apache.traffic_control.traffic_router.core.edge.Node.IPVersionsimport org.apache.traffic_control.traffic_router.core.hash.ConsistentHasherimport org.apache.traffic_control.traffic_router.core.http.RouterFilterimport org.apache.traffic_control.traffic_router.core.loc.*import org.apache.traffic_control.traffic_router.core.request.DNSRequestimport
+import java.util.regex.Pattern
+import java.util.stream.Collectors
 
-org.apache.traffic_control.traffic_router.core.request.HTTPRequestimport org.apache.traffic_control.traffic_router.core.request.Requestimport org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.*import org.apache.traffic_control.traffic_router.core.util.*
-import org.apache.traffic_control.traffic_router.geolocation.Geolocationimport
-
-import org.apache.traffic_control.traffic_router.geolocation.GeolocationExceptionimport org.apache.traffic_control.traffic_router.geolocation.GeolocationServiceimport org.springframework.beans.BeansExceptionimport org.springframework.context.ApplicationContextimport org.springframework.web.util.UriComponentsBuilderimport org.xbill.DNS.*import java.io.IOExceptionimport
-
-java.net.*import java.util.*
-import java.util.regex.Patternimport
-
-java.util.stream.Collectors
 /**
  * TrafficRouter is the main router class that handles Traffic Router logic.
  */
