@@ -15,7 +15,6 @@
 package org.apache.traffic_control.traffic_router.core.router
 
 import com.fasterxml.jackson.databind.JsonNode
-import org.apache.logging.log4j.LogManager
 import org.apache.traffic_control.traffic_router.configuration.ConfigurationListener
 import org.apache.traffic_control.traffic_router.core.dns.DNSAccessRecord
 import org.apache.traffic_control.traffic_router.core.dns.ZoneManager
@@ -24,6 +23,7 @@ import org.apache.traffic_control.traffic_router.core.ds.SteeringGeolocationComp
 import org.apache.traffic_control.traffic_router.core.ds.SteeringRegistry
 import org.apache.traffic_control.traffic_router.core.ds.SteeringResult
 import org.apache.traffic_control.traffic_router.core.ds.SteeringTarget
+import org.apache.traffic_control.traffic_router.core.ds.DeliveryService.DeepCachingType
 import org.apache.traffic_control.traffic_router.core.edge.Cache
 import org.apache.traffic_control.traffic_router.core.edge.CacheLocation
 import org.apache.traffic_control.traffic_router.core.edge.CacheLocation.LocalizationMethod
@@ -41,7 +41,6 @@ import org.apache.traffic_control.traffic_router.core.loc.FederationRegistry
 import org.apache.traffic_control.traffic_router.core.loc.MaxmindGeolocationService
 import org.apache.traffic_control.traffic_router.core.loc.NetworkNode
 import org.apache.traffic_control.traffic_router.core.loc.NetworkNodeException
-import org.apache.traffic_control.traffic_router.core.loc.RegionalGeo
 import org.apache.traffic_control.traffic_router.core.request.DNSRequest
 import org.apache.traffic_control.traffic_router.core.request.HTTPRequest
 import org.apache.traffic_control.traffic_router.core.request.Request
@@ -51,7 +50,14 @@ import org.apache.traffic_control.traffic_router.core.router.StatTracker.Track.R
 import org.apache.traffic_control.traffic_router.core.util.CidrAddress
 import org.apache.traffic_control.traffic_router.core.util.JsonUtils
 import org.apache.traffic_control.traffic_router.core.util.TrafficOpsUtils
+
 import org.apache.traffic_control.traffic_router.geolocation.Geolocation
+import org.apache.logging.log4j.LogManager
+import org.apache.traffic_control.traffic_router.core.util.JsonUtils.optBoolean
+import org.apache.traffic_control.traffic_router.core.util.JsonUtils.optDouble
+import org.apache.traffic_control.traffic_router.core.util.JsonUtils.optLong
+import org.apache.traffic_control.traffic_router.core.util.JsonUtils.optString
+
 import org.apache.traffic_control.traffic_router.geolocation.GeolocationException
 import org.apache.traffic_control.traffic_router.geolocation.GeolocationService
 import org.springframework.beans.BeansException
@@ -60,6 +66,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import org.xbill.DNS.Name
 import org.xbill.DNS.Type
 import org.xbill.DNS.Zone
+import java.io.IOException
 import java.net.InetAddress
 import java.net.MalformedURLException
 import java.net.URL
@@ -67,43 +74,40 @@ import java.net.UnknownHostException
 import java.util.Collections
 import java.util.Locale
 import java.util.Random
+
 import java.util.regex.Pattern
 import java.util.stream.Collectors
 
 /**
  * TrafficRouter is the main router class that handles Traffic Router logic.
  */
-class TrafficRouter(
-    cr: CacheRegister,
-    geolocationService: GeolocationService,
-    geolocationService6: GeolocationService,
-    anonymousIpService: AnonymousIpDatabaseService,
-    statTracker: StatTracker?,
-    trafficOpsUtils: TrafficOpsUtils?,
-    federationRegistry: FederationRegistry,
-    trafficRouterManager: TrafficRouterManager?
-) {
-    val cacheRegister: CacheRegister?
-    val zoneManager: ZoneManager
-    val geolocationService: GeolocationService
-    private val geolocationService6: GeolocationService
-    val anonymousIpDatabaseService: AnonymousIpDatabaseService
-    private val federationRegistry: FederationRegistry
-    val isConsistentDNSRouting: Boolean
-    val isDnssecZoneDiffingEnabled: Boolean
+class TrafficRouter(private val cacheRegister: CacheRegister?,
+                    private val geolocationService: GeolocationService?,
+                    private val geolocationService6: GeolocationService?,
+                    private val anonymousIpService: AnonymousIpDatabaseService?,
+                    statTracker: StatTracker?,
+                    trafficOpsUtils: TrafficOpsUtils?,
+                    private val federationRegistry: FederationRegistry?,
+                    trafficRouterManager: TrafficRouterManager?) {
+    private val zoneManager: ZoneManager?
+    private val consistentDNSRouting: Boolean
+    private val dnssecZoneDiffingEnabled: Boolean
     private val stripSpecialQueryParamsEnabled: Boolean
-    val isEdgeDNSRouting: Boolean
-    val isEdgeHTTPRouting: Boolean
-    private var edgeNSttl // 1 hour default
+    private val edgeDNSRouting: Boolean
+    private val edgeHTTPRouting: Boolean
+    private val edgeNSttl // 1 hour default
             : Long = 0
     private val edgeDNSRoutingLimit: Int
     private val edgeHTTPRoutingLimit: Int
-    private val random = Random(System.nanoTime())
-    var requestHeaders: Set<String> = HashSet()
+    private val random: Random? = Random(System.nanoTime())
+    private var requestHeaders: MutableSet<String?>? = HashSet()
     private var applicationContext: ApplicationContext? = null
-    private val consistentHasher = ConsistentHasher()
+    private val consistentHasher: ConsistentHasher? = ConsistentHasher()
     private var steeringRegistry: SteeringRegistry? = null
-    private val defaultGeolocationsOverride: MutableMap<String, Geolocation> = HashMap()
+    private val defaultGeolocationsOverride: MutableMap<String?, Geolocation?>? = HashMap()
+    fun getZoneManager(): ZoneManager? {
+        return zoneManager
+    }
 
     /**
      * Returns a [List] of all of the online [Cache]s that support the specified
@@ -114,14 +118,10 @@ class TrafficRouter(
      * the DeliveryService to check
      * @return collection of supported caches
      */
-    fun getSupportingCaches(
-        caches: List<Cache>,
-        ds: DeliveryService,
-        requestVersion: IPVersions?
-    ): MutableList<Cache?> {
+    fun getSupportingCaches(caches: MutableList<Cache?>?, ds: DeliveryService?, requestVersion: IPVersions?): MutableList<Cache?>? {
         val supportingCaches: MutableList<Cache?> = ArrayList()
         for (cache in caches) {
-            if (!cache.hasDeliveryService(ds.id)) {
+            if (!cache.hasDeliveryService(ds.getId())) {
                 continue
             }
             if (!cache.hasAuthority() || cache.isAvailable(requestVersion)) {
@@ -129,6 +129,10 @@ class TrafficRouter(
             }
         }
         return supportingCaches
+    }
+
+    fun getCacheRegister(): CacheRegister? {
+        return cacheRegister
     }
 
     /**
@@ -161,9 +165,9 @@ class TrafficRouter(
      * @return Always returns `true` when successful. On failure, throws.
      */
     @Throws(UnknownHostException::class)
-    fun setState(states: JsonNode): Boolean {
-        setCacheStates(states["caches"])
-        setDsStates(states["deliveryServices"])
+    fun setState(states: JsonNode?): Boolean {
+        setCacheStates(states.get("caches"))
+        setDsStates(states.get("deliveryServices"))
         return true
     }
 
@@ -181,9 +185,9 @@ class TrafficRouter(
         if (dsStates == null) {
             return false
         }
-        val dsMap = cacheRegister!!.deliveryServices
+        val dsMap = cacheRegister.getDeliveryServices()
         for (dsName in dsMap.keys) {
-            dsMap[dsName]!!.setState(dsStates[dsName])
+            dsMap[dsName].setState(dsStates[dsName])
         }
         return true
     }
@@ -202,11 +206,11 @@ class TrafficRouter(
         if (cacheStates == null) {
             return false
         }
-        val cacheMap = cacheRegister!!.cacheMap ?: return false
+        val cacheMap = cacheRegister.getCacheMap() ?: return false
         for (cacheName in cacheMap.keys) {
             val monitorCacheName = cacheName.replaceFirst("@.*".toRegex(), "")
             val state = cacheStates[monitorCacheName]
-            cacheMap[cacheName]!!.setState(state)
+            cacheMap[cacheName].setState(state)
         }
         return true
     }
@@ -217,42 +221,40 @@ class TrafficRouter(
      * @throws IOException when an error occurs reading in a configuration file.
      */
     init {
-        cacheRegister = cr
-        this.geolocationService = geolocationService
-        this.geolocationService6 = geolocationService6
-        anonymousIpDatabaseService = anonymousIpService
-        this.federationRegistry = federationRegistry
-        stripSpecialQueryParamsEnabled = JsonUtils.optBoolean(cr.config, STRIP_SPECIAL_QUERY_PARAMS)
-        isDnssecZoneDiffingEnabled =
-            JsonUtils.optBoolean(cr.config, DNSSEC_ENABLED) && JsonUtils.optBoolean(cr.config, DNSSEC_ZONE_DIFFING)
-        isConsistentDNSRouting = JsonUtils.optBoolean(cr.config, "consistent.dns.routing") // previous/default behavior
-        isEdgeDNSRouting = JsonUtils.optBoolean(cr.config, "edge.dns.routing") && cr.hasEdgeTrafficRouters()
-        isEdgeHTTPRouting = JsonUtils.optBoolean(cr.config, "edge.http.routing") && cr.hasEdgeTrafficRouters()
-        if (cr.config != null) {
+        stripSpecialQueryParamsEnabled = optBoolean(cacheRegister.getConfig(), STRIP_SPECIAL_QUERY_PARAMS)
+        dnssecZoneDiffingEnabled = optBoolean(cacheRegister.getConfig(), DNSSEC_ENABLED) && optBoolean(cacheRegister.getConfig(), DNSSEC_ZONE_DIFFING)
+        consistentDNSRouting = optBoolean(cacheRegister.getConfig(), "consistent.dns.routing") // previous/default behavior
+        edgeDNSRouting = optBoolean(cacheRegister.getConfig(), "edge.dns.routing") && cacheRegister.hasEdgeTrafficRouters()
+        edgeHTTPRouting = optBoolean(cacheRegister.getConfig(), "edge.http.routing") && cacheRegister.hasEdgeTrafficRouters()
+        if (cacheRegister.getConfig() != null) {
             // maxmindDefaultOverride: {countryCode: , lat: , long: }
-            val geolocations = cr.config["maxmindDefaultOverride"]
+            val geolocations = cacheRegister.getConfig()["maxmindDefaultOverride"]
             if (geolocations != null) {
                 for (geolocation in geolocations) {
-                    val countryCode = JsonUtils.optString(geolocation, "countryCode")
-                    val lat = JsonUtils.optDouble(geolocation, "lat")
-                    val longitude = JsonUtils.optDouble(geolocation, "long")
+                    val countryCode: String = optString(geolocation, "countryCode")
+                    val lat: Double = optDouble(geolocation, "lat")
+                    val longitude: Double = optDouble(geolocation, "long")
                     defaultGeolocationsOverride[countryCode] = Geolocation(lat, longitude)
                 }
             }
         }
-        val ttls = cacheRegister.config["ttls"]
+        val ttls = cacheRegister.getConfig()["ttls"]
         if (ttls != null && ttls.has("NS")) {
-            edgeNSttl = JsonUtils.optLong(ttls, "NS")
+            edgeNSttl = optLong(ttls, "NS")
         } else {
             edgeNSttl = DEFAULT_EDGE_NS_TTL
         }
-        edgeDNSRoutingLimit = JsonUtils.optInt(cr.config, "edge.dns.limit", DEFAULT_EDGE_TR_LIMIT)
-        edgeHTTPRoutingLimit = JsonUtils.optInt(
-            cr.config,
-            "edge.http.limit",
-            DEFAULT_EDGE_TR_LIMIT
-        ) // NOTE: this can be overridden per-DS via maxDnsAnswers
+        edgeDNSRoutingLimit = JsonUtils.optInt(cacheRegister.getConfig(), "edge.dns.limit", DEFAULT_EDGE_TR_LIMIT)
+        edgeHTTPRoutingLimit = JsonUtils.optInt(cacheRegister.getConfig(), "edge.http.limit", DEFAULT_EDGE_TR_LIMIT) // NOTE: this can be overridden per-DS via maxDnsAnswers
         zoneManager = ZoneManager(this, statTracker, trafficOpsUtils, trafficRouterManager)
+    }
+
+    fun getGeolocationService(): GeolocationService? {
+        return geolocationService
+    }
+
+    fun getAnonymousIpDatabaseService(): AnonymousIpDatabaseService? {
+        return anonymousIpService
     }
 
     /**
@@ -263,10 +265,8 @@ class TrafficRouter(
      * @throws GeolocationException if the client could not be located.
      */
     @Throws(GeolocationException::class)
-    fun getLocation(clientIP: String): Geolocation {
-        return if (clientIP.contains(":")) geolocationService6.location(clientIP) else geolocationService.location(
-            clientIP
-        )
+    fun getLocation(clientIP: String?): Geolocation? {
+        return if (clientIP.contains(":")) geolocationService6.location(clientIP) else geolocationService.location(clientIP)
     }
 
     /**
@@ -288,9 +288,9 @@ class TrafficRouter(
             return null
         }
         try {
-            return applicationContext!!.getBean(geolocationProvider) as GeolocationService
+            return applicationContext.getBean(geolocationProvider) as GeolocationService
         } catch (e: Exception) {
-            var error = StringBuilder("Failed getting providing class '$geolocationProvider' for geolocation")
+            var error: StringBuilder? = StringBuilder("Failed getting providing class '$geolocationProvider' for geolocation")
             if (deliveryServiceId != null && !deliveryServiceId.isEmpty()) {
                 error = error.append(" for delivery service $deliveryServiceId")
             }
@@ -312,11 +312,9 @@ class TrafficRouter(
      * @throws GeolocationException if the client could not be located.
      */
     @Throws(GeolocationException::class)
-    fun getLocation(clientIP: String, geolocationProvider: String?, deliveryServiceId: String?): Geolocation {
+    fun getLocation(clientIP: String?, geolocationProvider: String?, deliveryServiceId: String?): Geolocation? {
         val customGeolocationService = getGeolocationService(geolocationProvider, deliveryServiceId)
-        return if (customGeolocationService != null) customGeolocationService.location(clientIP) else getLocation(
-            clientIP
-        )
+        return if (customGeolocationService != null) customGeolocationService.location(clientIP) else getLocation(clientIP)
     }
 
     /**
@@ -327,8 +325,8 @@ class TrafficRouter(
      * @throws GeolocationException if the client could not be located.
      */
     @Throws(GeolocationException::class)
-    fun getLocation(clientIP: String, deliveryService: DeliveryService): Geolocation {
-        return getLocation(clientIP, deliveryService.geolocationProvider, deliveryService.id)
+    fun getLocation(clientIP: String?, deliveryService: DeliveryService?): Geolocation? {
+        return getLocation(clientIP, deliveryService.getGeolocationProvider(), deliveryService.getId())
     }
 
     /**
@@ -346,23 +344,18 @@ class TrafficRouter(
      * `null` if the no applicable [Cache]s could be found.
      */
     @Throws(GeolocationException::class)
-    fun getCachesByGeo(
-        ds: DeliveryService,
-        clientLocation: Geolocation?,
-        track: StatTracker.Track,
-        requestVersion: IPVersions
-    ): MutableList<Cache?>? {
+    fun getCachesByGeo(ds: DeliveryService?, clientLocation: Geolocation?, track: StatTracker.Track?, requestVersion: IPVersions?): MutableList<Cache?>? {
         var locationsTested = 0
-        val locationLimit = ds.locationLimit
-        val geoEnabledCacheLocations = filterEnabledLocations(cacheRegister!!.cacheLocations, LocalizationMethod.GEO)
+        val locationLimit = ds.getLocationLimit()
+        val geoEnabledCacheLocations = filterEnabledLocations(getCacheRegister().getCacheLocations(), LocalizationMethod.GEO)
         val cacheLocations1 = ds.filterAvailableLocations(geoEnabledCacheLocations)
-        val cacheLocations = orderLocations(cacheLocations1, clientLocation) as List<CacheLocation>
+        val cacheLocations = orderLocations(cacheLocations1, clientLocation) as MutableList<CacheLocation?>?
         for (location in cacheLocations) {
             val caches = selectCaches(location, ds, requestVersion)
             if (caches != null) {
-                track.setResultLocation(location.geolocation)
+                track.setResultLocation(location.getGeolocation())
                 if (track.getResultLocation() == GEO_ZERO_ZERO) {
-                    LOGGER.error("Location " + location.id + " has Geolocation " + location.geolocation)
+                    LOGGER.error("Location " + location.getId() + " has Geolocation " + location.getGeolocation())
                 }
                 return caches
             }
@@ -394,45 +387,40 @@ class TrafficRouter(
      */
     @JvmOverloads
     @Throws(GeolocationException::class)
-    fun selectCaches(
-        request: HTTPRequest,
-        ds: DeliveryService,
-        track: StatTracker.Track,
-        enableDeep: Boolean = true
-    ): MutableList<Cache?>? {
+    fun selectCaches(request: HTTPRequest?, ds: DeliveryService?, track: StatTracker.Track?, enableDeep: Boolean = true): MutableList<Cache?>? {
         var cacheLocation: CacheLocation?
         var result = ResultType.CZ
-        val useDeep = enableDeep && ds.deepCache == DeliveryService.DeepCachingType.ALWAYS
-        val requestVersion = if (request.clientIP.contains(":")) IPVersions.IPV6ONLY else IPVersions.IPV4ONLY
+        val useDeep = enableDeep && ds.getDeepCache() == DeepCachingType.ALWAYS
+        val requestVersion = if (request.getClientIP().contains(":")) IPVersions.IPV6ONLY else IPVersions.IPV4ONLY
         if (useDeep) {
             // Deep caching is enabled. See if there are deep caches available
-            cacheLocation = getDeepCoverageZoneCacheLocation(request.clientIP, ds, requestVersion)
+            cacheLocation = getDeepCoverageZoneCacheLocation(request.getClientIP(), ds, requestVersion)
             if (cacheLocation != null && cacheLocation.caches.size != 0) {
                 // Found deep caches for this client, and there are caches that might be available there.
                 result = ResultType.DEEP_CZ
             } else {
                 // No deep caches for this client, would have used them if there were any. Fallback to regular CZ
-                cacheLocation = getCoverageZoneCacheLocation(request.clientIP, ds, requestVersion)
+                cacheLocation = getCoverageZoneCacheLocation(request.getClientIP(), ds, requestVersion)
             }
         } else {
             // Deep caching not enabled for this Delivery Service; use the regular CZ
-            cacheLocation = getCoverageZoneCacheLocation(request.clientIP, ds, false, track, requestVersion)
+            cacheLocation = getCoverageZoneCacheLocation(request.getClientIP(), ds, false, track, requestVersion)
         }
         var caches = selectCachesByCZ(ds, cacheLocation, track, result, requestVersion)
         if (caches != null) {
             return caches
         }
-        if (ds.isCoverageZoneOnly) {
-            if (ds.geoRedirectUrl != null) {
+        if (ds.isCoverageZoneOnly()) {
+            if (ds.getGeoRedirectUrl() != null) {
                 //use the NGB redirect
-                caches = enforceGeoRedirect(track, ds, request.clientIP, null, requestVersion)
+                caches = enforceGeoRedirect(track, ds, request.getClientIP(), null, requestVersion)
             } else {
                 track.setResult(ResultType.MISS)
                 track.setResultDetails(ResultDetails.DS_CZ_ONLY)
             }
         } else if (track.continueGeo) {
             // continue Geo can be disabled when backup group is used -- ended up an empty cache list if reach here
-            caches = selectCachesByGeo(request.clientIP, ds, cacheLocation, track, requestVersion)
+            caches = selectCachesByGeo(request.getClientIP(), ds, cacheLocation, track, requestVersion)
         }
         return caches
     }
@@ -441,8 +429,8 @@ class TrafficRouter(
      * Returns whether or not a Delivery Service has a valid miss location.
      * @param deliveryService The Delivery Service being served.
      */
-    fun isValidMissLocation(deliveryService: DeliveryService): Boolean {
-        return if (deliveryService.missLocation != null && deliveryService.missLocation.latitude != 0.0 && deliveryService.missLocation.longitude != 0.0) {
+    fun isValidMissLocation(deliveryService: DeliveryService?): Boolean {
+        return if (deliveryService.getMissLocation() != null && deliveryService.getMissLocation().latitude != 0.0 && deliveryService.getMissLocation().longitude != 0.0) {
             true
         } else false
     }
@@ -456,13 +444,7 @@ class TrafficRouter(
      * @param track The [Track] object that tracks how requests are served
      */
     @Throws(GeolocationException::class)
-    fun selectCachesByGeo(
-        clientIp: String,
-        deliveryService: DeliveryService,
-        cacheLocation: CacheLocation?,
-        track: StatTracker.Track,
-        requestVersion: IPVersions
-    ): MutableList<Cache?>? {
+    fun selectCachesByGeo(clientIp: String?, deliveryService: DeliveryService?, cacheLocation: CacheLocation?, track: StatTracker.Track?, requestVersion: IPVersions?): MutableList<Cache?>? {
         var clientLocation: Geolocation? = null
         try {
             clientLocation = getClientLocation(clientIp, deliveryService, cacheLocation, track)
@@ -470,14 +452,10 @@ class TrafficRouter(
             LOGGER.warn("Failed looking up Client GeoLocation: " + e.message)
         }
         if (clientLocation == null) {
-            return if (deliveryService.geoRedirectUrl != null) {
+            return if (deliveryService.getGeoRedirectUrl() != null) {
                 //will use the NGB redirect
-                LOGGER.debug(
-                    String.format(
-                        "client is blocked by geolimit, use the NGB redirect url: %s",
-                        deliveryService.geoRedirectUrl
-                    )
-                )
+                LOGGER.debug(String.format("client is blocked by geolimit, use the NGB redirect url: %s",
+                        deliveryService.getGeoRedirectUrl()))
                 enforceGeoRedirect(track, deliveryService, clientIp, track.getClientGeolocation(), requestVersion)
             } else {
                 track.setResultDetails(ResultDetails.DS_CLIENT_GEO_UNSUPPORTED)
@@ -485,12 +463,12 @@ class TrafficRouter(
             }
         }
         track.setResult(ResultType.GEO)
-        if (clientLocation.isDefaultLocation && defaultGeoLocationsOverride.containsKey(clientLocation.countryCode)) {
+        if (clientLocation.isDefaultLocation && getDefaultGeoLocationsOverride().containsKey(clientLocation.countryCode)) {
             if (isValidMissLocation(deliveryService)) {
-                clientLocation = deliveryService.missLocation
+                clientLocation = deliveryService.getMissLocation()
                 track.setResult(ResultType.GEO_DS)
             } else {
-                clientLocation = defaultGeoLocationsOverride[clientLocation.countryCode]
+                clientLocation = getDefaultGeoLocationsOverride().get(clientLocation.countryCode)
             }
         }
         val caches = getCachesByGeo(deliveryService, clientLocation, track, requestVersion)
@@ -507,14 +485,12 @@ class TrafficRouter(
      * @return The final result of routing.
      */
     @Throws(GeolocationException::class)
-    fun route(request: DNSRequest, track: StatTracker.Track): DNSRouteResult? {
+    fun route(request: DNSRequest?, track: StatTracker.Track?): DNSRouteResult? {
         val ds = selectDeliveryService(request)
-        track.setRouteType(RouteType.DNS, request.hostname)
+        track.setRouteType(RouteType.DNS, request.getHostname())
 
         // TODO: getHostname or getName -- !ds.getRoutingName().equalsIgnoreCase(request.getHostname().split("\\.")[0]))
-        return if (ds != null && ds.isDns && request.name.toString().lowercase(Locale.getDefault())
-                .matches(ds.routingName.lowercase(Locale.getDefault()) + "\\..*")
-        ) {
+        return if (ds != null && ds.isDns && request.getName().toString().lowercase(Locale.getDefault()).matches(ds.routingName.lowercase(Locale.getDefault()) + "\\..*")) {
             getEdgeCaches(request, ds, track)
         } else {
             getEdgeTrafficRouters(request, ds, track)
@@ -522,11 +498,7 @@ class TrafficRouter(
     }
 
     @Throws(GeolocationException::class)
-    private fun getEdgeTrafficRouters(
-        request: DNSRequest,
-        ds: DeliveryService?,
-        track: StatTracker.Track
-    ): DNSRouteResult {
+    private fun getEdgeTrafficRouters(request: DNSRequest?, ds: DeliveryService?, track: StatTracker.Track?): DNSRouteResult? {
         val result = DNSRouteResult()
         result.deliveryService = ds
         result.addresses = selectTrafficRouters(request, ds, track)
@@ -534,36 +506,24 @@ class TrafficRouter(
     }
 
     @Throws(GeolocationException::class)
-    private fun selectTrafficRouters(
-        request: DNSRequest,
-        ds: DeliveryService?,
-        track: StatTracker.Track? = null
-    ): List<InetRecord> {
-        val result: MutableList<InetRecord> = ArrayList()
+    private fun selectTrafficRouters(request: DNSRequest?, ds: DeliveryService?, track: StatTracker.Track? = null): MutableList<InetRecord?>? {
+        val result: MutableList<InetRecord?> = ArrayList()
         var resultType: ResultType? = null
         track?.setResultDetails(ResultDetails.LOCALIZED_DNS)
         var clientGeolocation: Geolocation? = null
-        val networkNode = getNetworkNode(request.clientIP)
+        val networkNode = getNetworkNode(request.getClientIP())
         if (networkNode != null && networkNode.geolocation != null) {
             clientGeolocation = networkNode.geolocation
             resultType = ResultType.CZ
         } else {
-            clientGeolocation = getClientGeolocation(request.clientIP, track, ds)
+            clientGeolocation = getClientGeolocation(request.getClientIP(), track, ds)
             resultType = ResultType.GEO
         }
         if (clientGeolocation == null) {
-            result.addAll(selectTrafficRoutersMiss(request.zoneName, ds))
+            result.addAll(selectTrafficRoutersMiss(request.getZoneName(), ds))
             resultType = ResultType.MISS
         } else {
-            result.addAll(
-                selectTrafficRoutersLocalized(
-                    clientGeolocation,
-                    request.zoneName,
-                    ds,
-                    track,
-                    request.queryType
-                )
-            )
+            result.addAll(selectTrafficRoutersLocalized(clientGeolocation, request.getZoneName(), ds, track, request.getQueryType()))
             track?.setClientGeolocation(clientGeolocation)
         }
         track?.setResult(resultType)
@@ -571,22 +531,21 @@ class TrafficRouter(
     }
 
     @Throws(GeolocationException::class)
-    fun selectTrafficRoutersMiss(zoneName: String?, ds: DeliveryService?): List<InetRecord> {
-        val trafficRouterRecords: MutableList<InetRecord> = ArrayList()
-        if (!isEdgeDNSRouting && !isEdgeHTTPRouting) {
+    fun selectTrafficRoutersMiss(zoneName: String?, ds: DeliveryService?): MutableList<InetRecord?>? {
+        val trafficRouterRecords: MutableList<InetRecord?> = ArrayList()
+        if (!isEdgeDNSRouting() && !isEdgeHTTPRouting()) {
             return trafficRouterRecords
         }
-        val trafficRouterLocations = cacheRegister!!.edgeTrafficRouterLocations
-        val edgeTrafficRouters: MutableList<Node> = ArrayList()
-        val orderedNodes: MutableMap<String, List<Node>> = HashMap()
-        var limit =
-            if (edgeDNSRoutingLimit > getEdgeHTTPRoutingLimit(ds)) edgeDNSRoutingLimit else getEdgeHTTPRoutingLimit(ds)
+        val trafficRouterLocations = getCacheRegister().getEdgeTrafficRouterLocations()
+        val edgeTrafficRouters: MutableList<Node?> = ArrayList()
+        val orderedNodes: MutableMap<String?, MutableList<Node?>?> = HashMap()
+        var limit = if (getEdgeDNSRoutingLimit() > getEdgeHTTPRoutingLimit(ds)) getEdgeDNSRoutingLimit() else getEdgeHTTPRoutingLimit(ds)
         var index = 0
         var exhausted = false
 
         // if limits don't exist, or do exist and are higher than the number of edge TRs, use the number of edge TRs as the limit
-        if (limit == 0 || limit > cacheRegister.edgeTrafficRouterCount) {
-            limit = cacheRegister.edgeTrafficRouterCount
+        if (limit == 0 || limit > getCacheRegister().getEdgeTrafficRouterCount()) {
+            limit = getCacheRegister().getEdgeTrafficRouterCount()
         }
 
         // grab one TR per location until the limit is reached
@@ -616,10 +575,10 @@ class TrafficRouter(
             index++
         }
         if (!edgeTrafficRouters.isEmpty()) {
-            if (isEdgeDNSRouting) {
+            if (isEdgeDNSRouting()) {
                 trafficRouterRecords.addAll(nsRecordsFromNodes(ds, edgeTrafficRouters))
             }
-            if (ds != null && !ds.isDns && isEdgeHTTPRouting) { // only generate edge routing records for HTTP DSs when necessary
+            if (ds != null && !ds.isDns && isEdgeHTTPRouting()) { // only generate edge routing records for HTTP DSs when necessary
                 trafficRouterRecords.addAll(inetRecordsFromNodes(ds, edgeTrafficRouters))
             }
         }
@@ -627,47 +586,36 @@ class TrafficRouter(
     }
 
     @Throws(GeolocationException::class)
-    fun selectTrafficRoutersLocalized(
-        clientGeolocation: Geolocation?,
-        name: String?,
-        ds: DeliveryService?
-    ): List<InetRecord> {
+    fun selectTrafficRoutersLocalized(clientGeolocation: Geolocation?, name: String?, ds: DeliveryService?): MutableList<InetRecord?>? {
         return selectTrafficRoutersLocalized(clientGeolocation, name, ds, null, 0)
     }
 
     @Throws(GeolocationException::class)
-    fun selectTrafficRoutersLocalized(
-        clientGeolocation: Geolocation?,
-        zoneName: String?,
-        ds: DeliveryService?,
-        track: StatTracker.Track?,
-        queryType: Int
-    ): List<InetRecord> {
-        val trafficRouterRecords: MutableList<InetRecord> = ArrayList()
-        if (!isEdgeDNSRouting && !isEdgeHTTPRouting) {
+    fun selectTrafficRoutersLocalized(clientGeolocation: Geolocation?, zoneName: String?, ds: DeliveryService?, track: StatTracker.Track?, queryType: Int): MutableList<InetRecord?>? {
+        val trafficRouterRecords: MutableList<InetRecord?> = ArrayList()
+        if (!isEdgeDNSRouting() && !isEdgeHTTPRouting()) {
             return trafficRouterRecords
         }
-        val trafficRouterLocations =
-            orderLocations(cacheRegister!!.edgeTrafficRouterLocations, clientGeolocation) as List<TrafficRouterLocation>
+        val trafficRouterLocations = orderLocations(getCacheRegister().getEdgeTrafficRouterLocations(), clientGeolocation) as MutableList<TrafficRouterLocation?>?
         for (location in trafficRouterLocations) {
-            val trafficRouters = consistentHasher.selectHashables(location.trafficRouters, zoneName)
+            val trafficRouters = consistentHasher.selectHashables<Node?>(location.getTrafficRouters(), zoneName)
             if (trafficRouters == null || trafficRouters.isEmpty()) {
                 continue
             }
-            if (isEdgeDNSRouting) {
+            if (isEdgeDNSRouting()) {
                 trafficRouterRecords.addAll(nsRecordsFromNodes(ds, trafficRouters))
             }
-            if (ds != null && !ds.isDns && isEdgeHTTPRouting) { // only generate edge routing records for HTTP DSs when necessary
+            if (ds != null && !ds.isDns && isEdgeHTTPRouting()) { // only generate edge routing records for HTTP DSs when necessary
                 trafficRouterRecords.addAll(inetRecordsFromNodes(ds, trafficRouters))
             }
-            track?.setResultLocation(location.geolocation)
+            track?.setResultLocation(location.getGeolocation())
             break
         }
         return trafficRouterRecords
     }
 
     @Throws(GeolocationException::class)
-    private fun getEdgeCaches(request: DNSRequest, ds: DeliveryService?, track: StatTracker.Track): DNSRouteResult? {
+    private fun getEdgeCaches(request: DNSRequest?, ds: DeliveryService?, track: StatTracker.Track?): DNSRouteResult? {
         val result = DNSRouteResult()
         result.deliveryService = ds
         if (ds == null) {
@@ -680,12 +628,12 @@ class TrafficRouter(
             result.addAddresses(selectTrafficRouters(request, ds))
             return result
         }
-        val requestVersion = if (request.queryType == Type.AAAA) IPVersions.IPV6ONLY else IPVersions.IPV4ONLY
-        val cacheLocation = getCoverageZoneCacheLocation(request.clientIP, ds, false, track, requestVersion)
+        val requestVersion = if (request.getQueryType() == Type.AAAA) IPVersions.IPV6ONLY else IPVersions.IPV4ONLY
+        val cacheLocation = getCoverageZoneCacheLocation(request.getClientIP(), ds, false, track, requestVersion)
         var caches = selectCachesByCZ(ds, cacheLocation, track, requestVersion)
         if (caches != null) {
             track.setResult(ResultType.CZ)
-            track.setClientGeolocation(cacheLocation!!.geolocation)
+            track.setClientGeolocation(cacheLocation.getGeolocation())
             result.addresses = inetRecordsFromCaches(ds, caches, request)
             result.addAddresses(selectTrafficRouters(request, ds))
             return result
@@ -698,17 +646,17 @@ class TrafficRouter(
             return result
         }
         try {
-            val inetRecords = federationRegistry.findInetRecords(ds.id, CidrAddress.fromString(request.clientIP))
+            val inetRecords = federationRegistry.findInetRecords(ds.id, CidrAddress.Companion.fromString(request.getClientIP()))
             if (inetRecords != null && !inetRecords.isEmpty()) {
                 result.addresses = inetRecords
                 track.setResult(ResultType.FED)
                 return result
             }
         } catch (e: NetworkNodeException) {
-            LOGGER.error("Bad client address: '" + request.clientIP + "'")
+            LOGGER.error("Bad client address: '" + request.getClientIP() + "'")
         }
         if (track.continueGeo) {
-            caches = selectCachesByGeo(request.clientIP, ds, cacheLocation, track, requestVersion)
+            caches = selectCachesByGeo(request.getClientIP(), ds, cacheLocation, track, requestVersion)
         }
         if (caches != null) {
             track.setResult(ResultType.GEO)
@@ -721,34 +669,34 @@ class TrafficRouter(
         return result
     }
 
-    private fun nsRecordsFromNodes(ds: DeliveryService?, nodes: List<Node>): List<InetRecord> {
-        val nsRecords: MutableList<InetRecord> = ArrayList()
-        val limit = if (edgeDNSRoutingLimit > nodes.size) nodes.size else edgeDNSRoutingLimit
-        var ttl = edgeNSttl
+    private fun nsRecordsFromNodes(ds: DeliveryService?, nodes: MutableList<Node?>?): MutableList<InetRecord?>? {
+        val nsRecords: MutableList<InetRecord?> = ArrayList()
+        val limit = if (getEdgeDNSRoutingLimit() > nodes.size) nodes.size else getEdgeDNSRoutingLimit()
+        var ttl = getEdgeNSttl()
         if (ds != null && ds.ttls.has("NS")) {
-            ttl = JsonUtils.optLong(ds.ttls, "NS") // no exception
+            ttl = optLong(ds.ttls, "NS") // no exception
         }
         for (i in 0 until limit) {
-            val node = nodes[i]
-            nsRecords.add(InetRecord(node.fqdn, ttl, Type.NS))
+            val node = nodes.get(i)
+            nsRecords.add(InetRecord(node.getFqdn(), ttl, Type.NS))
         }
         return nsRecords
     }
 
-    fun inetRecordsFromNodes(ds: DeliveryService?, nodes: List<Node>): List<InetRecord> {
-        val addresses: MutableList<InetRecord> = ArrayList()
+    fun inetRecordsFromNodes(ds: DeliveryService?, nodes: MutableList<Node?>?): MutableList<InetRecord?>? {
+        val addresses: MutableList<InetRecord?> = ArrayList()
         val limit = if (getEdgeHTTPRoutingLimit(ds) > nodes.size) nodes.size else getEdgeHTTPRoutingLimit(ds)
         if (ds == null) {
             return addresses
         }
         val ttls = ds.ttls
         for (i in 0 until limit) {
-            val node = nodes[i]
-            if (node.ip4 != null) {
-                addresses.add(InetRecord(node.ip4, JsonUtils.optLong(ttls, "A")))
+            val node = nodes.get(i)
+            if (node.getIp4() != null) {
+                addresses.add(InetRecord(node.getIp4(), optLong(ttls, "A")))
             }
-            if (node.ip6 != null && ds.isIp6RoutingEnabled) {
-                addresses.add(InetRecord(node.ip6, JsonUtils.optLong(ttls, "AAAA")))
+            if (node.getIp6() != null && ds.isIp6RoutingEnabled) {
+                addresses.add(InetRecord(node.getIp6(), optLong(ttls, "AAAA")))
             }
         }
         return addresses
@@ -766,13 +714,12 @@ class TrafficRouter(
      * chosen at random
      * @return The IP Addresses of the passed caches. In general, these may be IPv4 or IPv6.
      */
-    fun inetRecordsFromCaches(ds: DeliveryService, caches: MutableList<Cache?>, request: Request): List<InetRecord> {
-        val addresses: MutableList<InetRecord> = ArrayList()
-        val maxDnsIps = ds.maxDnsIps
-        val selectedCaches: MutableList<Cache?>
-        if (maxDnsIps > 0 && isConsistentDNSRouting) { // only consistent hash if we must
-            selectedCaches =
-                consistentHasher.selectHashables(caches, ds.dispersion, request.hostname) as MutableList<Cache?>
+    fun inetRecordsFromCaches(ds: DeliveryService?, caches: MutableList<Cache?>?, request: Request?): MutableList<InetRecord?>? {
+        val addresses: MutableList<InetRecord?> = ArrayList()
+        val maxDnsIps = ds.getMaxDnsIps()
+        val selectedCaches: MutableList<Cache?>?
+        if (maxDnsIps > 0 && isConsistentDNSRouting()) { // only consistent hash if we must
+            selectedCaches = consistentHasher.selectHashables(caches, ds.getDispersion(), request.getHostname()) as MutableList<Cache?>
         } else if (maxDnsIps > 0) {
             /*
 			 * We also shuffle in NameServer when adding Records to the Message prior
@@ -793,7 +740,7 @@ class TrafficRouter(
             selectedCaches = caches
         }
         for (cache in selectedCaches) {
-            addresses.addAll(cache!!.getIpAddresses(ds.ttls, ds.isIp6RoutingEnabled))
+            addresses.addAll(cache.getIpAddresses(ds.getTtls(), ds.isIp6RoutingEnabled()))
         }
         return addresses
     }
@@ -812,15 +759,11 @@ class TrafficRouter(
      * @throws GeolocationException
      */
     @Throws(GeolocationException::class)
-    fun getClientGeolocation(
-        clientIp: String,
-        track: StatTracker.Track?,
-        deliveryService: DeliveryService?
-    ): Geolocation {
+    fun getClientGeolocation(clientIp: String?, track: StatTracker.Track?, deliveryService: DeliveryService?): Geolocation? {
         if (track != null && track.isClientGeolocationQueried()) {
             return track.getClientGeolocation()
         }
-        val clientGeolocation: Geolocation
+        val clientGeolocation: Geolocation?
         clientGeolocation = deliveryService?.let { getLocation(clientIp, it) } ?: getLocation(clientIp)
         if (track != null) {
             track.setClientGeolocation(clientGeolocation)
@@ -841,12 +784,7 @@ class TrafficRouter(
      * location).
      */
     @Throws(GeolocationException::class)
-    fun getClientLocation(
-        clientIp: String,
-        ds: DeliveryService,
-        cacheLocation: Location?,
-        track: StatTracker.Track?
-    ): Geolocation {
+    fun getClientLocation(clientIp: String?, ds: DeliveryService?, cacheLocation: Location?, track: StatTracker.Track?): Geolocation? {
         if (cacheLocation != null) {
             return cacheLocation.geolocation
         }
@@ -866,11 +804,7 @@ class TrafficRouter(
      * @param cacheLocation The location from which caches will be selected.
      * @return All of the caches in the given location capable of serving ds.
      */
-    fun selectCachesByCZ(
-        ds: DeliveryService,
-        cacheLocation: CacheLocation?,
-        requestVersion: IPVersions
-    ): List<Cache?>? {
+    fun selectCachesByCZ(ds: DeliveryService?, cacheLocation: CacheLocation?, requestVersion: IPVersions?): MutableList<Cache?>? {
         return selectCachesByCZ(ds, cacheLocation, null, requestVersion)
     }
 
@@ -883,18 +817,8 @@ class TrafficRouter(
      * @return All of the caches in the given location capable of serving the identified Delivery
      * Service.
      */
-    fun selectCachesByCZ(
-        deliveryServiceId: String?,
-        cacheLocationId: String?,
-        track: StatTracker.Track?,
-        requestVersion: IPVersions
-    ): List<Cache?>? {
-        return selectCachesByCZ(
-            cacheRegister!!.getDeliveryService(deliveryServiceId),
-            cacheRegister.getCacheLocation(cacheLocationId),
-            track,
-            requestVersion
-        )
+    fun selectCachesByCZ(deliveryServiceId: String?, cacheLocationId: String?, track: StatTracker.Track?, requestVersion: IPVersions?): MutableList<Cache?>? {
+        return selectCachesByCZ(cacheRegister.getDeliveryService(deliveryServiceId), cacheRegister.getCacheLocation(cacheLocationId), track, requestVersion)
     }
 
     /**
@@ -909,19 +833,8 @@ class TrafficRouter(
      * @param cacheLocation The location from which caches will be selected
      * @return All of the caches in the given location capable of serving ds.
      */
-    private fun selectCachesByCZ(
-        ds: DeliveryService,
-        cacheLocation: CacheLocation?,
-        track: StatTracker.Track?,
-        requestVersion: IPVersions
-    ): MutableList<Cache?>? {
-        return selectCachesByCZ(
-            ds,
-            cacheLocation,
-            track,
-            ResultType.CZ,
-            requestVersion
-        ) // ResultType.CZ was the original default before DDC
+    private fun selectCachesByCZ(ds: DeliveryService?, cacheLocation: CacheLocation?, track: StatTracker.Track?, requestVersion: IPVersions?): MutableList<Cache?>? {
+        return selectCachesByCZ(ds, cacheLocation, track, ResultType.CZ, requestVersion) // ResultType.CZ was the original default before DDC
     }
 
     /**
@@ -940,13 +853,7 @@ class TrafficRouter(
      * This is used for tracking routing results.
      * @return All of the caches in the given location capable of serving ds.
      */
-    private fun selectCachesByCZ(
-        ds: DeliveryService?,
-        cacheLocation: CacheLocation?,
-        track: StatTracker.Track?,
-        result: ResultType,
-        requestVersion: IPVersions
-    ): MutableList<Cache?>? {
+    private fun selectCachesByCZ(ds: DeliveryService?, cacheLocation: CacheLocation?, track: StatTracker.Track?, result: ResultType?, requestVersion: IPVersions?): MutableList<Cache?>? {
         if (cacheLocation == null || ds == null || !ds.isLocationAvailable(cacheLocation)) {
             return null
         }
@@ -969,54 +876,54 @@ class TrafficRouter(
      * @return The list of routes available to service the client's request.
      */
     @Throws(MalformedURLException::class, GeolocationException::class)
-    fun multiRoute(request: HTTPRequest, track: StatTracker.Track): HTTPRouteResult? {
-        val entryDeliveryService = cacheRegister!!.getDeliveryService(request)
+    fun multiRoute(request: HTTPRequest?, track: StatTracker.Track?): HTTPRouteResult? {
+        val entryDeliveryService = cacheRegister.getDeliveryService(request)
         val steeringResults = getSteeringResults(request, track, entryDeliveryService) ?: return null
         val routeResult = HTTPRouteResult(true)
         routeResult.deliveryService = entryDeliveryService
         if (entryDeliveryService.isRegionalGeoEnabled) {
-            RegionalGeo.enforce(this, request, entryDeliveryService, null, routeResult, track)
+            enforce(this, request, entryDeliveryService, null, routeResult, track)
             if (routeResult.url != null) {
                 return routeResult
             }
         }
-        val resultsToRemove: MutableList<SteeringResult> = ArrayList()
+        val resultsToRemove: MutableList<SteeringResult?> = ArrayList()
         val selectedCaches: MutableSet<Cache?> = HashSet()
 
         // Pattern based consistent hashing - use consistentHashRegex from steering DS instead of targets
-        val steeringHash = buildPatternBasedHashString(entryDeliveryService.consistentHashRegex, request.path)
+        val steeringHash = buildPatternBasedHashString(entryDeliveryService.consistentHashRegex, request.getPath())
         for (steeringResult in steeringResults) {
-            val ds = steeringResult.deliveryService
-            var caches: List<Cache?>? = selectCaches(request, ds, track)
+            val ds = steeringResult.getDeliveryService()
+            var caches = selectCaches(request, ds, track)
 
             // child Delivery Services can use their query parameters
             val pathToHash = steeringHash + ds.extractSignificantQueryParams(request)
             if (caches != null && !caches.isEmpty()) {
                 var tryCaches: MutableList<Cache?>? = ArrayList(caches)
-                tryCaches!!.removeAll(selectedCaches)
+                tryCaches.removeAll(selectedCaches)
                 if (!tryCaches.isEmpty()) {
                     caches = tryCaches
                 } else if (track.result == ResultType.DEEP_CZ) {
                     // deep caches have been selected already, try non-deep selection
                     tryCaches = selectCaches(request, ds, track, false)
                     track.setResult(ResultType.DEEP_CZ) // request should still be tracked as a DEEP_CZ hit
-                    tryCaches!!.removeAll(selectedCaches)
+                    tryCaches.removeAll(selectedCaches)
                     if (!tryCaches.isEmpty()) {
                         caches = tryCaches
                     }
                 }
                 val cache = consistentHasher.selectHashable(caches, ds.dispersion, pathToHash)
-                steeringResult.cache = cache
+                steeringResult.setCache(cache)
                 selectedCaches.add(cache)
             } else {
                 resultsToRemove.add(steeringResult)
             }
         }
         steeringResults.removeAll(resultsToRemove)
-        geoSortSteeringResults(steeringResults, request.clientIP, entryDeliveryService)
+        geoSortSteeringResults(steeringResults, request.getClientIP(), entryDeliveryService)
         for (steeringResult in steeringResults) {
-            routeResult.addUrl(URL(steeringResult.deliveryService.createURIString(request, steeringResult.cache)))
-            routeResult.addDeliveryService(steeringResult.deliveryService)
+            routeResult.addUrl(URL(steeringResult.getDeliveryService().createURIString(request, steeringResult.getCache())))
+            routeResult.addDeliveryService(steeringResult.getDeliveryService())
         }
         if (routeResult.urls.isEmpty()) {
             routeResult.addUrl(entryDeliveryService.getFailureHttpResponse(request, track))
@@ -1036,11 +943,11 @@ class TrafficRouter(
      * @param request An [HTTPRequest] representing the client's request.
      * @return A string appropriate to use for consistent hashing to service the request
      */
-    fun buildPatternBasedHashString(deliveryService: DeliveryService, request: HTTPRequest): String {
-        val requestPath = request.path
+    fun buildPatternBasedHashString(deliveryService: DeliveryService?, request: HTTPRequest?): String? {
+        val requestPath = request.getPath()
         val hashString = StringBuilder("")
-        if (deliveryService.consistentHashRegex != null && !requestPath.isEmpty()) {
-            hashString.append(buildPatternBasedHashString(deliveryService.consistentHashRegex, requestPath))
+        if (deliveryService.getConsistentHashRegex() != null && !requestPath.isEmpty()) {
+            hashString.append(buildPatternBasedHashString(deliveryService.getConsistentHashRegex(), requestPath))
         }
         hashString.append(deliveryService.extractSignificantQueryParams(request))
         return hashString.toString()
@@ -1059,7 +966,7 @@ class TrafficRouter(
      * `https://example.com/some/path`
      * @return The parts of requestPath that matched regex
      */
-    fun buildPatternBasedHashString(regex: String?, requestPath: String): String {
+    fun buildPatternBasedHashString(regex: String?, requestPath: String?): String? {
         if (regex == null || regex.isEmpty()) {
             return requestPath
         }
@@ -1094,8 +1001,8 @@ class TrafficRouter(
      * @throws GeolocationException
      */
     @Throws(MalformedURLException::class, GeolocationException::class)
-    fun route(request: HTTPRequest, track: StatTracker.Track): HTTPRouteResult? {
-        track.setRouteType(RouteType.HTTP, request.hostname)
+    fun route(request: HTTPRequest?, track: StatTracker.Track?): HTTPRouteResult? {
+        track.setRouteType(RouteType.HTTP, request.getHostname())
         val result: HTTPRouteResult?
         result = if (isMultiRouteRequest(request)) {
             multiRoute(request, track)
@@ -1115,9 +1022,9 @@ class TrafficRouter(
                 val url = result.urls[i]
                 if (url != null) {
                     result.urls[i] = UriComponentsBuilder.fromHttpUrl(url.toString())
-                        .replaceQueryParam(HTTPRequest.FAKE_IP)
-                        .replaceQueryParam(RouterFilter.REDIRECT_QUERY_PARAM)
-                        .build().toUri().toURL()
+                            .replaceQueryParam(HTTPRequest.Companion.FAKE_IP)
+                            .replaceQueryParam(RouterFilter.Companion.REDIRECT_QUERY_PARAM)
+                            .build().toUri().toURL()
                 }
             }
         }
@@ -1130,7 +1037,7 @@ class TrafficRouter(
      * @throws MalformedURLException if a URL cannot be constructed to return to the client
      */
     @Throws(MalformedURLException::class, GeolocationException::class)
-    fun singleRoute(request: HTTPRequest, track: StatTracker.Track): HTTPRouteResult? {
+    fun singleRoute(request: HTTPRequest?, track: StatTracker.Track?): HTTPRouteResult? {
         val deliveryService = getDeliveryService(request, track) ?: return null
         val routeResult = HTTPRouteResult(false)
         if (!deliveryService.isAvailable) {
@@ -1138,15 +1045,11 @@ class TrafficRouter(
             return routeResult
         }
         routeResult.deliveryService = deliveryService
-        val caches: List<Cache?>? = selectCaches(request, deliveryService, track)
+        val caches = selectCaches(request, deliveryService, track)
         if (caches == null || caches.isEmpty()) {
             if (track.getResult() == ResultType.GEO_REDIRECT) {
                 routeResult.url = URL(deliveryService.geoRedirectUrl)
-                LOGGER.debug(
-                    String.format(
-                        "NGB redirect to url: %s for request: %s", deliveryService.geoRedirectUrl, request.requestedUrl
-                    )
-                )
+                LOGGER.debug(String.format("NGB redirect to url: %s for request: %s", deliveryService.geoRedirectUrl, request.getRequestedUrl()))
                 return routeResult
             }
             routeResult.url = deliveryService.getFailureHttpResponse(request, track)
@@ -1159,14 +1062,14 @@ class TrafficRouter(
 
         // Enforce anonymous IP blocking if a DS has anonymous blocking enabled
         // and the feature is enabled
-        if (deliveryService.isAnonymousIpEnabled && AnonymousIp.getCurrentConfig().enabled) {
-            AnonymousIp.enforce(this, request, deliveryService, cache, routeResult, track)
-            if (routeResult.responseCode == AnonymousIp.BLOCK_CODE) {
+        if (deliveryService.isAnonymousIpEnabled && AnonymousIp.Companion.getCurrentConfig().enabled) {
+            AnonymousIp.Companion.enforce(this, request, deliveryService, cache, routeResult, track)
+            if (routeResult.responseCode == AnonymousIp.Companion.BLOCK_CODE) {
                 return routeResult
             }
         }
         if (deliveryService.isRegionalGeoEnabled) {
-            RegionalGeo.enforce(this, request, deliveryService, cache, routeResult, track)
+            enforce(this, request, deliveryService, cache, routeResult, track)
             return routeResult
         }
         val uriString = deliveryService.createURIString(request, cache)
@@ -1180,11 +1083,7 @@ class TrafficRouter(
      * @param entryDeliveryService The steering Delivery Service being served.
      * @return All of the possible steering results for routing request through entryDeliveryService.
      */
-    private fun getSteeringResults(
-        request: HTTPRequest,
-        track: StatTracker.Track,
-        entryDeliveryService: DeliveryService
-    ): MutableList<SteeringResult>? {
+    private fun getSteeringResults(request: HTTPRequest?, track: StatTracker.Track?, entryDeliveryService: DeliveryService?): MutableList<SteeringResult?>? {
         if (isTlsMismatch(request, entryDeliveryService)) {
             track.setResult(ResultType.ERROR)
             track.setResultDetails(ResultDetails.DS_TLS_MISMATCH)
@@ -1196,9 +1095,9 @@ class TrafficRouter(
             track.setResultDetails(ResultDetails.DS_NOT_FOUND)
             return null
         }
-        val toBeRemoved: MutableList<SteeringResult> = ArrayList()
+        val toBeRemoved: MutableList<SteeringResult?> = ArrayList()
         for (steeringResult in steeringResults) {
-            val ds = steeringResult.deliveryService
+            val ds = steeringResult.getDeliveryService()
             if (isTlsMismatch(request, ds)) {
                 track.setResult(ResultType.ERROR)
                 track.setResultDetails(ResultDetails.DS_TLS_MISMATCH)
@@ -1218,10 +1117,9 @@ class TrafficRouter(
      * @return The Delivery Service corresponding to the request if one can be found, otherwise
      * `null`.
      */
-    private fun getDeliveryService(request: HTTPRequest, track: StatTracker.Track): DeliveryService? {
+    private fun getDeliveryService(request: HTTPRequest?, track: StatTracker.Track?): DeliveryService? {
         val xtcSteeringOption = request.getHeaderValue(XTC_STEERING_OPTION)
-        val deliveryService =
-            consistentHashDeliveryService(cacheRegister!!.getDeliveryService(request), request, xtcSteeringOption)
+        val deliveryService = consistentHashDeliveryService(cacheRegister.getDeliveryService(request), request, xtcSteeringOption)
         if (deliveryService == null) {
             track.setResult(ResultType.DS_MISS)
             track.setResultDetails(ResultDetails.DS_NOT_FOUND)
@@ -1241,11 +1139,11 @@ class TrafficRouter(
      * @param request The client HTTP request.
      * @param deliveryService The Delivery Service being served.
      */
-    private fun isTlsMismatch(request: HTTPRequest, deliveryService: DeliveryService): Boolean {
-        if (request.isSecure && !deliveryService.isSslEnabled) {
+    private fun isTlsMismatch(request: HTTPRequest?, deliveryService: DeliveryService?): Boolean {
+        if (request.isSecure() && !deliveryService.isSslEnabled()) {
             return true
         }
-        return if (!request.isSecure && !deliveryService.isAcceptHttp) {
+        return if (!request.isSecure() && !deliveryService.isAcceptHttp()) {
             true
         } else false
     }
@@ -1258,7 +1156,7 @@ class TrafficRouter(
      */
     protected fun getDeepNetworkNode(ip: String?): NetworkNode? {
         try {
-            return NetworkNode.getDeepInstance().getNetwork(ip)
+            return NetworkNode.Companion.getDeepInstance().getNetwork(ip)
         } catch (e: NetworkNodeException) {
             LOGGER.warn(e)
         }
@@ -1273,18 +1171,14 @@ class TrafficRouter(
      */
     protected fun getNetworkNode(ip: String?): NetworkNode? {
         try {
-            return NetworkNode.getInstance().getNetwork(ip)
+            return NetworkNode.Companion.getInstance().getNetwork(ip)
         } catch (e: NetworkNodeException) {
             LOGGER.warn(e)
         }
         return null
     }
 
-    fun getCoverageZoneCacheLocation(
-        ip: String,
-        deliveryServiceId: String,
-        requestVersion: IPVersions?
-    ): CacheLocation? {
+    fun getCoverageZoneCacheLocation(ip: String?, deliveryServiceId: String?, requestVersion: IPVersions?): CacheLocation? {
         return getCoverageZoneCacheLocation(ip, deliveryServiceId, false, null, requestVersion) // default is not deep
     }
 
@@ -1300,19 +1194,13 @@ class TrafficRouter(
         return cacheLocation
     }
 
-    fun getCoverageZoneCacheLocation(
-        ip: String,
-        deliveryServiceId: String,
-        useDeep: Boolean,
-        track: StatTracker.Track?,
-        requestVersion: IPVersions?
-    ): CacheLocation? {
+    fun getCoverageZoneCacheLocation(ip: String?, deliveryServiceId: String?, useDeep: Boolean, track: StatTracker.Track?, requestVersion: IPVersions?): CacheLocation? {
         val networkNode = if (useDeep) getDeepNetworkNode(ip) else getNetworkNode(ip)
         val localizationMethod = if (useDeep) LocalizationMethod.DEEP_CZ else LocalizationMethod.CZ
         if (networkNode == null) {
             return null
         }
-        val deliveryService = cacheRegister!!.getDeliveryService(deliveryServiceId)
+        val deliveryService = cacheRegister.getDeliveryService(deliveryServiceId)
         var cacheLocation: CacheLocation? = networkNode.location as CacheLocation
         if (useDeep && cacheLocation != null) {
             // lazily load deep Caches into the deep CacheLocation
@@ -1321,12 +1209,7 @@ class TrafficRouter(
         if (cacheLocation != null && !cacheLocation.isEnabledFor(localizationMethod)) {
             return null
         }
-        if (cacheLocation != null && !getSupportingCaches(
-                cacheLocation.caches,
-                deliveryService,
-                requestVersion
-            ).isEmpty()
-        ) {
+        if (cacheLocation != null && !getSupportingCaches(cacheLocation.caches, deliveryService, requestVersion).isEmpty()) {
             return cacheLocation
         }
         if (useDeep) {
@@ -1338,34 +1221,23 @@ class TrafficRouter(
         }
 
         // find CacheLocation
-        cacheLocation = cacheRegister.getCacheLocationById(networkNode.loc)
+        cacheLocation = getCacheRegister().getCacheLocationById(networkNode.loc)
         if (cacheLocation != null && !cacheLocation.isEnabledFor(localizationMethod)) {
-            track!!.continueGeo =
-                false // hit in the CZF but the cachegroup doesn't allow CZ-localization, don't fall back to GEO
+            track.continueGeo = false // hit in the CZF but the cachegroup doesn't allow CZ-localization, don't fall back to GEO
             return null
         }
-        if (cacheLocation != null && !getSupportingCaches(
-                cacheLocation.caches,
-                deliveryService,
-                requestVersion
-            ).isEmpty()
-        ) {
+        if (cacheLocation != null && !getSupportingCaches(cacheLocation.caches, deliveryService, requestVersion).isEmpty()) {
             // lazy loading in case a CacheLocation has not yet been associated with this NetworkNode
             networkNode.location = cacheLocation
             return cacheLocation
         }
         if (cacheLocation != null && cacheLocation.backupCacheGroups != null) {
             for (cacheGroup in cacheLocation.backupCacheGroups) {
-                val bkCacheLocation = cacheRegister.getCacheLocationById(cacheGroup)
+                val bkCacheLocation = getCacheRegister().getCacheLocationById(cacheGroup)
                 if (bkCacheLocation != null && !bkCacheLocation.isEnabledFor(localizationMethod)) {
                     continue
                 }
-                if (bkCacheLocation != null && !getSupportingCaches(
-                        bkCacheLocation.caches,
-                        deliveryService,
-                        requestVersion
-                    ).isEmpty()
-                ) {
+                if (bkCacheLocation != null && !getSupportingCaches(bkCacheLocation.caches, deliveryService, requestVersion).isEmpty()) {
                     LOGGER.debug("Got backup CZ cache group " + bkCacheLocation.id + " for " + ip + ", ds " + deliveryServiceId)
                     if (track != null) {
                         track.isFromBackupCzGroup = true
@@ -1377,7 +1249,7 @@ class TrafficRouter(
             // will become to false only when backups are configured and (primary group's) fallbackToClosedGeo is configured (non-empty list) to false
             // False signals subsequent cacheSelection routine to stop geo based selection.
             if (!cacheLocation.isUseClosestGeoLoc) {
-                track!!.continueGeo = false
+                track.continueGeo = false
                 return null
             }
         }
@@ -1386,12 +1258,7 @@ class TrafficRouter(
         // Check whether the CZF entry has a geolocation and use it if so.
         var availableLocations = cacheRegister.filterAvailableCacheLocations(deliveryServiceId)
         availableLocations = filterEnabledLocations(availableLocations, localizationMethod)
-        val closestCacheLocation = getClosestCacheLocation(
-            availableLocations,
-            networkNode.geolocation,
-            cacheRegister.getDeliveryService(deliveryServiceId),
-            requestVersion
-        )
+        val closestCacheLocation = getClosestCacheLocation(availableLocations, networkNode.geolocation, cacheRegister.getDeliveryService(deliveryServiceId), requestVersion)
         if (closestCacheLocation != null) {
             LOGGER.debug("Got closest CZ cache group " + closestCacheLocation.id + " for " + ip + ", ds " + deliveryServiceId)
             if (track != null) {
@@ -1401,39 +1268,22 @@ class TrafficRouter(
         return closestCacheLocation
     }
 
-    fun filterEnabledLocations(
-        locations: Collection<CacheLocation>,
-        localizationMethod: LocalizationMethod?
-    ): List<CacheLocation> {
+    fun filterEnabledLocations(locations: MutableCollection<CacheLocation?>?, localizationMethod: LocalizationMethod?): MutableList<CacheLocation?>? {
         return locations.stream()
-            .filter { loc: CacheLocation -> loc.isEnabledFor(localizationMethod) }
-            .collect(Collectors.toList())
+                .filter { loc: CacheLocation? -> loc.isEnabledFor(localizationMethod) }
+                .collect(Collectors.toList())
     }
 
-    fun getDeepCoverageZoneCacheLocation(
-        ip: String,
-        deliveryService: DeliveryService,
-        requestVersion: IPVersions?
-    ): CacheLocation? {
+    fun getDeepCoverageZoneCacheLocation(ip: String?, deliveryService: DeliveryService?, requestVersion: IPVersions?): CacheLocation? {
         return getCoverageZoneCacheLocation(ip, deliveryService, true, null, requestVersion)
     }
 
-    fun getCoverageZoneCacheLocation(
-        ip: String,
-        deliveryService: DeliveryService,
-        useDeep: Boolean,
-        track: StatTracker.Track?,
-        requestVersion: IPVersions?
-    ): CacheLocation? {
-        return getCoverageZoneCacheLocation(ip, deliveryService.id, useDeep, track, requestVersion)
+    fun getCoverageZoneCacheLocation(ip: String?, deliveryService: DeliveryService?, useDeep: Boolean, track: StatTracker.Track?, requestVersion: IPVersions?): CacheLocation? {
+        return getCoverageZoneCacheLocation(ip, deliveryService.getId(), useDeep, track, requestVersion)
     }
 
-    fun getCoverageZoneCacheLocation(
-        ip: String,
-        deliveryService: DeliveryService,
-        requestVersion: IPVersions?
-    ): CacheLocation? {
-        return getCoverageZoneCacheLocation(ip, deliveryService.id, requestVersion)
+    fun getCoverageZoneCacheLocation(ip: String?, deliveryService: DeliveryService?, requestVersion: IPVersions?): CacheLocation? {
+        return getCoverageZoneCacheLocation(ip, deliveryService.getId(), requestVersion)
     }
     /**
      * Chooses a cache for a Delivery Service based on the Coverage Zone File or Deep Coverage Zone
@@ -1456,12 +1306,7 @@ class TrafficRouter(
      * @return A cache object chosen to serve the client's request
      */
     @JvmOverloads
-    fun consistentHashForCoverageZone(
-        ip: String,
-        deliveryServiceId: String,
-        requestPath: String?,
-        useDeep: Boolean = false
-    ): Cache? {
+    fun consistentHashForCoverageZone(ip: String?, deliveryServiceId: String?, requestPath: String?, useDeep: Boolean = false): Cache? {
         val r = HTTPRequest()
         r.path = requestPath
         r.queryString = ""
@@ -1478,13 +1323,8 @@ class TrafficRouter(
      * use Coverage Zone File
      * @return A [Cache] object chosen to serve the client's request
      */
-    fun consistentHashForCoverageZone(
-        ip: String,
-        deliveryServiceId: String,
-        request: HTTPRequest,
-        useDeep: Boolean
-    ): Cache? {
-        val deliveryService = cacheRegister!!.getDeliveryService(deliveryServiceId)
+    fun consistentHashForCoverageZone(ip: String?, deliveryServiceId: String?, request: HTTPRequest?, useDeep: Boolean): Cache? {
+        val deliveryService = cacheRegister.getDeliveryService(deliveryServiceId)
         if (deliveryService == null) {
             LOGGER.error("Failed getting delivery service from cache register for id '$deliveryServiceId'")
             return null
@@ -1508,7 +1348,7 @@ class TrafficRouter(
      * `http://test.example.com/request/path`  `/request/path`
      * @return A cache object chosen to serve the client's request
      */
-    fun consistentHashForGeolocation(ip: String, deliveryServiceId: String, requestPath: String?): Cache? {
+    fun consistentHashForGeolocation(ip: String?, deliveryServiceId: String?, requestPath: String?): Cache? {
         val r = HTTPRequest()
         r.path = requestPath
         r.queryString = ""
@@ -1523,21 +1363,21 @@ class TrafficRouter(
      * @param request The client's HTTP request
      * @return A cache object chosen to serve the client's request
      */
-    fun consistentHashForGeolocation(ip: String, deliveryServiceId: String, request: HTTPRequest): Cache? {
-        val deliveryService = cacheRegister!!.getDeliveryService(deliveryServiceId)
+    fun consistentHashForGeolocation(ip: String?, deliveryServiceId: String?, request: HTTPRequest?): Cache? {
+        val deliveryService = cacheRegister.getDeliveryService(deliveryServiceId)
         if (deliveryService == null) {
             LOGGER.error("Failed getting delivery service from cache register for id '$deliveryServiceId'")
             return null
         }
         val requestVersion = if (ip.contains(":")) IPVersions.IPV6ONLY else IPVersions.IPV4ONLY
-        var caches: List<Cache?>? = null
+        var caches: MutableList<Cache?>? = null
         if (deliveryService.isCoverageZoneOnly && deliveryService.geoRedirectUrl != null) {
             //use the NGB redirect
-            caches = enforceGeoRedirect(StatTracker.getTrack(), deliveryService, ip, null, requestVersion)
+            caches = enforceGeoRedirect(StatTracker.Companion.getTrack(), deliveryService, ip, null, requestVersion)
         } else {
             val cacheLocation = getCoverageZoneCacheLocation(ip, deliveryServiceId, requestVersion)
             try {
-                caches = selectCachesByGeo(ip, deliveryService, cacheLocation, StatTracker.getTrack(), requestVersion)
+                caches = selectCachesByGeo(ip, deliveryService, cacheLocation, StatTracker.Companion.getTrack(), requestVersion)
             } catch (e: GeolocationException) {
                 LOGGER.warn("Failed gettting list of caches by geolocation for ip $ip delivery service id '$deliveryServiceId'")
             }
@@ -1556,28 +1396,28 @@ class TrafficRouter(
      * @param requestPath The client's requested path.
      * @return A string suitable for using in consistent hashing.
      */
-    fun buildPatternBasedHashStringDeliveryService(deliveryServiceId: String?, requestPath: String?): String {
+    fun buildPatternBasedHashStringDeliveryService(deliveryServiceId: String?, requestPath: String?): String? {
         val r = HTTPRequest()
         r.path = requestPath
         r.queryString = ""
-        return buildPatternBasedHashString(cacheRegister!!.getDeliveryService(deliveryServiceId), r)
+        return buildPatternBasedHashString(cacheRegister.getDeliveryService(deliveryServiceId), r)
     }
 
     /**
      * Returns whether or not the given Delivery Service is of the STEERING or CLIENT_STEERING type.
      */
     private fun isSteeringDeliveryService(deliveryService: DeliveryService?): Boolean {
-        return deliveryService != null && steeringRegistry!!.has(deliveryService.id)
+        return deliveryService != null && steeringRegistry.has(deliveryService.id)
     }
 
     /**
      * Checks whether the given client's HTTP request is for a CLIENT_STEERING Delivery Service.
      */
-    private fun isMultiRouteRequest(request: HTTPRequest): Boolean {
-        val deliveryService = cacheRegister!!.getDeliveryService(request)
+    private fun isMultiRouteRequest(request: HTTPRequest?): Boolean {
+        val deliveryService = cacheRegister.getDeliveryService(request)
         return if (deliveryService == null || !isSteeringDeliveryService(deliveryService)) {
             false
-        } else steeringRegistry!![deliveryService.id].isClientSteering
+        } else steeringRegistry.get(deliveryService.id).isClientSteering
     }
 
     /**
@@ -1590,7 +1430,7 @@ class TrafficRouter(
      * geo-located (and deliveryService has no default "miss" location set) or if the client is
      * blocked by the Delivery Service's settings.
      */
-    fun getClientLocationByCoverageZoneOrGeo(clientIP: String, deliveryService: DeliveryService): Geolocation {
+    fun getClientLocationByCoverageZoneOrGeo(clientIP: String?, deliveryService: DeliveryService?): Geolocation? {
         val clientLocation: Geolocation?
         val networkNode = getNetworkNode(clientIP)
         clientLocation = if (networkNode != null && networkNode.geolocation != null) {
@@ -1615,42 +1455,34 @@ class TrafficRouter(
      * @param deliveryService The Delivery Service being served. This is used to help geo-locate the
      * client according to blocking and fallback configuration.
      */
-    fun geoSortSteeringResults(
-        steeringResults: List<SteeringResult>,
-        clientIP: String?,
-        deliveryService: DeliveryService
-    ) {
+    fun geoSortSteeringResults(steeringResults: MutableList<SteeringResult?>?, clientIP: String?, deliveryService: DeliveryService?) {
         if (clientIP == null || clientIP.isEmpty()
-            || steeringResults.stream().allMatch { t: SteeringResult -> t.steeringTarget.geolocation == null }
-        ) {
+                || steeringResults.stream().allMatch { t: SteeringResult? -> t.getSteeringTarget().geolocation == null }) {
             return
         }
         val clientLocation = getClientLocationByCoverageZoneOrGeo(clientIP, deliveryService)
         if (clientLocation != null) {
             steeringResults.sort(SteeringGeolocationComparator(clientLocation))
-            steeringResults.sort(Comparator.comparingInt { s: SteeringResult -> s.steeringTarget.order }) // re-sort by order to preserve the ordering done by ConsistentHasher
+            steeringResults.sort(Comparator.comparingInt { s: SteeringResult? -> s.getSteeringTarget().order }) // re-sort by order to preserve the ordering done by ConsistentHasher
         }
     }
 
-    fun consistentHashMultiDeliveryService(
-        deliveryService: DeliveryService?,
-        request: HTTPRequest
-    ): MutableList<SteeringResult>? {
+    fun consistentHashMultiDeliveryService(deliveryService: DeliveryService?, request: HTTPRequest?): MutableList<SteeringResult?>? {
         if (deliveryService == null) {
             return null
         }
-        val steeringResults: MutableList<SteeringResult> = ArrayList()
+        val steeringResults: MutableList<SteeringResult?> = ArrayList()
         if (!isSteeringDeliveryService(deliveryService)) {
             steeringResults.add(SteeringResult(null, deliveryService))
             return steeringResults
         }
-        val steering = steeringRegistry!![deliveryService.id]
+        val steering = steeringRegistry.get(deliveryService.id)
 
         // Pattern based consistent hashing
         val pathToHash = buildPatternBasedHashString(deliveryService, request)
         val steeringTargets = consistentHasher.selectHashables(steering.targets, pathToHash)
         for (steeringTarget in steeringTargets) {
-            val target = cacheRegister!!.getDeliveryService(steeringTarget.deliveryService)
+            val target = cacheRegister.getDeliveryService(steeringTarget.deliveryService)
             if (target != null) { // target might not be in CRConfig yet
                 steeringResults.add(SteeringResult(steeringTarget, target))
             }
@@ -1667,7 +1499,7 @@ class TrafficRouter(
      * `http://test.example.com/request/path`  `/request/path`
      * @return A cache object chosen to serve the client's request
      */
-    fun consistentHashSteeringForCoverageZone(ip: String, deliveryServiceId: String, requestPath: String?): Cache? {
+    fun consistentHashSteeringForCoverageZone(ip: String?, deliveryServiceId: String?, requestPath: String?): Cache? {
         val r = HTTPRequest()
         r.path = requestPath
         r.queryString = ""
@@ -1682,7 +1514,7 @@ class TrafficRouter(
      * @param request The client's HTTP request
      * @return A cache object chosen to serve the client's request
      */
-    fun consistentHashSteeringForCoverageZone(ip: String, deliveryServiceId: String, request: HTTPRequest): Cache? {
+    fun consistentHashSteeringForCoverageZone(ip: String?, deliveryServiceId: String?, request: HTTPRequest?): Cache? {
         val deliveryService = consistentHashDeliveryService(deliveryServiceId, request)
         if (deliveryService == null) {
             LOGGER.error("Failed getting delivery service from cache register for id '$deliveryServiceId'")
@@ -1720,8 +1552,8 @@ class TrafficRouter(
      * @param request The client's HTTP request
      * @return The chosen target Delivery Service, or null if one could not be determined.
      */
-    fun consistentHashDeliveryService(deliveryServiceId: String?, request: HTTPRequest): DeliveryService? {
-        return consistentHashDeliveryService(cacheRegister!!.getDeliveryService(deliveryServiceId), request, "")
+    fun consistentHashDeliveryService(deliveryServiceId: String?, request: HTTPRequest?): DeliveryService? {
+        return consistentHashDeliveryService(cacheRegister.getDeliveryService(deliveryServiceId), request, "")
     }
 
     /**
@@ -1733,24 +1565,20 @@ class TrafficRouter(
      * @param xtcSteeringOption The value of the client's [.XTC_STEERING_OPTION] HTTP Header.
      * @return The chosen target Delivery Service, or null if one could not be determined.
      */
-    fun consistentHashDeliveryService(
-        deliveryService: DeliveryService?,
-        request: HTTPRequest,
-        xtcSteeringOption: String?
-    ): DeliveryService? {
+    fun consistentHashDeliveryService(deliveryService: DeliveryService?, request: HTTPRequest?, xtcSteeringOption: String?): DeliveryService? {
         if (deliveryService == null) {
             return null
         }
         if (!isSteeringDeliveryService(deliveryService)) {
             return deliveryService
         }
-        val steering = steeringRegistry!![deliveryService.id]
+        val steering = steeringRegistry.get(deliveryService.id)
         if (xtcSteeringOption != null && !xtcSteeringOption.isEmpty()) {
-            return if (steering.hasTarget(xtcSteeringOption)) cacheRegister!!.getDeliveryService(xtcSteeringOption) else null
+            return if (steering.hasTarget(xtcSteeringOption)) cacheRegister.getDeliveryService(xtcSteeringOption) else null
         }
-        val bypassDeliveryServiceId = steering.getBypassDestination(request.path)
+        val bypassDeliveryServiceId = steering.getBypassDestination(request.getPath())
         if (bypassDeliveryServiceId != null && !bypassDeliveryServiceId.isEmpty()) {
-            val bypass = cacheRegister!!.getDeliveryService(bypassDeliveryServiceId)
+            val bypass = cacheRegister.getDeliveryService(bypassDeliveryServiceId)
             if (bypass != null) { // bypass DS target might not be in CRConfig yet. Until then, try existing targets
                 return bypass
             }
@@ -1758,15 +1586,15 @@ class TrafficRouter(
 
         // only select from targets in CRConfig
         val availableTargets = steering.targets.stream()
-            .filter { target: SteeringTarget -> cacheRegister!!.getDeliveryService(target.deliveryService) != null }
-            .collect(Collectors.toList())
+                .filter { target: SteeringTarget? -> cacheRegister.getDeliveryService(target.getDeliveryService()) != null }
+                .collect(Collectors.toList())
 
         // Pattern based consistent hashing
         val pathToHash = buildPatternBasedHashString(deliveryService, request)
         val steeringTarget = consistentHasher.selectHashable(availableTargets, deliveryService.dispersion, pathToHash)
 
         // set target.consistentHashRegex from steering DS, if it is set
-        val targetDeliveryService = cacheRegister!!.getDeliveryService(steeringTarget.deliveryService)
+        val targetDeliveryService = cacheRegister.getDeliveryService(steeringTarget.deliveryService)
         if (deliveryService.consistentHashRegex != null && !deliveryService.consistentHashRegex.isEmpty()) {
             targetDeliveryService.consistentHashRegex = deliveryService.consistentHashRegex
         }
@@ -1781,23 +1609,18 @@ class TrafficRouter(
      * @param locations the collection of Locations to order
      * @return the ordered list of locations
      */
-    fun orderLocations(locations: List<Location>, clientLocation: Geolocation?): List<Location> {
+    fun orderLocations(locations: MutableList<out Location?>?, clientLocation: Geolocation?): MutableList<out Location?>? {
         Collections.sort(locations, LocationComparator(clientLocation))
         return locations
     }
 
-    private fun getClosestCacheLocation(
-        cacheLocations: List<CacheLocation>,
-        clientLocation: Geolocation?,
-        deliveryService: DeliveryService,
-        requestVersion: IPVersions?
-    ): CacheLocation? {
+    private fun getClosestCacheLocation(cacheLocations: MutableList<CacheLocation?>?, clientLocation: Geolocation?, deliveryService: DeliveryService?, requestVersion: IPVersions?): CacheLocation? {
         if (clientLocation == null) {
             return null
         }
-        val orderedLocations = orderLocations(cacheLocations, clientLocation) as List<CacheLocation>
+        val orderedLocations = orderLocations(cacheLocations, clientLocation) as MutableList<CacheLocation?>?
         for (cacheLocation in orderedLocations) {
-            if (!getSupportingCaches(cacheLocation.caches, deliveryService, requestVersion).isEmpty()) {
+            if (!getSupportingCaches(cacheLocation.getCaches(), deliveryService, requestVersion).isEmpty()) {
                 return cacheLocation
             }
         }
@@ -1813,21 +1636,15 @@ class TrafficRouter(
      * the delivery service for the request
      * @return the selected cache or null if none can be found
      */
-    private fun selectCaches(
-        location: CacheLocation,
-        ds: DeliveryService,
-        requestVersion: IPVersions
-    ): MutableList<Cache?>? {
+    private fun selectCaches(location: CacheLocation?, ds: DeliveryService?, requestVersion: IPVersions?): MutableList<Cache?>? {
         if (LOGGER.isDebugEnabled) {
-            LOGGER.debug("Trying location: " + location.id)
+            LOGGER.debug("Trying location: " + location.getId())
         }
-        val caches = getSupportingCaches(location.caches, ds, requestVersion)
+        val caches = getSupportingCaches(location.getCaches(), ds, requestVersion)
         if (caches.isEmpty()) {
             if (LOGGER.isDebugEnabled) {
-                LOGGER.debug(
-                    "No online, supporting caches were found at location: "
-                            + location.id
-                )
+                LOGGER.debug("No online, supporting caches were found at location: "
+                        + location.getId())
             }
             return null
         }
@@ -1848,24 +1665,28 @@ class TrafficRouter(
  * @param builder Used to build a zone if one has not already been created containing qname.
  * @return A zone containing records of type qtype that contains qname. This can be null
 ](https://javadoc.io/doc/dnsjava/dnsjava/latest/org/xbill/DNS/Type.html) */
-    fun getZone(
-        qname: Name?,
-        qtype: Int,
-        clientAddress: InetAddress?,
-        isDnssecRequest: Boolean,
-        builder: DNSAccessRecord.Builder?
-    ): Zone {
+    fun getZone(qname: Name?, qtype: Int, clientAddress: InetAddress?, isDnssecRequest: Boolean, builder: DNSAccessRecord.Builder?): Zone? {
         return zoneManager.getZone(qname, qtype, clientAddress, isDnssecRequest, builder)
     }
 
-    private fun enforceGeoRedirect(
-        track: StatTracker.Track,
-        ds: DeliveryService,
-        clientIp: String,
-        queriedClientLocation: Geolocation?,
-        requestVersion: IPVersions
-    ): MutableList<Cache?>? {
-        val urlType = ds.geoRedirectUrlType
+    fun setRequestHeaders(requestHeaders: MutableSet<String?>?) {
+        this.requestHeaders = requestHeaders
+    }
+
+    fun getRequestHeaders(): MutableSet<String?>? {
+        return requestHeaders
+    }
+
+    fun isConsistentDNSRouting(): Boolean {
+        return consistentDNSRouting
+    }
+
+    fun isDnssecZoneDiffingEnabled(): Boolean {
+        return dnssecZoneDiffingEnabled
+    }
+
+    private fun enforceGeoRedirect(track: StatTracker.Track?, ds: DeliveryService?, clientIp: String?, queriedClientLocation: Geolocation?, requestVersion: IPVersions?): MutableList<Cache?>? {
+        val urlType = ds.getGeoRedirectUrlType()
         track.setResult(ResultType.GEO_REDIRECT)
         if ("NOT_DS_URL" == urlType) {
             // redirect url not belongs to this DS, just redirect it
@@ -1884,11 +1705,11 @@ class TrafficRouter(
             try {
                 clientLocation = getLocation(clientIp, ds)
             } catch (e: GeolocationException) {
-                LOGGER.warn("Failed getting geolocation for client ip " + clientIp + " and delivery service '" + ds.id + "'")
+                LOGGER.warn("Failed getting geolocation for client ip " + clientIp + " and delivery service '" + ds.getId() + "'")
             }
         }
         if (clientLocation == null) {
-            clientLocation = ds.missLocation
+            clientLocation = ds.getMissLocation()
         }
         if (clientLocation == null) {
             LOGGER.error("cannot find a geo location for the client: $clientIp")
@@ -1921,9 +1742,7 @@ class TrafficRouter(
             LOGGER.warn("Application Context not yet ready, skipping calling listeners of configuration change")
             return
         }
-        val configurationListenerMap = applicationContext!!.getBeansOfType(
-            ConfigurationListener::class.java
-        )
+        val configurationListenerMap = applicationContext.getBeansOfType(ConfigurationListener::class.java)
         for (configurationListener in configurationListenerMap.values) {
             configurationListener.configurationChanged()
         }
@@ -1933,14 +1752,31 @@ class TrafficRouter(
         this.steeringRegistry = steeringRegistry
     }
 
+    fun isEdgeDNSRouting(): Boolean {
+        return edgeDNSRouting
+    }
+
+    fun isEdgeHTTPRouting(): Boolean {
+        return edgeHTTPRouting
+    }
+
+    private fun getEdgeNSttl(): Long {
+        return edgeNSttl
+    }
+
+    private fun getEdgeDNSRoutingLimit(): Int {
+        return edgeDNSRoutingLimit
+    }
+
     private fun getEdgeHTTPRoutingLimit(ds: DeliveryService?): Int {
         return if (ds != null && ds.maxDnsIps != 0 && ds.maxDnsIps != edgeHTTPRoutingLimit) {
             ds.maxDnsIps
         } else edgeHTTPRoutingLimit
     }
 
-    val defaultGeoLocationsOverride: Map<String, Geolocation>
-        get() = defaultGeolocationsOverride
+    fun getDefaultGeoLocationsOverride(): MutableMap<String?, Geolocation?>? {
+        return defaultGeolocationsOverride
+    }
 
     companion object {
         val LOGGER = LogManager.getLogger(TrafficRouter::class.java)
@@ -1950,7 +1786,7 @@ class TrafficRouter(
          * the XMLID of a Delivery Service to use as an explicit target in CLIENT_STEERING (thus
          * bypassing normal steering logic).
          */
-        const val XTC_STEERING_OPTION = "x-tc-steering-option"
+        val XTC_STEERING_OPTION: String? = "x-tc-steering-option"
 
         /**
          * This is the key of a JSON object that is a configuration option that may be present in
@@ -1958,14 +1794,14 @@ class TrafficRouter(
          * servers will be provided in responses to steering requests (known as "Client Steering Forced
          * Diversity").
          */
-        const val DNSSEC_ENABLED = "dnssec.enabled"
-        const val DNSSEC_ZONE_DIFFING = "dnssec.zone.diffing.enabled"
-        const val DNSSEC_RRSIG_CACHE_ENABLED = "dnssec.rrsig.cache.enabled"
-        const val STRIP_SPECIAL_QUERY_PARAMS = "strip.special.query.params"
+        val DNSSEC_ENABLED: String? = "dnssec.enabled"
+        val DNSSEC_ZONE_DIFFING: String? = "dnssec.zone.diffing.enabled"
+        val DNSSEC_RRSIG_CACHE_ENABLED: String? = "dnssec.rrsig.cache.enabled"
+        val STRIP_SPECIAL_QUERY_PARAMS: String? = "strip.special.query.params"
         private const val DEFAULT_EDGE_NS_TTL: Long = 3600
         private const val DEFAULT_EDGE_TR_LIMIT = 4
-        private val GEO_ZERO_ZERO = Geolocation(0.0, 0.0)
-        protected const val UNABLE_TO_ROUTE_REQUEST = "Unable to route request."
-        protected const val URL_ERR_STR = "Unable to create URL."
+        private val GEO_ZERO_ZERO: Geolocation? = Geolocation(0.0, 0.0)
+        protected val UNABLE_TO_ROUTE_REQUEST: String? = "Unable to route request."
+        protected val URL_ERR_STR: String? = "Unable to create URL."
     }
 }
