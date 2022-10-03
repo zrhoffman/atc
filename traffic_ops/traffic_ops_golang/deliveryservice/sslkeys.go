@@ -116,7 +116,7 @@ func generatePutTrafficVaultSSLKeys(req tc.DeliveryServiceGenSSLKeysReq, tx *sql
 
 // GeneratePlaceholderSelfSignedCert generates a self-signed SSL certificate as a placeholder when a new HTTPS
 // delivery service is created or an HTTP delivery service is updated to use HTTPS.
-func GeneratePlaceholderSelfSignedCert(ds tc.DeliveryServiceV4, inf *api.APIInfo, context context.Context) (error, int) {
+func GeneratePlaceholderSelfSignedCert(ds tc.DeliveryServiceV5, inf *api.APIInfo, context context.Context) (error, int) {
 	tx := inf.Tx.Tx
 	tv := inf.Vault
 	_, ok, err := tv.GetDeliveryServiceSSLKeys(*ds.XMLID, "", tx, context)

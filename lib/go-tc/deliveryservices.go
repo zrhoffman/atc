@@ -249,9 +249,19 @@ type DeliveryServiceV40 struct {
 	GeoLimitCountries GeoLimitCountriesType `json:"geoLimitCountries"`
 }
 
+// DeliveryServiceV50 is a Delivery Service as it appears in version 5.0 of the
+// Traffic Ops API.
+type DeliveryServiceV50 struct {
+	DeliveryServiceV40
+}
+
 // DeliveryServiceV4 is a Delivery Service as it appears in version 4 of the
 // Traffic Ops API - it always points to the highest minor version in APIv4.
 type DeliveryServiceV4 = DeliveryServiceV40
+
+// DeliveryServiceV5 is a Delivery Service as it appears in version 5 of the
+// Traffic Ops API - it always points to the highest minor version in APIv5.
+type DeliveryServiceV5 = DeliveryServiceV50
 
 // These are the TLS Versions known by Apache Traffic Control to exist.
 const (
@@ -874,6 +884,11 @@ func (ds *DeliveryServiceV4) DowngradeToV31() DeliveryServiceNullableV30 {
 	}
 }
 
+// DowngradeToV31 converts a 5.x DS to a 3.x DS.
+func (ds *DeliveryServiceV5) DowngradeToV31() DeliveryServiceNullableV30 {
+	return util.Ptr(ds.DowngradeToV4()).DowngradeToV31()
+}
+
 // UpgradeToV4 converts the 3.x DS to a 4.x DS.
 func (ds *DeliveryServiceNullableV30) UpgradeToV4() DeliveryServiceV4 {
 	var geo GeoLimitCountriesType
@@ -892,6 +907,23 @@ func (ds *DeliveryServiceNullableV30) UpgradeToV4() DeliveryServiceV4 {
 		TLSVersions:                      nil,
 		GeoLimitCountries:                geo,
 	}
+}
+
+// UpgradeToV5 converts a 3.x DS to a 5.x DS.
+func (ds *DeliveryServiceNullableV30) UpgradeToV5() DeliveryServiceV5 {
+	return util.Ptr(ds.UpgradeToV4()).UpgradeToV5()
+}
+
+// UpgradeToV5 converts a 5.x DS to a 4.x DS.
+func (ds *DeliveryServiceV5) DowngradeToV4() DeliveryServiceV4 {
+	return ds.DeliveryServiceV40
+}
+
+// UpgradeToV5 converts a 4.x DS to a 5.x DS.
+func (ds *DeliveryServiceV4) UpgradeToV5() DeliveryServiceV5 {
+	upgradedDS := DeliveryServiceV5{}
+	upgradedDS.DeliveryServiceV40 = *ds
+	return upgradedDS
 }
 
 func jsonValue(v interface{}) (driver.Value, error) {

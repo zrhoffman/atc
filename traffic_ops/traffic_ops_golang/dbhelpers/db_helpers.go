@@ -1321,7 +1321,7 @@ func TopologyExists(tx *sql.Tx, name string) (bool, error) {
 // one of the Topology's Cache Groups is empty with respect to the Delivery
 // Service's CDN. Note that this can panic if ds does not have a properly set
 // CDNID.
-func CheckTopology(tx *sqlx.Tx, ds tc.DeliveryServiceV4) (int, error, error) {
+func CheckTopology(tx *sqlx.Tx, ds tc.DeliveryServiceV5) (int, error, error) {
 	statusCode, userErr, sysErr := http.StatusOK, error(nil), error(nil)
 
 	if ds.Topology == nil {

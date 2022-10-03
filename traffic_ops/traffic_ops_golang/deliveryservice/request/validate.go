@@ -68,7 +68,7 @@ func validateLegacy(dsr tc.DeliveryServiceRequestNullable, tx *sql.Tx) error {
 	}
 	errs := tovalidate.ToErrors(errMap)
 	// ensure the deliveryservice requested is valid
-	upgraded := dsr.DeliveryService.UpgradeToV4()
+	upgraded := dsr.DeliveryService.UpgradeToV5()
 	e := deliveryservice.Validate(tx, &upgraded)
 
 	errs = append(errs, e)
@@ -112,7 +112,7 @@ func validateV4(dsr tc.DeliveryServiceRequestV40, tx *sql.Tx) (error, error) {
 				if r == nil {
 					return fmt.Errorf("required for changeType='%s'", dsr.ChangeType)
 				}
-				ds, ok := r.(*tc.DeliveryServiceV4)
+				ds, ok := r.(*tc.DeliveryServiceV5)
 				if !ok {
 					return fmt.Errorf("expected a Delivery Service, got %T", r)
 				}

@@ -21,6 +21,10 @@ package util
 
 import "time"
 
+func Ptr[T any](t T) *T {
+	return &t
+}
+
 func StrPtr(str string) *string {
 	return &str
 }

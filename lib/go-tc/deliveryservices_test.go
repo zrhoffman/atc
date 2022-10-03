@@ -391,7 +391,7 @@ func compareV31DSes(a, b DeliveryServiceNullableV30, t *testing.T) {
 }
 
 // This gets equivalent legacy and new Delivery Services, for testing comparisons.
-func dsUpgradeAndDowngradeTestingPair() (DeliveryServiceNullableV30, DeliveryServiceV4) {
+func dsUpgradeAndDowngradeTestingPair() (DeliveryServiceNullableV30, DeliveryServiceV5) {
 	anonymousBlockingEnabled := false
 	cacheURL := "testquest"
 	cCRDNSTTL := 42
@@ -465,7 +465,7 @@ func dsUpgradeAndDowngradeTestingPair() (DeliveryServiceNullableV30, DeliverySer
 	typeID := 22
 	xmlid := "xmlid"
 
-	newDS := DeliveryServiceV4{}
+	newDS := DeliveryServiceV5{}
 	newDS.Active = new(bool)
 	newDS.AnonymousBlockingEnabled = &anonymousBlockingEnabled
 	newDS.CCRDNSTTL = &cCRDNSTTL
@@ -649,17 +649,17 @@ func TestDeliveryServiceUpgradeAndDowngrade(t *testing.T) {
 	compareV31DSes(oldDS, newDS.DowngradeToV31(), t)
 
 	nullableOldDS := DeliveryServiceNullableV30(oldDS)
-	upgraded := nullableOldDS.UpgradeToV4()
+	upgraded := nullableOldDS.UpgradeToV5()
 	compareV31DSes(upgraded.DowngradeToV31(), newDS.DowngradeToV31(), t)
 
 	downgraded := newDS.DowngradeToV31()
-	upgraded = downgraded.UpgradeToV4()
+	upgraded = downgraded.UpgradeToV5()
 	downgraded = upgraded.DowngradeToV31()
 	compareV31DSes(oldDS, downgraded, t)
 
-	upgraded = nullableOldDS.UpgradeToV4()
+	upgraded = nullableOldDS.UpgradeToV5()
 	downgraded = newDS.DowngradeToV31()
-	tmp := downgraded.UpgradeToV4()
+	tmp := downgraded.UpgradeToV5()
 	downgraded = tmp.DowngradeToV31()
 	compareV31DSes(upgraded.DowngradeToV31(), downgraded, t)
 
@@ -668,14 +668,14 @@ func TestDeliveryServiceUpgradeAndDowngrade(t *testing.T) {
 		*oldDS.CacheURL = "testquest"
 	}
 
-	upgraded = oldDS.UpgradeToV4()
+	upgraded = oldDS.UpgradeToV5()
 	downgraded = upgraded.DowngradeToV31()
 	if downgraded.CacheURL != nil {
 		t.Error("Expected 'cacheurl' to be null after upgrade then downgrade because it doesn't exist in APIv4, but it wasn't")
 	}
 
 	downgraded = newDS.DowngradeToV31()
-	upgraded = downgraded.UpgradeToV4()
+	upgraded = downgraded.UpgradeToV5()
 	if upgraded.TLSVersions != nil {
 		t.Errorf("Expected 'tlsVersions' to be nil after upgrade, because all TLS versions are implicitly supported for an APIv3 DS; found: %v", upgraded.TLSVersions)
 	}
@@ -710,7 +710,7 @@ func containsWarning(a Alerts, expected string) func(*testing.T) {
 const nonNilTLSVersionsWarningMessage = "setting TLS Versions that are explicitly supported may break older clients that can't use the specified versions"
 
 func TestTLSVersionsAlerts(t *testing.T) {
-	var ds DeliveryServiceV40
+	var ds DeliveryServiceV50
 	alerts := ds.TLSVersionsAlerts()
 	if alerts.HasAlerts() {
 		t.Errorf("nil versions should not produce any warnings, but these were generated: %v", alerts.Alerts)
@@ -837,7 +837,8 @@ func BenchmarkTLSVersionsAlerts(b *testing.B) {
 			versions = append(versions, fmt.Sprintf("%d.%d", major, minor))
 		}
 	}
-	ds := DeliveryServiceV4{TLSVersions: versions}
+	ds := DeliveryServiceV5{}
+	ds.TLSVersions = versions
 
 	b.ReportAllocs()
 	b.ResetTimer()

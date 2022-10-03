@@ -56,7 +56,7 @@ const (
 // we need a type alias to define functions on
 type TODeliveryService struct {
 	api.APIInfoImpl
-	tc.DeliveryServiceV4
+	tc.DeliveryServiceV5
 }
 
 // TODeliveryServiceOldDetails is the struct to store the old details while updating a DS.
@@ -69,11 +69,11 @@ type TODeliveryServiceOldDetails struct {
 }
 
 func (ds TODeliveryService) MarshalJSON() ([]byte, error) {
-	return json.Marshal(ds.DeliveryServiceV4)
+	return json.Marshal(ds.DeliveryServiceV5)
 }
 
 func (ds *TODeliveryService) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &ds.DeliveryServiceV4)
+	return json.Unmarshal(data, &ds.DeliveryServiceV5)
 }
 
 func (ds *TODeliveryService) APIInfo() *api.APIInfo { return ds.ReqInfo }
@@ -107,7 +107,7 @@ func (ds *TODeliveryService) GetType() string {
 
 // IsTenantAuthorized checks that the user is authorized for both the delivery service's existing tenant, and the new tenant they're changing it to (if different).
 func (ds *TODeliveryService) IsTenantAuthorized(user *auth.CurrentUser) (bool, error) {
-	return isTenantAuthorized(ds.ReqInfo, &ds.DeliveryServiceV4)
+	return isTenantAuthorized(ds.ReqInfo, &ds.DeliveryServiceV5)
 }
 
 const baseTLSVersionsQuery = `SELECT ARRAY_AGG(tls_version ORDER BY tls_version) FROM deliveryservice_tls_version`
@@ -170,6 +170,7 @@ func CreateV31(w http.ResponseWriter, r *http.Request) {
 	}
 	api.WriteRespAlertObj(w, r, tc.SuccessLevel, "Delivery Service creation was successful", []tc.DeliveryServiceV31{*res})
 }
+
 func CreateV40(w http.ResponseWriter, r *http.Request) {
 	inf, userErr, sysErr, errCode := api.NewInfo(r, nil, nil)
 	if userErr != nil || sysErr != nil {
@@ -195,6 +196,31 @@ func CreateV40(w http.ResponseWriter, r *http.Request) {
 	api.WriteAlertsObj(w, r, http.StatusCreated, alerts, []tc.DeliveryServiceV40{*res})
 }
 
+func CreateV50(w http.ResponseWriter, r *http.Request) {
+	inf, userErr, sysErr, errCode := api.NewInfo(r, nil, nil)
+	if userErr != nil || sysErr != nil {
+		api.HandleErr(w, r, inf.Tx.Tx, errCode, userErr, sysErr)
+		return
+	}
+	defer inf.Close()
+
+	ds := tc.DeliveryServiceV50{}
+	if err := json.NewDecoder(r.Body).Decode(&ds); err != nil {
+		api.HandleErr(w, r, inf.Tx.Tx, http.StatusBadRequest, errors.New("decoding: "+err.Error()), nil)
+		return
+	}
+	res, status, userErr, sysErr := createV50(w, r, inf, ds, true)
+	if userErr != nil || sysErr != nil {
+		api.HandleErr(w, r, inf.Tx.Tx, status, userErr, sysErr)
+		return
+	}
+	alerts := res.TLSVersionsAlerts()
+	alerts.AddNewAlert(tc.SuccessLevel, "Delivery Service creation was successful")
+
+	w.Header().Set("Location", fmt.Sprintf("/api/5.0/deliveryservices?id=%d", *res.ID))
+	api.WriteAlertsObj(w, r, http.StatusCreated, alerts, []tc.DeliveryServiceV50{*res})
+}
+
 func createV30(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV30 tc.DeliveryServiceV30) (*tc.DeliveryServiceV30, int, error, error) {
 	ds := tc.DeliveryServiceV31{DeliveryServiceV30: dsV30}
 	res, status, userErr, sysErr := createV31(w, r, inf, ds)
@@ -206,13 +232,13 @@ func createV30(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV30 t
 func createV31(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV31 tc.DeliveryServiceV31) (*tc.DeliveryServiceV31, int, error, error) {
 	tx := inf.Tx.Tx
 	dsNullable := tc.DeliveryServiceNullableV30(dsV31)
-	ds := dsNullable.UpgradeToV4()
-	res, status, userErr, sysErr := createV40(w, r, inf, tc.DeliveryServiceV40(ds), false)
+	ds := dsNullable.UpgradeToV5()
+	res, status, userErr, sysErr := createV50(w, r, inf, tc.DeliveryServiceV50(ds), false)
 	if res == nil {
 		return nil, status, userErr, sysErr
 	}
 
-	ds = tc.DeliveryServiceV4(*res)
+	ds = tc.DeliveryServiceV5(*res)
 	if dsV31.CacheURL != nil {
 		_, err := tx.Exec("UPDATE deliveryservice SET cacheurl = $1 WHERE ID = $2",
 			&dsV31.CacheURL,
@@ -262,9 +288,20 @@ func recreateTLSVersions(versions []string, dsid int, tx *sql.Tx) error {
 
 // create creates the given ds in the database, and returns the DS with its id and other fields created on insert set. On error, the HTTP status code, user error, and system error are returned. The status code SHOULD NOT be used, if both errors are nil.
 func createV40(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV40 tc.DeliveryServiceV40, omitExtraLongDescFields bool) (*tc.DeliveryServiceV40, int, error, error) {
+	ds := dsV40.UpgradeToV5()
+	res, status, userErr, sysErr := createV50(w, r, inf, ds, false)
+	if res == nil {
+		return nil, status, userErr, sysErr
+	}
+	oldRes := ds.DowngradeToV4()
+	return &oldRes, status, userErr, sysErr
+}
+
+// create creates the given ds in the database, and returns the DS with its id and other fields created on insert set. On error, the HTTP status code, user error, and system error are returned. The status code SHOULD NOT be used, if both errors are nil.
+func createV50(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV50 tc.DeliveryServiceV50, omitExtraLongDescFields bool) (*tc.DeliveryServiceV50, int, error, error) {
 	user := inf.User
 	tx := inf.Tx.Tx
-	ds := tc.DeliveryServiceV4(dsV40)
+	ds := tc.DeliveryServiceV5(dsV50)
 	err := Validate(tx, &ds)
 	var geoLimitCountries string
 	if err != nil {
@@ -513,16 +550,16 @@ func createV40(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV40 t
 		return nil, http.StatusInternalServerError, nil, errors.New("error writing to audit log: " + err.Error())
 	}
 
-	dsV40 = ds
+	dsV50 = ds
 
 	if inf.Config.TrafficVaultEnabled && ds.Protocol != nil && (*ds.Protocol == tc.DSProtocolHTTPS || *ds.Protocol == tc.DSProtocolHTTPAndHTTPS || *ds.Protocol == tc.DSProtocolHTTPToHTTPS) {
-		err, errCode := GeneratePlaceholderSelfSignedCert(dsV40, inf, r.Context())
+		err, errCode := GeneratePlaceholderSelfSignedCert(dsV50, inf, r.Context())
 		if err != nil || errCode != http.StatusOK {
 			return nil, errCode, nil, fmt.Errorf("creating self signed default cert: %v", err)
 		}
 	}
 
-	return &dsV40, http.StatusOK, nil, nil
+	return &dsV50, http.StatusOK, nil, nil
 }
 
 func createDefaultRegex(tx *sql.Tx, dsID int, xmlID string) error {
@@ -666,6 +703,42 @@ func UpdateV40(w http.ResponseWriter, r *http.Request) {
 	api.WriteAlertsObj(w, r, http.StatusOK, alerts, []tc.DeliveryServiceV40{*res})
 }
 
+func UpdateV50(w http.ResponseWriter, r *http.Request) {
+	inf, userErr, sysErr, errCode := api.NewInfo(r, nil, []string{"id"})
+	if userErr != nil || sysErr != nil {
+		api.HandleErr(w, r, inf.Tx.Tx, errCode, userErr, sysErr)
+		return
+	}
+	defer inf.Close()
+	id := inf.IntParams["id"]
+
+	ds := tc.DeliveryServiceV50{}
+	if err := json.NewDecoder(r.Body).Decode(&ds); err != nil {
+		api.HandleErr(w, r, inf.Tx.Tx, http.StatusBadRequest, errors.New("malformed JSON: "+err.Error()), nil)
+		return
+	}
+	ds.ID = &id
+	_, cdn, _, err := dbhelpers.GetDSNameAndCDNFromID(inf.Tx.Tx, id)
+	if err != nil {
+		api.HandleErr(w, r, inf.Tx.Tx, http.StatusInternalServerError, nil, errors.New("deliveryservice update: getting CDN from DS ID "+err.Error()))
+		return
+	}
+	userErr, sysErr, statusCode := dbhelpers.CheckIfCurrentUserCanModifyCDN(inf.Tx.Tx, string(cdn), inf.User.UserName)
+	if userErr != nil || sysErr != nil {
+		api.HandleErr(w, r, inf.Tx.Tx, statusCode, userErr, sysErr)
+		return
+	}
+	res, status, userErr, sysErr := updateV50(w, r, inf, &ds, true)
+	if userErr != nil || sysErr != nil {
+		api.HandleErr(w, r, inf.Tx.Tx, status, userErr, sysErr)
+		return
+	}
+	alerts := res.TLSVersionsAlerts()
+	alerts.AddNewAlert(tc.SuccessLevel, "Delivery Service update was successful")
+
+	api.WriteAlertsObj(w, r, http.StatusOK, alerts, []tc.DeliveryServiceV50{*res})
+}
+
 func updateV30(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV30 *tc.DeliveryServiceV30) (*tc.DeliveryServiceV30, int, error, error) {
 	dsV31 := tc.DeliveryServiceV31{DeliveryServiceV30: *dsV30}
 	// query the DB for existing 3.1 fields in order to "upgrade" this 3.0 request into a 3.1 request
@@ -692,19 +765,19 @@ WHERE
 }
 func updateV31(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV31 *tc.DeliveryServiceV31) (*tc.DeliveryServiceV31, int, error, error) {
 	dsNull := tc.DeliveryServiceNullableV30(*dsV31)
-	ds := dsNull.UpgradeToV4()
-	dsV40 := ds
-	if dsV40.ID == nil {
+	ds := dsNull.UpgradeToV5()
+	dsV50 := ds
+	if dsV50.ID == nil {
 		return nil, http.StatusInternalServerError, nil, errors.New("cannot update a Delivery Service with nil ID")
 	}
 
 	tx := inf.Tx.Tx
 	var sysErr error
-	if dsV40.TLSVersions, sysErr = GetDSTLSVersions(*dsV40.ID, tx); sysErr != nil {
-		return nil, http.StatusInternalServerError, nil, fmt.Errorf("getting TLS versions for DS #%d in API version < 4.0: %w", *dsV40.ID, sysErr)
+	if dsV50.TLSVersions, sysErr = GetDSTLSVersions(*dsV50.ID, tx); sysErr != nil {
+		return nil, http.StatusInternalServerError, nil, fmt.Errorf("getting TLS versions for DS #%d in API version < 4.0: %w", *dsV50.ID, sysErr)
 	}
 
-	res, status, usrErr, sysErr := updateV40(w, r, inf, &dsV40, false)
+	res, status, usrErr, sysErr := updateV50(w, r, inf, &dsV50, false)
 	if res == nil || usrErr != nil || sysErr != nil {
 		return nil, status, usrErr, sysErr
 	}
@@ -726,10 +799,33 @@ func updateV31(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV31 *
 	oldRes := tc.DeliveryServiceV31(ds.DowngradeToV31())
 	return &oldRes, http.StatusOK, nil, nil
 }
-func updateV40(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV40 *tc.DeliveryServiceV40, omitExtraLongDescFields bool) (*tc.DeliveryServiceV40, int, error, error) {
+
+func updateV40(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, ds *tc.DeliveryServiceV40, omitExtraLongDescFields bool) (*tc.DeliveryServiceV40, int, error, error) {
+	dsV50 := ds.UpgradeToV5()
+	if dsV50.ID == nil {
+		return nil, http.StatusInternalServerError, nil, errors.New("cannot update a Delivery Service with nil ID")
+	}
+
+	tx := inf.Tx.Tx
+	var sysErr error
+	if dsV50.TLSVersions, sysErr = GetDSTLSVersions(*dsV50.ID, tx); sysErr != nil {
+		return nil, http.StatusInternalServerError, nil, fmt.Errorf("getting TLS versions for DS #%d in API version < 5.0: %w", *dsV50.ID, sysErr)
+	}
+
+	res, status, usrErr, sysErr := updateV50(w, r, inf, &dsV50, false)
+	if res == nil || usrErr != nil || sysErr != nil {
+		return nil, status, usrErr, sysErr
+	}
+	ds40 := res.DowngradeToV4()
+	ds = &ds40
+
+	return ds, http.StatusOK, nil, nil
+}
+
+func updateV50(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV50 *tc.DeliveryServiceV50, omitExtraLongDescFields bool) (*tc.DeliveryServiceV50, int, error, error) {
 	tx := inf.Tx.Tx
 	user := inf.User
-	ds := tc.DeliveryServiceV4(*dsV40)
+	ds := tc.DeliveryServiceV5(*dsV50)
 	if err := Validate(tx, &ds); err != nil {
 		return nil, http.StatusBadRequest, errors.New("invalid request: " + err.Error()), nil
 	}
@@ -1044,16 +1140,16 @@ func updateV40(w http.ResponseWriter, r *http.Request, inf *api.APIInfo, dsV40 *
 		return nil, http.StatusInternalServerError, nil, errors.New("writing change log entry: " + err.Error())
 	}
 
-	dsV40 = (*tc.DeliveryServiceV40)(&ds)
+	dsV50 = (*tc.DeliveryServiceV50)(&ds)
 
 	if inf.Config.TrafficVaultEnabled && ds.Protocol != nil && (*ds.Protocol == tc.DSProtocolHTTPS || *ds.Protocol == tc.DSProtocolHTTPAndHTTPS || *ds.Protocol == tc.DSProtocolHTTPToHTTPS) {
-		err, errCode := GeneratePlaceholderSelfSignedCert(*dsV40, inf, r.Context())
+		err, errCode := GeneratePlaceholderSelfSignedCert(*dsV50, inf, r.Context())
 		if err != nil || errCode != http.StatusOK {
 			return nil, errCode, nil, fmt.Errorf("creating self signed default cert: %v", err)
 		}
 	}
 
-	return dsV40, http.StatusOK, nil, nil
+	return dsV50, http.StatusOK, nil, nil
 }
 
 // Delete is the DeliveryService implementation of the Deleter interface.
@@ -1240,7 +1336,7 @@ func requiredIfMatchesTypeName(patterns []string, typeName string) func(interfac
 
 var validTLSVersionPattern = regexp.MustCompile(`^\d+\.\d+$`)
 
-func Validate(tx *sql.Tx, ds *tc.DeliveryServiceV4) error {
+func Validate(tx *sql.Tx, ds *tc.DeliveryServiceV5) error {
 	sanitize(ds)
 	neverOrAlways := validation.NewStringRule(tovalidate.IsOneOfStringICase("NEVER", "ALWAYS"),
 		"must be one of 'NEVER' or 'ALWAYS'")
@@ -1298,7 +1394,7 @@ func Validate(tx *sql.Tx, ds *tc.DeliveryServiceV4) error {
 	return util.JoinErrs(errs)
 }
 
-func validateGeoLimitCountries(ds *tc.DeliveryServiceV4) error {
+func validateGeoLimitCountries(ds *tc.DeliveryServiceV5) error {
 	var IsLetter = regexp.MustCompile(`^[A-Z]+$`).MatchString
 	if ds.GeoLimitCountries == nil {
 		return nil
@@ -1312,7 +1408,7 @@ func validateGeoLimitCountries(ds *tc.DeliveryServiceV4) error {
 	return nil
 }
 
-func validateTopologyFields(ds *tc.DeliveryServiceV4) error {
+func validateTopologyFields(ds *tc.DeliveryServiceV5) error {
 	if ds.Topology != nil && (ds.EdgeHeaderRewrite != nil || ds.MidHeaderRewrite != nil) {
 		return errors.New("cannot set edgeHeaderRewrite or midHeaderRewrite while a Topology is assigned. Use firstHeaderRewrite, innerHeaderRewrite, and/or lastHeaderRewrite instead")
 	}
@@ -1351,7 +1447,7 @@ func validateOrgServerFQDN(orgServerFQDN string) bool {
 	return true
 }
 
-func validateTypeFields(tx *sql.Tx, ds *tc.DeliveryServiceV4) error {
+func validateTypeFields(tx *sql.Tx, ds *tc.DeliveryServiceV5) error {
 	// Validate the TypeName related fields below
 	err := error(nil)
 	DNSRegexType := "^DNS.*$"
@@ -1495,7 +1591,7 @@ func getTypeFromID(id int, tx *sql.Tx) (tc.DSType, error) {
 	return tc.DSTypeFromString(name), nil
 }
 
-func updatePrimaryOrigin(tx *sql.Tx, user *auth.CurrentUser, ds tc.DeliveryServiceV4) error {
+func updatePrimaryOrigin(tx *sql.Tx, user *auth.CurrentUser, ds tc.DeliveryServiceV5) error {
 	count := 0
 	q := `SELECT count(*) FROM origin WHERE deliveryservice = $1 AND is_primary`
 	if err := tx.QueryRow(q, *ds.ID).Scan(&count); err != nil {
@@ -1535,7 +1631,7 @@ func updatePrimaryOrigin(tx *sql.Tx, user *auth.CurrentUser, ds tc.DeliveryServi
 	return nil
 }
 
-func createPrimaryOrigin(tx *sql.Tx, user *auth.CurrentUser, ds tc.DeliveryServiceV4) error {
+func createPrimaryOrigin(tx *sql.Tx, user *auth.CurrentUser, ds tc.DeliveryServiceV5) error {
 	if ds.OrgServerFQDN == nil {
 		return nil
 	}
@@ -1973,7 +2069,7 @@ func deleteLocationParam(tx *sql.Tx, configFile string) error {
 // Note it may return a nil id and nil error, if the tenant ID in the database
 // is nil.
 // This will panic if the transaction is nil.
-func getTenantID(tx *sql.Tx, ds *tc.DeliveryServiceV4) (*int, error) {
+func getTenantID(tx *sql.Tx, ds *tc.DeliveryServiceV5) (*int, error) {
 	if ds == nil || (ds.ID == nil && ds.XMLID == nil) {
 		return nil, errors.New("delivery service was nil, or had nil identifiers (ID and XMLID)")
 	}
@@ -1985,7 +2081,7 @@ func getTenantID(tx *sql.Tx, ds *tc.DeliveryServiceV4) (*int, error) {
 	return existingID, err
 }
 
-func isTenantAuthorized(inf *api.APIInfo, ds *tc.DeliveryServiceV4) (bool, error) {
+func isTenantAuthorized(inf *api.APIInfo, ds *tc.DeliveryServiceV5) (bool, error) {
 	tx := inf.Tx.Tx
 	user := inf.User
 
@@ -2069,7 +2165,7 @@ func setNilIfEmpty(ptrs ...**string) {
 	}
 }
 
-func sanitize(ds *tc.DeliveryServiceV4) {
+func sanitize(ds *tc.DeliveryServiceV5) {
 	if ds.GeoLimitCountries != nil {
 		geo := ([]string)(ds.GeoLimitCountries)
 		for i, _ := range geo {
