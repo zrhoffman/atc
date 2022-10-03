@@ -1218,7 +1218,7 @@ func (v *TODeliveryService) DeleteQuery() string {
 	return `DELETE FROM deliveryservice WHERE id = :id`
 }
 
-func readGetDeliveryServices(h http.Header, params map[string]string, tx *sqlx.Tx, user *auth.CurrentUser, useIMS bool) ([]tc.DeliveryServiceV4, error, error, int, *time.Time) {
+func readGetDeliveryServices(h http.Header, params map[string]string, tx *sqlx.Tx, user *auth.CurrentUser, useIMS bool) ([]tc.DeliveryServiceV5, error, error, int, *time.Time) {
 	if tx == nil {
 		return nil, nil, errors.New("nil transaction passed to readGetDeliveryServices"), http.StatusInternalServerError, nil
 	}
@@ -1263,7 +1263,7 @@ func readGetDeliveryServices(h http.Header, params map[string]string, tx *sqlx.T
 		runSecond, maxTime = ims.TryIfModifiedSinceQuery(tx, h, queryValues, selectMaxLastUpdatedQuery(where))
 		if !runSecond {
 			log.Debugln("IMS HIT")
-			return []tc.DeliveryServiceV4{}, nil, nil, http.StatusNotModified, &maxTime
+			return []tc.DeliveryServiceV5{}, nil, nil, http.StatusNotModified, &maxTime
 		}
 		log.Debugln("IMS MISS")
 	} else {
@@ -1663,14 +1663,14 @@ func getDSType(tx *sql.Tx, xmlid string) (tc.DSType, bool, error) {
 	return tc.DSTypeFromString(name), true, nil
 }
 
-func GetDeliveryServices(query string, queryValues map[string]interface{}, tx *sqlx.Tx) ([]tc.DeliveryServiceV4, error, error, int) {
+func GetDeliveryServices(query string, queryValues map[string]interface{}, tx *sqlx.Tx) ([]tc.DeliveryServiceV5, error, error, int) {
 	rows, err := tx.NamedQuery(query, queryValues)
 	if err != nil {
 		return nil, nil, fmt.Errorf("querying: %v", err), http.StatusInternalServerError
 	}
 	defer rows.Close()
 
-	dses := []tc.DeliveryServiceV4{}
+	dses := []tc.DeliveryServiceV5{}
 	dsCDNDomains := map[string]string{}
 
 	// ensure json generated from this slice won't come out as `null` if empty
@@ -1678,7 +1678,7 @@ func GetDeliveryServices(query string, queryValues map[string]interface{}, tx *s
 
 	geoLimitCountries := util.StrPtr("")
 	for rows.Next() {
-		ds := tc.DeliveryServiceV4{}
+		ds := tc.DeliveryServiceV5{}
 		cdnDomain := ""
 		err := rows.Scan(&ds.Active,
 			&ds.AnonymousBlockingEnabled,

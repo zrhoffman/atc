@@ -856,6 +856,13 @@ func (ds *DeliveryServiceV4) RemoveLD1AndLD2() DeliveryServiceV4 {
 	return *ds
 }
 
+// RemoveLD1AndLD2 removes the Long Description 1 and Long Description 2 fields from a V 5.x DS, and returns the resulting struct.
+func (ds *DeliveryServiceV5) RemoveLD1AndLD2() DeliveryServiceV5 {
+	ds.LongDesc1 = nil
+	ds.LongDesc2 = nil
+	return *ds
+}
+
 // DowngradeToV31 converts a 4.x DS to a 3.1 DS.
 func (ds *DeliveryServiceV4) DowngradeToV31() DeliveryServiceNullableV30 {
 	nullableFields := ds.DeliveryServiceNullableFieldsV11
@@ -968,6 +975,20 @@ func (ds *DeliveryServiceV4) Value() (driver.Value, error) {
 // This expects src to be an encoding/json.RawMessage and unmarshals that into
 // the DeliveryServiceV4.
 func (ds *DeliveryServiceV4) Scan(src interface{}) error {
+	return jsonScan(src, ds)
+}
+
+// Value implements the database/sql/driver.Valuer interface by marshaling the
+// struct to JSON to pass back as an encoding/json.RawMessage.
+func (ds *DeliveryServiceV5) Value() (driver.Value, error) {
+	return jsonValue(ds)
+}
+
+// Scan implements the database/sql.Scanner interface.
+//
+// This expects src to be an encoding/json.RawMessage and unmarshals that into
+// the DeliveryServiceV5.
+func (ds *DeliveryServiceV5) Scan(src interface{}) error {
 	return jsonScan(src, ds)
 }
 

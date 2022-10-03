@@ -162,7 +162,7 @@ func PutAssignment(w http.ResponseWriter, r *http.Request) {
 		req.Assignee = nil
 	}
 
-	var dsr tc.DeliveryServiceRequestV40
+	var dsr tc.DeliveryServiceRequestV50
 	if err := inf.Tx.QueryRowx(selectQuery+"WHERE r.id=$1", inf.IntParams["id"]).StructScan(&dsr); err != nil {
 		if err == sql.ErrNoRows {
 			errCode = http.StatusNotFound
@@ -218,7 +218,7 @@ func PutAssignment(w http.ResponseWriter, r *http.Request) {
 			api.HandleErr(w, r, tx, http.StatusInternalServerError, nil, sysErr)
 			return
 		}
-		dsr.Original = new(tc.DeliveryServiceV4)
+		dsr.Original = new(tc.DeliveryServiceV5)
 		*dsr.Original = originals[0]
 	}
 	var resp interface{}
