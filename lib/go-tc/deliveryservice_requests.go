@@ -436,7 +436,11 @@ type DeliveryServiceRequestNullable struct {
 	XMLID           *string                     `json:"-" db:"xml_id"`
 }
 
-// Upgrade coerces the DeliveryServiceRequestNullable to the newer
+func (dsr DeliveryServiceRequestNullable) UpgradeToV5() DeliveryServiceRequestV50 {
+	return dsr.UpgradeToV4().UpgradeToV5()
+}
+
+// UpgradeToV4 coerces the DeliveryServiceRequestNullable to the newer
 // DeliveryServiceRequestV40 structure.
 //
 // All reference properties are "deep"-copied so they may be modified without
@@ -444,7 +448,7 @@ type DeliveryServiceRequestNullable struct {
 // copy, but the properties of the underlying DeliveryServiceNullableV30 are
 // "shallow" copied, and so modifying them *can* affect the original and
 // vice-versa.
-func (dsr DeliveryServiceRequestNullable) Upgrade() DeliveryServiceRequestV40 {
+func (dsr DeliveryServiceRequestNullable) UpgradeToV4() DeliveryServiceRequestV40 {
 	var upgraded DeliveryServiceRequestV40
 	if dsr.Assignee != nil {
 		upgraded.Assignee = new(string)
@@ -496,6 +500,20 @@ func (dsr DeliveryServiceRequestNullable) Upgrade() DeliveryServiceRequestV40 {
 		upgraded.XMLID = *dsr.DeliveryService.XMLID
 	}
 	return upgraded
+}
+
+// UpgradeToV5 coerces the DeliveryServiceRequestV40 to the newer
+// DeliveryServiceRequestV50 structure.
+func (dsr DeliveryServiceRequestV40) UpgradeToV5() DeliveryServiceRequestV50 {
+	dsrV50 := DeliveryServiceRequestV50{}
+	if dsr.Original != nil {
+		dsrV50.Original = util.Ptr(dsr.Original.UpgradeToV5())
+	}
+	if dsr.Requested != nil {
+		dsrV50.Requested = util.Ptr(dsr.Requested.UpgradeToV5())
+	}
+	dsrV50.DeliveryServiceRequestFieldsV40 = dsr.DeliveryServiceRequestFieldsV40
+	return dsrV50
 }
 
 // UnmarshalJSON implements the json.Unmarshaller interface to suppress
@@ -695,9 +713,7 @@ func (dsrct *DSRChangeType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// DeliveryServiceRequestV40 is the type of a Delivery Service Request in
-// Traffic Ops API version 4.0.
-type DeliveryServiceRequestV40 struct {
+type DeliveryServiceRequestFieldsV40 struct {
 	// Assignee is the username of the user assigned to the Delivery Service
 	// Request, if any.
 	Assignee *string `json:"assignee"`
@@ -728,6 +744,15 @@ type DeliveryServiceRequestV40 struct {
 	// LastUpdated is the date/time at which the Delivery Service was last
 	// modified.
 	LastUpdated time.Time `json:"lastUpdated" db:"last_updated"`
+	// Status is the status of the Delivery Service Request.
+	Status RequestStatus `json:"status" db:"status"`
+	// Used internally to define the affected Delivery Service.
+	XMLID string `json:"-"`
+}
+
+// DeliveryServiceRequestV40 is the type of a Delivery Service Request in
+// Traffic Ops API version 4.0.
+type DeliveryServiceRequestV40 struct {
 	// Original is the original Delivery Service for which changes are
 	// requested. This is present in responses only for ChangeTypes 'change' and
 	// 'delete', and is only required in requests where ChangeType is 'delete'.
@@ -736,10 +761,19 @@ type DeliveryServiceRequestV40 struct {
 	// only for ChangeTypes 'change' and 'create', and is only required in
 	// requests in those cases.
 	Requested *DeliveryServiceV4 `json:"requested,omitempty" db:"deliveryservice"`
-	// Status is the status of the Delivery Service Request.
-	Status RequestStatus `json:"status" db:"status"`
-	// Used internally to define the affected Delivery Service.
-	XMLID string `json:"-"`
+	DeliveryServiceRequestFieldsV40
+}
+
+type DeliveryServiceRequestV50 struct {
+	// Original is the original Delivery Service for which changes are
+	// requested. This is present in responses only for ChangeTypes 'change' and
+	// 'delete', and is only required in requests where ChangeType is 'delete'.
+	Original *DeliveryServiceV5 `json:"original,omitempty" db:"original"`
+	// Requested is the set of requested changes. This is present in responses
+	// only for ChangeTypes 'change' and 'create', and is only required in
+	// requests in those cases.
+	Requested *DeliveryServiceV5 `json:"requested,omitempty" db:"deliveryservice"`
+	DeliveryServiceRequestFieldsV40
 }
 
 // DeliveryServiceRequestV4 is the type of a Delivery Service Request as it
@@ -752,13 +786,25 @@ func (dsr DeliveryServiceRequestV40) IsOpen() bool {
 	return !dsr.IsClosed()
 }
 
+// IsOpen returns whether or not the Delivery Service Request is still "open" -
+// i.e. has not been rejected or completed.
+func (dsr DeliveryServiceRequestV50) IsOpen() bool {
+	return !dsr.IsClosed()
+}
+
 // IsClosed returns whether or not the Delivery Service Request has been
 // "closed", by being either rejected or completed.
 func (dsr DeliveryServiceRequestV40) IsClosed() bool {
 	return dsr.Status == RequestStatusComplete || dsr.Status == RequestStatusRejected || dsr.Status == RequestStatusPending
 }
 
-// Downgrade coerces the DeliveryServiceRequestV40 to the older
+// IsClosed returns whether or not the Delivery Service Request has been
+// "closed", by being either rejected or completed.
+func (dsr DeliveryServiceRequestV50) IsClosed() bool {
+	return dsr.Status == RequestStatusComplete || dsr.Status == RequestStatusRejected || dsr.Status == RequestStatusPending
+}
+
+// DowngradeToV30 coerces the DeliveryServiceRequestV40 to the older
 // DeliveryServiceRequestNullable structure.
 //
 // "XMLID" will be copied directly if it is non-empty, otherwise determined
@@ -769,7 +815,7 @@ func (dsr DeliveryServiceRequestV40) IsClosed() bool {
 // copy of "Requested", but the properties of the underlying
 // DeliveryServiceNullableV30 are "shallow" copied, and so modifying them *can*
 // affect the original and vice-versa.
-func (dsr DeliveryServiceRequestV40) Downgrade() DeliveryServiceRequestNullable {
+func (dsr DeliveryServiceRequestV40) DowngradeToV30() DeliveryServiceRequestNullable {
 	downgraded := DeliveryServiceRequestNullable{
 		Author:       new(string),
 		ChangeType:   new(string),
@@ -820,6 +866,26 @@ func (dsr DeliveryServiceRequestV40) Downgrade() DeliveryServiceRequestNullable 
 		*downgraded.XMLID = *dsr.Requested.XMLID
 	}
 	return downgraded
+}
+
+// DowngradeToV40 coerces the DeliveryServiceRequestV50 to the older
+// DeliveryServiceRequestV40 structure.
+func (dsr DeliveryServiceRequestV50) DowngradeToV30() DeliveryServiceRequestNullable {
+	return dsr.DowngradeToV40().DowngradeToV30()
+}
+
+// DowngradeToV40 coerces the DeliveryServiceRequestV50 to the older
+// DeliveryServiceRequestV40 structure.
+func (dsr DeliveryServiceRequestV50) DowngradeToV40() DeliveryServiceRequestV40 {
+	dsrV40 := DeliveryServiceRequestV40{}
+	if dsr.Original != nil {
+		dsrV40.Original = util.Ptr(dsr.Original.DowngradeToV4())
+	}
+	if dsr.Requested != nil {
+		dsrV40.Requested = util.Ptr(dsr.Requested.DowngradeToV4())
+	}
+	dsrV40.DeliveryServiceRequestFieldsV40 = dsr.DeliveryServiceRequestFieldsV40
+	return dsrV40
 }
 
 // String encodes the DeliveryServiceRequestV40 as a string, in the format
@@ -878,8 +944,80 @@ func (dsr DeliveryServiceRequestV40) String() string {
 	return builder.String()
 }
 
+// String encodes the DeliveryServiceRequestV50 as a string, in the format
+// "DeliveryServiceRequestV50({{Property}}={{Value}}[, {{Property}}={{Value}}]+)".
+//
+// If a property is a pointer value, then its dereferenced value is used -
+// unless it's nil, in which case "<nil>" is used as the value. DeliveryService
+// is omitted, because of how large it is. Times are formatted in RFC3339 format.
+func (dsr DeliveryServiceRequestV50) String() string {
+	var builder strings.Builder
+	builder.Write([]byte("DeliveryServiceRequestV50(Assignee="))
+	if dsr.Assignee != nil {
+		builder.WriteRune('"')
+		builder.WriteString(*dsr.Assignee)
+		builder.WriteRune('"')
+	} else {
+		builder.Write([]byte("<nil>"))
+	}
+	builder.Write([]byte(", AssigneeID="))
+	if dsr.AssigneeID != nil {
+		builder.WriteString(strconv.Itoa(*dsr.AssigneeID))
+	} else {
+		builder.Write([]byte("<nil>"))
+	}
+	builder.Write([]byte(`, Author="`))
+	builder.WriteString(dsr.Author)
+	builder.Write([]byte(`", AuthorID=`))
+	if dsr.AuthorID != nil {
+		builder.WriteString(strconv.Itoa(*dsr.AuthorID))
+	} else {
+		builder.Write([]byte("<nil>"))
+	}
+	builder.Write([]byte(`, ChangeType="`))
+	builder.WriteString(dsr.ChangeType.String())
+	builder.Write([]byte(`", CreatedAt=`))
+	builder.WriteString(dsr.CreatedAt.Format(time.RFC3339))
+	builder.Write([]byte(", ID="))
+	if dsr.ID != nil {
+		builder.WriteString(strconv.Itoa(*dsr.ID))
+	} else {
+		builder.Write([]byte("<nil>"))
+	}
+	builder.Write([]byte(`, LastEditedBy="`))
+	builder.WriteString(dsr.LastEditedBy)
+	builder.Write([]byte(`", LastEditedByID=`))
+	if dsr.LastEditedByID != nil {
+		builder.WriteString(strconv.Itoa(*dsr.LastEditedByID))
+	} else {
+		builder.Write([]byte("<nil>"))
+	}
+	builder.Write([]byte(`, LastUpdated=`))
+	builder.WriteString(dsr.LastUpdated.Format(time.RFC3339))
+	builder.Write([]byte(`, Status="`))
+	builder.WriteString(dsr.Status.String())
+	builder.Write([]byte(`")`))
+	return builder.String()
+}
+
 // SetXMLID sets the DeliveryServiceRequestV40's XMLID based on its DeliveryService.
 func (dsr *DeliveryServiceRequestV40) SetXMLID() {
+	if dsr == nil {
+		return
+	}
+
+	if dsr.ChangeType == DSRChangeTypeDelete && dsr.Original != nil && dsr.Original.XMLID != nil {
+		dsr.XMLID = *dsr.Original.XMLID
+		return
+	}
+
+	if dsr.Requested != nil && dsr.Requested.XMLID != nil {
+		dsr.XMLID = *dsr.Requested.XMLID
+	}
+}
+
+// SetXMLID sets the DeliveryServiceRequestV50's XMLID based on its DeliveryService.
+func (dsr *DeliveryServiceRequestV50) SetXMLID() {
 	if dsr == nil {
 		return
 	}

@@ -238,7 +238,7 @@ func PutStatus(w http.ResponseWriter, r *http.Request) {
 		}
 		resp = dsr
 	} else {
-		resp = dsr.Downgrade()
+		resp = dsr.DowngradeToV30()
 	}
 
 	api.WriteRespAlertObj(w, r, tc.SuccessLevel, message, resp)

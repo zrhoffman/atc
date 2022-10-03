@@ -299,7 +299,7 @@ func Get(w http.ResponseWriter, r *http.Request) {
 
 	downgraded := make([]tc.DeliveryServiceRequestNullable, 0, len(dsrs))
 	for _, dsr := range dsrs {
-		downgraded = append(downgraded, dsr.Downgrade())
+		downgraded = append(downgraded, dsr.DowngradeToV30())
 	}
 
 	api.WriteResp(w, r, downgraded)
@@ -507,7 +507,7 @@ func createLegacy(w http.ResponseWriter, r *http.Request, inf *api.APIInfo) (res
 		return
 	}
 
-	upgraded := dsr.Upgrade()
+	upgraded := dsr.UpgradeToV4()
 	authorized, err := isTenantAuthorized(upgraded, inf)
 	if err != nil {
 		sysErr := fmt.Errorf("checking tenant authorized: %v", err)
@@ -558,7 +558,7 @@ func createLegacy(w http.ResponseWriter, r *http.Request, inf *api.APIInfo) (res
 		return
 	}
 
-	api.WriteRespAlertObj(w, r, tc.SuccessLevel, "Delivery Service request created", upgraded.Downgrade())
+	api.WriteRespAlertObj(w, r, tc.SuccessLevel, "Delivery Service request created", upgraded.DowngradeToV30())
 
 	result.Successful = true
 	result.Assignee = dsr.Assignee
@@ -684,7 +684,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	if inf.Version.Major >= 4 {
 		resp = dsr
 	} else {
-		resp = dsr.Downgrade()
+		resp = dsr.DowngradeToV30()
 	}
 
 	api.WriteRespAlertObj(w, r, tc.SuccessLevel, fmt.Sprintf("Delivery Service Request #%d deleted", inf.IntParams["id"]), resp)
@@ -838,7 +838,7 @@ func putLegacy(w http.ResponseWriter, r *http.Request, inf *api.APIInfo) (result
 	dsr.LastEditedByID = new(tc.IDNoMod)
 	*dsr.LastEditedByID = tc.IDNoMod(inf.User.ID)
 
-	upgraded := dsr.Upgrade()
+	upgraded := dsr.UpgradeToV4()
 
 	authorized, err := isTenantAuthorized(upgraded, inf)
 	if err != nil {

@@ -135,25 +135,31 @@ func ExampleDeliveryServiceRequestV40_String() {
 	// Output: DeliveryServiceRequestV40(Assignee=<nil>, AssigneeID=<nil>, Author="", AuthorID=<nil>, ChangeType="", CreatedAt=0001-01-01T00:00:00Z, ID=<nil>, LastEditedBy="", LastEditedByID=<nil>, LastUpdated=0001-01-01T00:00:00Z, Status="")
 }
 
+func ExampleDeliveryServiceRequestV50_String() {
+	var dsr DeliveryServiceRequestV50
+	fmt.Println(dsr.String())
+
+	// Output: DeliveryServiceRequestV50(Assignee=<nil>, AssigneeID=<nil>, Author="", AuthorID=<nil>, ChangeType="", CreatedAt=0001-01-01T00:00:00Z, ID=<nil>, LastEditedBy="", LastEditedByID=<nil>, LastUpdated=0001-01-01T00:00:00Z, Status="")
+}
+
 func TestDeliveryServiceRequestV40_Downgrade(t *testing.T) {
 	xmlid := "xmlid"
-	dsr := DeliveryServiceRequestV40{
-		Assignee:       nil,
-		AssigneeID:     nil,
-		Author:         "author",
-		AuthorID:       nil,
-		ChangeType:     DSRChangeTypeCreate,
-		CreatedAt:      time.Time{},
-		ID:             nil,
-		LastEditedBy:   "last edited by",
-		LastEditedByID: nil,
-		LastUpdated:    time.Now(),
-		Requested:      &DeliveryServiceV4{},
-		Status:         RequestStatusComplete,
-	}
+	dsr := DeliveryServiceRequestV50{}
+	dsr.Assignee = nil
+	dsr.AssigneeID = nil
+	dsr.Author = "author"
+	dsr.AuthorID = nil
+	dsr.ChangeType = DSRChangeTypeCreate
+	dsr.CreatedAt = time.Time{}
+	dsr.ID = nil
+	dsr.LastEditedBy = "last edited by"
+	dsr.LastEditedByID = nil
+	dsr.LastUpdated = time.Now()
+	dsr.Requested = &DeliveryServiceV5{}
+	dsr.Status = RequestStatusComplete
 	dsr.Requested.XMLID = &xmlid
 
-	downgraded := dsr.Downgrade()
+	downgraded := dsr.DowngradeToV30()
 	if downgraded.Assignee != nil {
 		t.Errorf("Incorrect Assignee; want: <nil>, got: %s", *downgraded.Assignee)
 	}
