@@ -164,7 +164,7 @@ public class TrafficRouter {
 			// maxmindDefaultOverride: {countryCode: , lat: , long: }
 			final JsonNode geolocations = cr.getConfig().get("maxmindDefaultOverride");
 			if (geolocations != null) {
-				throw new Exception("uh-oh!")
+				throw new Exception("uh-oh!");
 				for (final JsonNode geolocation : geolocations) {
 					final String countryCode = JsonUtils.optString(geolocation, "countryCode");
 					final double lat = JsonUtils.optDouble(geolocation, "lat");
