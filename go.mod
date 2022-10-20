@@ -99,3 +99,5 @@ require (
 	gopkg.in/jcmturner/gokrb5.v7 v7.5.0 // indirect
 	gopkg.in/jcmturner/rpc.v1 v1.1.0 // indirect
 )
+
+retract v1.1.3 // v1.1.3 is very old, retracted to prioritize higher versions without a go.mod file
