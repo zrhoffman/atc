@@ -66,7 +66,7 @@ jobs:
         run: echo 'IMAGE_NAME=${{ env.CONTAINER }}:${{ env.ATS_VERSION }}-${{ matrix.platform }}' >> '${{ github.env }}'
       - name: Install aarch64 emulator
         if: ${{ env.SHOULD_RUN == '1' && matrix.platform == 'arm64' }}
-        run: docker run --rm --privileged tonistiigi/binfmt:qemu-v6.2.0 --install arm64
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset
       - name: Make a Docker Buildx builder
         if: ${{ env.SHOULD_RUN == '1' && matrix.platform == 'arm64' }}
         run: docker buildx create --name arm64-builder --use
