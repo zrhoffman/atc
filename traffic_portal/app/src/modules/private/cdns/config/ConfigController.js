@@ -72,6 +72,58 @@ let ConfigController = function (cdn, currentSnapshot, newSnapshot, $scope, $sta
 		$scope[destination + "Changes"] = diff;
 	};
 
+	function minimizeArrayDiff(oldItems, newItems) {
+			const minimalDiffItems = [];
+			const addedItems = [];
+
+			let newItemsIndex, newItem;
+			const oldItemsIterator = oldItems.entries();
+			const newItemsIterator = newItems.entries();
+			for (let oldItemsNext = oldItemsIterator.next(), newItemsNext = newItemsIterator.next(); !(oldItemsNext.done || newItemsNext.done);) {
+				const [, oldItem] = oldItemsNext.value;
+				[newItemsIndex, newItem] = newItemsNext.value;
+				if (oldItem < newItem) {
+					newItemsIndex--;
+					minimalDiffItems.push(undefined);
+					oldItemsNext = oldItemsIterator.next();
+					continue;
+				} else if (oldItem > newItem) {
+					addedItems.push(newItem);
+					newItemsNext = newItemsIterator.next();
+					continue;
+				}
+				minimalDiffItems.push(newItem);
+				oldItemsNext = oldItemsIterator.next();
+				newItemsNext = newItemsIterator.next();
+			}
+			minimalDiffItems.push(...addedItems);
+			if (newItemsIndex !== undefined && newItemsIndex < newItems.length - 1) {
+				minimalDiffItems.push(...newItems.slice(newItemsIndex + 1));
+			}
+			return minimalDiffItems;
+	}
+
+	function minimizeServerCapabilitiesDiff(oldTrafficServers, newTrafficServers) {
+		const oldServersIterator = Object.entries(oldTrafficServers).entries();
+		const newServersIterator = Object.entries(newTrafficServers).entries();
+		const capabilitiesKey = "capabilities";
+		for (let oldServersNext = oldServersIterator.next(), newServersNext = newServersIterator.next(); !(oldServersNext.done || newServersNext.done);) {
+			const [, [oldHostname, oldServer]] = oldServersNext.value;
+			const [, [newHostname, newServer]] = newServersNext.value;
+			if (oldHostname < newHostname) {
+				oldServersNext = oldServersIterator.next();
+				continue;
+			} else if (oldHostname > newHostname) {
+				newServersNext = newServersIterator.next();
+				continue;
+			}
+			newServer[capabilitiesKey] = minimizeArrayDiff(oldServer[capabilitiesKey], newServer[capabilitiesKey]);
+			oldServersNext = oldServersIterator.next();
+			newServersNext = newServersIterator.next();
+		}
+
+	}
+
 	let snapshot = function () {
 		cdnService.snapshot(cdn);
 	};
@@ -196,6 +248,7 @@ let ConfigController = function (cdn, currentSnapshot, newSnapshot, $scope, $sta
 		performDiff(oldConfig, newConfig, 'config');
 		performDiff(oldTrafficRouters, newTrafficRouters, 'contentRouters');
 		performDiff(oldTrafficMonitors, newTrafficMonitors, 'monitors');
+		minimizeServerCapabilitiesDiff(oldTrafficServers, newTrafficServers);
 		performDiff(oldTrafficServers, newTrafficServers, 'contentServers');
 		performDiff(oldDeliveryServices, newDeliveryServices, 'deliveryServices');
 		performDiff(oldEdgeCacheGroups, newEdgeCacheGroups, 'edgeLocations');
