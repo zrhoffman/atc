@@ -466,7 +466,6 @@ func seed() {
 	}
 	cmd := exec.Command("psql", "-h", hostIP, "-p", hostPort, "-d", dbName, "-U", dbUser, "-e", "-v", "ON_ERROR_STOP=1")
 	cmd.Stdin = bytes.NewBuffer(seedsBytes)
-	cmd.Env = append(os.Environ(), "PGPASSWORD="+dbPassword)
 	out, err := cmd.CombinedOutput()
 	fmt.Println(string(out))
 	if err != nil {
