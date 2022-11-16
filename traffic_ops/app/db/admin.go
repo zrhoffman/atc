@@ -505,7 +505,6 @@ func patch() {
 	}
 	cmd := exec.Command("psql", "-h", hostIP, "-p", hostPort, "-d", dbName, "-U", dbUser, "-e", "-v", "ON_ERROR_STOP=1")
 	cmd.Stdin = bytes.NewBuffer(patchesBytes)
-	cmd.Env = append(os.Environ(), "PGPASSWORD="+dbPassword)
 	out, err := cmd.CombinedOutput()
 	fmt.Printf(string(out))
 	if err != nil {
