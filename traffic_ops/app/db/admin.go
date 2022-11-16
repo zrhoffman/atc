@@ -661,10 +661,6 @@ func main() {
 	if err := parseDBConfig(); err != nil {
 		die(err.Error())
 	}
-	if err := os.Setenv("PGPASSWORD", dbPassword); err != nil {
-		die("Setting PGPASSWORD: " + err.Error())
-	}
-
 	commands := make(map[string]func())
 
 	commands[cmdCreateDB] = createDB
