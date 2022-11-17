@@ -137,7 +137,7 @@ func TestCoordinates(t *testing.T) {
 			},
 			"PUT": {
 				"OK when VALID request": {
-					EndpointID:    GetCoordinateID(t, "coordinate2"),
+					EndpointId:    GetCoordinateID(t, "coordinate2"),
 					ClientSession: TOSession,
 					RequestBody: tc.Coordinate{
 						Latitude:  7.7,
@@ -148,7 +148,7 @@ func TestCoordinates(t *testing.T) {
 						validateCoordinateUpdateCreateFields("coordinate2", map[string]interface{}{"Latitude": 7.7, "Longitude": 8.8})),
 				},
 				"NOT FOUND when INVALID ID parameter": {
-					EndpointID: func() int { return 111111 },
+					EndpointId: func() int { return 111111 },
 					RequestBody: tc.Coordinate{
 						Latitude:  1.1,
 						Longitude: 2.2,
@@ -158,7 +158,7 @@ func TestCoordinates(t *testing.T) {
 					Expectations:  utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusNotFound)),
 				},
 				"PRECONDITION FAILED when updating with IMS & IUS Headers": {
-					EndpointID:    GetCoordinateID(t, "coordinate1"),
+					EndpointId:    GetCoordinateID(t, "coordinate1"),
 					ClientSession: TOSession,
 					RequestOpts:   client.RequestOptions{Header: http.Header{rfc.IfUnmodifiedSince: {currentTimeRFC}}},
 					RequestBody: tc.Coordinate{
@@ -169,7 +169,7 @@ func TestCoordinates(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusPreconditionFailed)),
 				},
 				"PRECONDITION FAILED when updating with IFMATCH ETAG Header": {
-					EndpointID:    GetCoordinateID(t, "coordinate1"),
+					EndpointId:    GetCoordinateID(t, "coordinate1"),
 					ClientSession: TOSession,
 					RequestBody: tc.Coordinate{
 						Latitude:  1.1,
@@ -182,7 +182,7 @@ func TestCoordinates(t *testing.T) {
 			},
 			"DELETE": {
 				"NOT FOUND when INVALID ID parameter": {
-					EndpointID:    func() int { return 12345 },
+					EndpointId:    func() int { return 12345 },
 					ClientSession: TOSession,
 					Expectations:  utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusNotFound)),
 				},
@@ -209,14 +209,14 @@ func TestCoordinates(t *testing.T) {
 						})
 					case "PUT":
 						t.Run(name, func(t *testing.T) {
-							alerts, reqInf, err := testCase.ClientSession.UpdateCoordinate(testCase.EndpointID(), testCase.RequestBody, testCase.RequestOpts)
+							alerts, reqInf, err := testCase.ClientSession.UpdateCoordinate(testCase.EndpointId(), testCase.RequestBody, testCase.RequestOpts)
 							for _, check := range testCase.Expectations {
 								check(t, reqInf, nil, alerts, err)
 							}
 						})
 					case "DELETE":
 						t.Run(name, func(t *testing.T) {
-							alerts, reqInf, err := testCase.ClientSession.DeleteCoordinate(testCase.EndpointID(), testCase.RequestOpts)
+							alerts, reqInf, err := testCase.ClientSession.DeleteCoordinate(testCase.EndpointId(), testCase.RequestOpts)
 							for _, check := range testCase.Expectations {
 								check(t, reqInf, nil, alerts, err)
 							}

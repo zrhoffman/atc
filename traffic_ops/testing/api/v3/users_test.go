@@ -84,7 +84,7 @@ func TestUsers(t *testing.T) {
 			},
 			"PUT": {
 				"OK when VALID request": {
-					EndpointID:    GetUserID(t, "steering"),
+					EndpointId:    GetUserID(t, "steering"),
 					ClientSession: TOSession,
 					RequestBody: map[string]interface{}{
 						"addressLine1":       "updated line 1",
@@ -108,7 +108,7 @@ func TestUsers(t *testing.T) {
 							"Country": "US", "Email": "steeringupdated@example.com", "FullName": "Steering User Updated"})),
 				},
 				"OK when UPDATING SELF": {
-					EndpointID:    GetUserID(t, "opsuser"),
+					EndpointId:    GetUserID(t, "opsuser"),
 					ClientSession: opsUserSession,
 					RequestBody: map[string]interface{}{
 						"addressLine1":       "address of ops",
@@ -129,7 +129,7 @@ func TestUsers(t *testing.T) {
 						validateUsersUpdateCreateFields(map[string]interface{}{"Email": "ops-updated@example.com", "FullName": "Operations User Updated"})),
 				},
 				"BAD REQUEST when updating OWN ROLE": {
-					EndpointID:    GetUserID(t, "opsuser"),
+					EndpointId:    GetUserID(t, "opsuser"),
 					ClientSession: opsUserSession,
 					RequestBody: map[string]interface{}{
 						"addressLine1":       "address of ops",
@@ -149,7 +149,7 @@ func TestUsers(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusBadRequest)),
 				},
 				"FORBIDDEN when OPERATIONS USER updates ADMIN USER": {
-					EndpointID:    GetUserID(t, "admin"),
+					EndpointId:    GetUserID(t, "admin"),
 					ClientSession: opsUserSession,
 					RequestBody: map[string]interface{}{
 						"email":              "oops@ops.net",
@@ -164,7 +164,7 @@ func TestUsers(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusForbidden)),
 				},
 				"FORBIDDEN when CHILD TENANT USER updates PARENT TENANT USER": {
-					EndpointID:    GetUserID(t, "tenant3user"),
+					EndpointId:    GetUserID(t, "tenant3user"),
 					ClientSession: tenant4UserSession,
 					RequestBody: map[string]interface{}{
 						"email":              "tenant3user@example.com",
@@ -210,7 +210,7 @@ func TestUsers(t *testing.T) {
 						})
 					case "PUT":
 						t.Run(name, func(t *testing.T) {
-							resp, reqInf, err := testCase.ClientSession.UpdateUserByID(testCase.EndpointID(), &user)
+							resp, reqInf, err := testCase.ClientSession.UpdateUserByID(testCase.EndpointId(), &user)
 							for _, check := range testCase.Expectations {
 								check(t, reqInf, resp.Response, resp.Alerts, err)
 							}

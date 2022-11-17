@@ -33,7 +33,7 @@ func TestServersIDStatus(t *testing.T) {
 		methodTests := utils.V3TestCaseT[tc.ServerPutStatus]{
 			"PUT": {
 				"OK when VALID request": {
-					EndpointID:    GetServerID(t, "atlanta-mid-01"),
+					EndpointId:    GetServerID(t, "atlanta-mid-01"),
 					ClientSession: TOSession,
 					RequestBody: tc.ServerPutStatus{
 						Status:        util.JSONNameOrIDStr{ID: util.Ptr(GetStatusID(t, "OFFLINE")())},
@@ -42,7 +42,7 @@ func TestServersIDStatus(t *testing.T) {
 					Expectations: utils.CkRequest(utils.NoError(), utils.HasStatus(http.StatusOK), validateUpdPending("atlanta-mid-01")),
 				},
 				"OK when using STATUS ID FIELD": {
-					EndpointID:    GetServerID(t, "atlanta-mid-16"),
+					EndpointId:    GetServerID(t, "atlanta-mid-16"),
 					ClientSession: TOSession,
 					RequestBody: tc.ServerPutStatus{
 						Status:        util.JSONNameOrIDStr{ID: util.Ptr(GetStatusID(t, "OFFLINE")())},
@@ -51,7 +51,7 @@ func TestServersIDStatus(t *testing.T) {
 					Expectations: utils.CkRequest(utils.NoError(), utils.HasStatus(http.StatusOK), validateUpdPending("atlanta-mid-16")),
 				},
 				"VALIDATE TOPOLOGY DESCENDANTS receive STATUS UPDATES": {
-					EndpointID:    GetServerID(t, "topology-mid-04"),
+					EndpointId:    GetServerID(t, "topology-mid-04"),
 					ClientSession: TOSession,
 					RequestBody: tc.ServerPutStatus{
 						Status:        util.JSONNameOrIDStr{ID: util.Ptr(GetStatusID(t, "OFFLINE")())},
@@ -63,7 +63,7 @@ func TestServersIDStatus(t *testing.T) {
 						validateParentPendingSpecificServers(map[string]bool{"topology-edge-01": true, "edgeInTopologyEdgeCg02": false})),
 				},
 				"NOT FOUND when SERVER DOESNT EXIST": {
-					EndpointID:    func() int { return 11111111 },
+					EndpointId:    func() int { return 11111111 },
 					ClientSession: TOSession,
 					RequestBody: tc.ServerPutStatus{
 						Status:        util.JSONNameOrIDStr{Name: util.Ptr("OFFLINE")},
@@ -72,7 +72,7 @@ func TestServersIDStatus(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusNotFound)),
 				},
 				"BAD REQUEST when STATUS DOESNT EXIST": {
-					EndpointID:    GetServerID(t, "atlanta-mid-16"),
+					EndpointId:    GetServerID(t, "atlanta-mid-16"),
 					ClientSession: TOSession,
 					RequestBody: tc.ServerPutStatus{
 						Status:        util.JSONNameOrIDStr{Name: util.Ptr("NOT_A_REAL_STATUS")},
@@ -81,7 +81,7 @@ func TestServersIDStatus(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusBadRequest)),
 				},
 				"BAD REQUEST when MISSING OFFLINE REASON when OFFLINE STATUS": {
-					EndpointID:    GetServerID(t, "atlanta-mid-16"),
+					EndpointId:    GetServerID(t, "atlanta-mid-16"),
 					ClientSession: TOSession,
 					RequestBody: tc.ServerPutStatus{
 						Status: util.JSONNameOrIDStr{Name: util.Ptr("OFFLINE")},
@@ -89,7 +89,7 @@ func TestServersIDStatus(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusBadRequest)),
 				},
 				"BAD REQUEST when MISSING OFFLINE REASON when ADMIN_DOWN STATUS": {
-					EndpointID:    GetServerID(t, "atlanta-mid-16"),
+					EndpointId:    GetServerID(t, "atlanta-mid-16"),
 					ClientSession: TOSession,
 					RequestBody: tc.ServerPutStatus{
 						Status: util.JSONNameOrIDStr{Name: util.Ptr("ADMIN_DOWN")},
@@ -97,7 +97,7 @@ func TestServersIDStatus(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusBadRequest)),
 				},
 				"CONFLICT when SERVER STATUS OFFLINE when ONLY EDGE SERVER ASSIGNED": {
-					EndpointID:    GetServerID(t, "test-ds-server-assignments"),
+					EndpointId:    GetServerID(t, "test-ds-server-assignments"),
 					ClientSession: TOSession,
 					RequestBody: tc.ServerPutStatus{
 						Status:        util.JSONNameOrIDStr{Name: util.Ptr("OFFLINE")},
@@ -115,7 +115,7 @@ func TestServersIDStatus(t *testing.T) {
 					case "PUT":
 						t.Run(name, func(t *testing.T) {
 							clearUpdates(t)
-							alerts, reqInf, err := testCase.ClientSession.UpdateServerStatus(testCase.EndpointID(), testCase.RequestBody)
+							alerts, reqInf, err := testCase.ClientSession.UpdateServerStatus(testCase.EndpointId(), testCase.RequestBody)
 							for _, check := range testCase.Expectations {
 								if alerts != nil {
 									check(t, reqInf, nil, *alerts, err)

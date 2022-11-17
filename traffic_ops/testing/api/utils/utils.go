@@ -119,7 +119,7 @@ func CreateV5Session(t *testing.T, trafficOpsURL, username, password string, toR
 
 // V3TestData represents the data needed for testing the v3 api endpoints.
 type V3TestData struct {
-	EndpointID     func() int
+	EndpointId     func() int
 	ClientSession  *v3client.Session
 	RequestParams  url.Values
 	RequestHeaders http.Header
@@ -130,7 +130,7 @@ type V3TestData struct {
 
 // V3TestDataT represents the data needed for testing the v3 api endpoints.
 type V3TestDataT[B any] struct {
-	EndpointID     func() int
+	EndpointId     func() int
 	ClientSession  *v3client.Session
 	RequestParams  url.Values
 	RequestHeaders http.Header
@@ -140,7 +140,7 @@ type V3TestDataT[B any] struct {
 
 // V4TestData represents the data needed for testing the v4 api endpoints.
 type V4TestData struct {
-	EndpointID    func() int
+	EndpointId    func() int
 	ClientSession *v4client.Session
 	RequestOpts   v4client.RequestOptions
 	RequestBody   map[string]interface{}
@@ -150,7 +150,7 @@ type V4TestData struct {
 
 // V5TestData represents the data needed for testing the v5 api endpoints.
 type V5TestData struct {
-	EndpointID    func() int
+	EndpointId    func() int
 	ClientSession *v5client.Session
 	RequestOpts   v5client.RequestOptions
 	RequestBody   map[string]interface{}
@@ -168,7 +168,7 @@ type requestOpts interface {
 
 // TestData represents the data needed for testing the api endpoints.
 type TestData[C clientSession, R requestOpts, B any] struct {
-	EndpointID    func() int
+	EndpointId    func() int
 	ClientSession *C
 	RequestOpts   R
 	RequestBody   B

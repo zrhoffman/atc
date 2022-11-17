@@ -128,7 +128,7 @@ func TestRoles(t *testing.T) {
 			},
 			"PUT": {
 				"OK when VALID request": {
-					EndpointID:    GetRoleID(t, "update_role"),
+					EndpointId:    GetRoleID(t, "update_role"),
 					ClientSession: TOSession,
 					RequestBody: tc.Role{
 						RoleV11: tc.RoleV11{
@@ -145,7 +145,7 @@ func TestRoles(t *testing.T) {
 						validateRoleUpdateCreateFields("new_name", map[string]interface{}{"Name": "new_name", "Description": "new updated description"})),
 				},
 				"BAD REQUEST when MISSING NAME": {
-					EndpointID:    GetRoleID(t, "another_role"),
+					EndpointId:    GetRoleID(t, "another_role"),
 					ClientSession: TOSession,
 					RequestBody: tc.Role{
 						RoleV11: tc.RoleV11{
@@ -160,7 +160,7 @@ func TestRoles(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusBadRequest)),
 				},
 				"BAD REQUEST when MISSING DESCRIPTION": {
-					EndpointID:    GetRoleID(t, "another_role"),
+					EndpointId:    GetRoleID(t, "another_role"),
 					ClientSession: TOSession,
 					RequestBody: tc.Role{
 						RoleV11: tc.RoleV11{
@@ -175,7 +175,7 @@ func TestRoles(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusBadRequest)),
 				},
 				"BAD REQUEST when ADMIN ROLE": {
-					EndpointID:    GetRoleID(t, "admin"),
+					EndpointId:    GetRoleID(t, "admin"),
 					ClientSession: TOSession,
 					RequestBody: tc.Role{
 						RoleV11: tc.RoleV11{
@@ -191,7 +191,7 @@ func TestRoles(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusBadRequest)),
 				},
 				"NOT FOUND when ROLE DOESNT EXIST": {
-					EndpointID:    func() int { return 9999999 },
+					EndpointId:    func() int { return 9999999 },
 					ClientSession: TOSession,
 					RequestBody: tc.Role{
 						RoleV11: tc.RoleV11{
@@ -207,7 +207,7 @@ func TestRoles(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusNotFound)),
 				},
 				"BAD REQUEST when ROLE NAME ALREADY EXISTS": {
-					EndpointID:    GetRoleID(t, "another_role"),
+					EndpointId:    GetRoleID(t, "another_role"),
 					ClientSession: TOSession,
 					RequestBody: tc.Role{
 						RoleV11: tc.RoleV11{
@@ -223,7 +223,7 @@ func TestRoles(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusBadRequest)),
 				},
 				"PRECONDITION FAILED when updating with IMS & IUS Headers": {
-					EndpointID:     GetRoleID(t, "another_role"),
+					EndpointId:     GetRoleID(t, "another_role"),
 					ClientSession:  TOSession,
 					RequestHeaders: http.Header{rfc.IfUnmodifiedSince: {currentTimeRFC}},
 					RequestBody: tc.Role{
@@ -239,7 +239,7 @@ func TestRoles(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusPreconditionFailed)),
 				},
 				"PRECONDITION FAILED when updating with IFMATCH ETAG Header": {
-					EndpointID:     GetRoleID(t, "another_role"),
+					EndpointId:     GetRoleID(t, "another_role"),
 					ClientSession:  TOSession,
 					RequestHeaders: http.Header{rfc.IfMatch: {rfc.ETag(currentTime)}},
 					RequestBody: tc.Role{
@@ -285,14 +285,14 @@ func TestRoles(t *testing.T) {
 						})
 					case "PUT":
 						t.Run(name, func(t *testing.T) {
-							alerts, reqInf, _, err := testCase.ClientSession.UpdateRoleByIDWithHdr(testCase.EndpointID(), testCase.RequestBody, testCase.RequestHeaders)
+							alerts, reqInf, _, err := testCase.ClientSession.UpdateRoleByIDWithHdr(testCase.EndpointId(), testCase.RequestBody, testCase.RequestHeaders)
 							for _, check := range testCase.Expectations {
 								check(t, reqInf, nil, alerts, err)
 							}
 						})
 					case "DELETE":
 						t.Run(name, func(t *testing.T) {
-							alerts, reqInf, _, err := testCase.ClientSession.DeleteRoleByID(testCase.EndpointID())
+							alerts, reqInf, _, err := testCase.ClientSession.DeleteRoleByID(testCase.EndpointId())
 							for _, check := range testCase.Expectations {
 								check(t, reqInf, nil, alerts, err)
 							}

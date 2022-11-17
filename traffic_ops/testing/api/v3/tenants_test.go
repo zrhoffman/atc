@@ -63,7 +63,7 @@ func TestTenants(t *testing.T) {
 			},
 			"PUT": {
 				"OK when VALID request": {
-					EndpointID:    GetTenantID(t, "tenant4"),
+					EndpointId:    GetTenantID(t, "tenant4"),
 					ClientSession: TOSession,
 					RequestBody: tc.Tenant{
 						Active:     false,
@@ -75,7 +75,7 @@ func TestTenants(t *testing.T) {
 						validateTenantCreateUpdateFields(map[string]interface{}{"Name": "newname", "Active": false})),
 				},
 				"BAD REQUEST when ROOT TENANT": {
-					EndpointID:    GetTenantID(t, "root"),
+					EndpointId:    GetTenantID(t, "root"),
 					ClientSession: TOSession,
 					RequestBody: tc.Tenant{
 						Active:     false,
@@ -85,7 +85,7 @@ func TestTenants(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusBadRequest)),
 				},
 				"PRECONDITION FAILED when updating with IMS & IUS Headers": {
-					EndpointID:     GetTenantID(t, "tenant2"),
+					EndpointId:     GetTenantID(t, "tenant2"),
 					ClientSession:  TOSession,
 					RequestHeaders: http.Header{rfc.IfUnmodifiedSince: {currentTimeRFC}},
 					RequestBody: tc.Tenant{
@@ -97,7 +97,7 @@ func TestTenants(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusPreconditionFailed)),
 				},
 				"PRECONDITION FAILED when updating with IFMATCH ETAG Header": {
-					EndpointID:    GetTenantID(t, "tenant2"),
+					EndpointId:    GetTenantID(t, "tenant2"),
 					ClientSession: TOSession,
 					RequestBody: tc.Tenant{
 						Active:     false,
@@ -111,7 +111,7 @@ func TestTenants(t *testing.T) {
 			},
 			"DELETE": {
 				"ERROR when TENANT HAS CHILDREN": {
-					EndpointID:    GetTenantID(t, "tenant1"),
+					EndpointId:    GetTenantID(t, "tenant1"),
 					ClientSession: TOSession,
 					Expectations:  utils.CkRequest(utils.HasError()),
 				},
@@ -140,7 +140,7 @@ func TestTenants(t *testing.T) {
 						})
 					case "PUT":
 						t.Run(name, func(t *testing.T) {
-							resp, reqInf, err := testCase.ClientSession.UpdateTenantWithHdr(strconv.Itoa(testCase.EndpointID()), &testCase.RequestBody, testCase.RequestHeaders)
+							resp, reqInf, err := testCase.ClientSession.UpdateTenantWithHdr(strconv.Itoa(testCase.EndpointId()), &testCase.RequestBody, testCase.RequestHeaders)
 							for _, check := range testCase.Expectations {
 								if resp != nil {
 									check(t, reqInf, resp.Response, resp.Alerts, err)
@@ -149,7 +149,7 @@ func TestTenants(t *testing.T) {
 						})
 					case "DELETE":
 						t.Run(name, func(t *testing.T) {
-							_, err := testCase.ClientSession.DeleteTenant(strconv.Itoa(testCase.EndpointID()))
+							_, err := testCase.ClientSession.DeleteTenant(strconv.Itoa(testCase.EndpointId()))
 							for _, check := range testCase.Expectations {
 								check(t, toclientlib.ReqInf{}, nil, tc.Alerts{}, err)
 							}

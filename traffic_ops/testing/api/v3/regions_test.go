@@ -74,7 +74,7 @@ func TestRegions(t *testing.T) {
 			},
 			"PUT": {
 				"OK when VALID request": {
-					EndpointID:    GetRegionID(t, "cdn-region2"),
+					EndpointId:    GetRegionID(t, "cdn-region2"),
 					ClientSession: TOSession,
 					RequestBody: tc.Region{
 						Name:         "newName",
@@ -85,7 +85,7 @@ func TestRegions(t *testing.T) {
 						validateRegionsUpdateCreateFields("newName", map[string]interface{}{"Name": "newName"})),
 				},
 				"PRECONDITION FAILED when updating with IMS & IUS Headers": {
-					EndpointID:     GetRegionID(t, "region1"),
+					EndpointId:     GetRegionID(t, "region1"),
 					ClientSession:  TOSession,
 					RequestHeaders: http.Header{rfc.IfUnmodifiedSince: {currentTimeRFC}},
 					RequestBody: tc.Region{
@@ -96,7 +96,7 @@ func TestRegions(t *testing.T) {
 					Expectations: utils.CkRequest(utils.HasError(), utils.HasStatus(http.StatusPreconditionFailed)),
 				},
 				"PRECONDITION FAILED when updating with IFMATCH ETAG Header": {
-					EndpointID:    GetRegionID(t, "region1"),
+					EndpointId:    GetRegionID(t, "region1"),
 					ClientSession: TOSession,
 					RequestBody: tc.Region{
 						Name:         "newName",
@@ -153,7 +153,7 @@ func TestRegions(t *testing.T) {
 						})
 					case "PUT":
 						t.Run(name, func(t *testing.T) {
-							alerts, reqInf, err := testCase.ClientSession.UpdateRegionByIDWithHdr(testCase.EndpointID(), testCase.RequestBody, testCase.RequestHeaders)
+							alerts, reqInf, err := testCase.ClientSession.UpdateRegionByIDWithHdr(testCase.EndpointId(), testCase.RequestBody, testCase.RequestHeaders)
 							for _, check := range testCase.Expectations {
 								check(t, reqInf, nil, alerts, err)
 							}
