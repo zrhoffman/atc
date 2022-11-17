@@ -95,8 +95,8 @@ export class CDNPage extends SideNavigationPage {
 	 * @returns Whether or not renaming succeeded.
 	 */
 	public async updateCDN(cdn: UpdateCDN): Promise<boolean> {
-		const yesButton = element(by.buttonText("Yes"));
-		const queueButton = element(by.buttonText("Queue Updates"));
+		const yesButton = by.buttonText("Yes");
+		const queueButton = by.buttonText("Queue Updates");
 
 		switch (cdn.description) {
 			case "perform snapshot":
@@ -106,25 +106,25 @@ export class CDNPage extends SideNavigationPage {
 					throw new Error("cannot find 'Perform Snapshot' button")
 				}
 				await element(snapshotButton).click();
-				await yesButton.click();
+				await element(yesButton).click();
 				break;
 			case "queue CDN updates":
-				await queueButton.click();
+				await element(queueButton).click();
 				const queueSelection = by.linkText(`Queue ${cdn.Name}${randomize} Server Updates`);
 				if (!await browser.isElementPresent(queueSelection)) {
 					throw new Error("cannot find 'Queue CDN updates' button")
 				}
 				await element(queueSelection).click();
-				await yesButton.click();
+				await element(yesButton).click();
 				break;
 			case "clear CDN updates":
-				await queueButton.click();
+				await element(queueButton).click();
 				const clearSelection = by.linkText(`Clear ${cdn.Name}${randomize} Server Updates`);
 				if (!await browser.isElementPresent(clearSelection)) {
 					throw new Error("Cannot find Clear CDN updates button")
 				}
 				await element(clearSelection).click();
-				await yesButton.click();
+				await element(yesButton).click();
 				break;
 			case "update cdn name":
 				await this.txtCDNName.clear();
