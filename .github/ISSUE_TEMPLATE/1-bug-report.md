@@ -50,16 +50,13 @@ or the Traffic Control Users mailing list (send an email to users-subscribe@traf
 - Automation <!-- Please specify which (GitHub Actions, Docker images, Ansible Roles, etc.) -->
 - unknown
 
-## Current behavior:
-<!-- Describe how the bug happens -->
-
-
-## Expected behavior:
-<!-- Describe what the behavior would be without the bug -->
-
-
-## Steps to reproduce:
+## What did you do?
 <!-- If the current behavior is a bug, please provide the *STEPS TO REPRODUCE* and
 include the applicable TC version.
 -->
 
+## What did you expect to happen?
+<!-- Describe what the behavior would be without the bug -->
+
+## What happened instead?
+<!-- Describe what the bug is -->
