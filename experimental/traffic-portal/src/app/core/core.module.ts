@@ -30,6 +30,7 @@ import { DivisionDetailComponent } from "./cache-groups/divisions/detail/divisio
 import { DivisionsTableComponent } from "./cache-groups/divisions/table/divisions-table.component";
 import { RegionDetailComponent } from "./cache-groups/regions/detail/region-detail.component";
 import { RegionsTableComponent } from "./cache-groups/regions/table/regions-table.component";
+import { CDNDetailsComponent } from "./cdns/cdn-details/cdn-details.component";
 import { ChangeLogsComponent } from "./change-logs/change-logs.component";
 import { LastDaysComponent } from "./change-logs/last-days/last-days.component";
 import { CurrentuserComponent } from "./currentuser/currentuser.component";
@@ -61,6 +62,7 @@ export const ROUTES: Routes = [
 	{ component: RegionDetailComponent, path: "regions/:id" },
 	{ component: UsersComponent, path: "users" },
 	{ component: UserDetailsComponent, path: "users/:id"},
+	{ component: CDNDetailsComponent, path: "cdns/:id" },
 	{ component: ServersTableComponent, path: "servers" },
 	{ component: ServerDetailsComponent, path: "server/:id" },
 	{ component: DeliveryserviceComponent, path: "deliveryservice/:id" },
@@ -107,7 +109,8 @@ export const ROUTES: Routes = [
 		DivisionDetailComponent,
 		RegionsTableComponent,
 		RegionDetailComponent,
-		CacheGroupDetailsComponent
+		CacheGroupDetailsComponent,
+		CDNDetailsComponent,
 	],
 	exports: [],
 	imports: [

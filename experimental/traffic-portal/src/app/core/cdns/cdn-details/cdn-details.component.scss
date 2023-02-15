@@ -1,5 +1,4 @@
 /*
-*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -13,11 +12,15 @@
 * limitations under the License.
 */
 
-/**
- * environment contains information about the running environment.
- */
-export const environment = {
-	apiVersion: "4.1",
-	customModule: false,
-	production: true
-};
+mat-card {
+	margin: 1em auto;
+	width: 80%;
+	min-width: 350px;
+
+	mat-card-content {
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-row-gap: 2em;
+		margin: 1em auto 50px;
+	}
+}
