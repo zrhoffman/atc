@@ -42,7 +42,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@master
-        if: ${{ (github.repository_owner == 'apache' && github.ref == 'refs/heads/master' ) || github.event_name != 'schedule' }}
         id: checkout
       - name: Install Python ${{ env.PYTHON3_VERSION }}
         uses: actions/setup-python@v4
