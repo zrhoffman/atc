@@ -57,6 +57,7 @@ jobs:
     - name: Run Go fmt
       uses: ./.github/actions/go-fmt
       with:
-        build-args: GO_VERSION
+        args:
+          GO_VERSION: 1.20
     - name: Save Alpine Docker image
       run: .github/actions/save-alpine-tar/entrypoint.sh save ${{ env.ALPINE_VERSION }}
