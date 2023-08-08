@@ -15,8 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
+ARG GO_VERSION
+FROM golang:${GO_VERSION} AS get-go
+
 # alpine:3.13
 FROM alpine@sha256:08d6ca16c60fe7490c03d10dc339d9fd8ea67c6466dea8d558526b1330a85930
+COPY --from=get-go /usr/local/go /usr/local/go
 
 ENV GOROOT=/usr/local/go \
     CGO_ENABLED=0

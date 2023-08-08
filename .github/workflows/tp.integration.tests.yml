@@ -147,6 +147,8 @@ jobs:
           key: ${{ runner.os }}-node-modules-${{ hashFiles('traffic_portal/package-lock.json traffic_portal/test/integration/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-modules-
+      - name: Load Go version
+        run: cp .env '${{ github.env }}'
       - name: Initialize Traffic Ops Database
         id: todb
         uses: ./.github/actions/todb-init

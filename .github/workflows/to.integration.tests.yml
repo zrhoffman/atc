@@ -96,6 +96,8 @@ jobs:
         key: docker-images/alpine@${{ env.ALPINE_VERSION }}.tar.gz
     - name: Import cached Alpine Docker image
       run: .github/actions/save-alpine-tar/entrypoint.sh load ${{ env.ALPINE_VERSION }}
+    - name: Load Go version
+      run: cp .env '${{ github.env }}'
     - name: Initialize Traffic Ops Database
       id: todb
       uses: ./.github/actions/todb-init
