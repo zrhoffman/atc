@@ -20,14 +20,11 @@ package cache
  */
 
 import (
-	"fmt"
 	"io"
-	"regexp"
 	"strconv"
 	"time"
 
 	"github.com/apache/trafficcontrol/lib/go-log"
-	"github.com/apache/trafficcontrol/lib/go-rfc"
 	"github.com/apache/trafficcontrol/lib/go-tc"
 	"github.com/apache/trafficcontrol/traffic_monitor/todata"
 )
@@ -37,8 +34,6 @@ type Handler struct {
 	resultChan chan Result
 	ToData     *todata.TODataThreadsafe
 }
-
-var hostnameRegex *regexp.Regexp
 
 func (h Handler) ResultChan() <-chan Result {
 	return h.resultChan
@@ -316,9 +311,6 @@ func (handler Handler) Handle(id string, rdr io.Reader, format string, reqTime t
 			return
 		}
 		result.Time = time.UnixMilli(valInt)
-	}
-	if value, ok := miscStats[rfc.Via]; ok {
-		result.ID = fmt.Sprintf("%v", value)
 	}
 
 	result.Statistics = stats

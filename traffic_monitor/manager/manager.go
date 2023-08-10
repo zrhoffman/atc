@@ -51,9 +51,7 @@ func Start(opsConfigFile string, cfg config.Config, appData config.StaticAppData
 
 	toData := todata.NewThreadsafe()
 
-	// makes results chan
 	cacheHealthHandler := cache.NewHandler()
-	// passes results chan to poller
 	cacheHealthPoller := poller.NewCache(true, cacheHealthHandler, cfg, appData)
 	cacheStatHandler := cache.NewPrecomputeHandler(toData)
 	cacheStatPoller := poller.NewCache(false, cacheStatHandler, cfg, appData)
