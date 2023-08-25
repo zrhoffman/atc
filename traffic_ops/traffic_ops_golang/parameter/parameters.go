@@ -365,19 +365,7 @@ func CreateParameter(w http.ResponseWriter, r *http.Request) {
 	var params []tc.ParameterV5
 
 	// Try to unmarshal the data as a slice
-	var sliceData []map[string]interface{}
-	if err := json.Unmarshal(body, &sliceData); err == nil {
-		for _, item := range sliceData {
-			param := tc.ParameterV5{
-				ConfigFile: item["configFile"].(string),
-				Name:       item["name"].(string),
-				Secure:     item["secure"].(bool),
-				Value:      item["value"].(string),
-			}
-
-			params = append(params, param)
-		}
-	} else {
+	if err := json.Unmarshal(body, &params); err != nil {
 		// Try to unmarshal the data as a single object
 		var param tc.ParameterV5
 		if err := json.Unmarshal(body, &param); err != nil {
