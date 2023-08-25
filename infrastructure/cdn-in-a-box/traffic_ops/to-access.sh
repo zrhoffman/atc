@@ -214,12 +214,12 @@ to-enroll() {
 		"edge" )
 			export MY_TYPE="EDGE"
 			export MY_PROFILE="EDGE_TIER_ATS_CACHE"
-			export MY_STATUS="REPORTED"
+			export MY_STATUS="ONLINE"
 			;;
 		"mid" )
 			export MY_TYPE="MID"
 			export MY_PROFILE="MID_TIER_ATS_CACHE"
-			export MY_STATUS="REPORTED"
+			export MY_STATUS="ONLINE"
 			;;
 		"origin" )
 			export MY_TYPE="ORG"

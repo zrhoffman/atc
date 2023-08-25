@@ -215,7 +215,7 @@ services:
   edge:
     build:
       context: ../..
-      dockerfile: infrastructure/cdn-in-a-box/cache/Dockerfile
+      dockerfile: infrastructure/cdn-in-a-box/varnish/Dockerfile
       target: edge
       args:
         # Change BASE_IMAGE to centos when RHEL_VERSION=7
@@ -239,7 +239,7 @@ services:
   mid-01:
     build:
       context: ../..
-      dockerfile: infrastructure/cdn-in-a-box/cache/Dockerfile
+      dockerfile: infrastructure/cdn-in-a-box/varnish/Dockerfile
       target: mid
       args:
         # Change BASE_IMAGE to centos when RHEL_VERSION=7
@@ -263,7 +263,7 @@ services:
   mid-02:
     build:
       context: ../..
-      dockerfile: infrastructure/cdn-in-a-box/cache/Dockerfile
+      dockerfile: infrastructure/cdn-in-a-box/varnish/Dockerfile
       target: mid
       args:
         # Change BASE_IMAGE to centos when RHEL_VERSION=7

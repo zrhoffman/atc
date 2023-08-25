@@ -174,12 +174,6 @@
 			"value": "2000"
 		},
 		{
-			"configFile": "chkconfig",
-			"name": "trafficserver",
-			"secure": false,
-			"value": "0:off\t1:off\t2:on\t3:on\t4:on\t5:on\t6:off"
-		},
-		{
 			"configFile": "plugin.config",
 			"name": "regex_revalidate.so",
 			"secure": false,
@@ -420,11 +414,6 @@
 			"configFile": "ssl_multicert.config",
 			"name": "location",
 			"value": "/opt/trafficserver/etc/trafficserver"
-		},
-		{
-			"configFile": "package",
-			"name": "trafficserver",
-			"value": "(unchanged)"
 		}
 	]
 }
