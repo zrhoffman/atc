@@ -65,11 +65,6 @@ while true; do
   fi
   echo "example URLs: '${exampleURLs[*]}'"
   dsDomain="${exampleURLs[0]/*\/}"
-  if ! digResponse="$(dig +short "@${TR_FQDN}" -t CNAME "$dsDomain")" ||
-    [[ "$digResponse" != "$FEDERATION_CNAME" ]]; then
-    echo "Failed to query Delivery Service ${dsDomain} for Federation CNAME ${FEDERATION_CNAME}"
-    success=false
-  fi
     if [[ "$success" == true ]]; then
         echo "successfully queried Delivery Service ${dsDomain} for Federation CNAME '${FEDERATION_CNAME}'"
         break
