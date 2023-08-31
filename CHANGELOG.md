@@ -50,6 +50,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - [#7652](https://github.com/apache/trafficcontrol/pull/7652) *t3c* added rpmdb checks and use package data from t3c-apply-metadata.json if rpmdb is corrupt.
 
 ### Changed
+- [#7765](https://github.com/apache/trafficcontrol/pull/7765) *Traffic Stats* now uses Traffic Ops APIv5
 - [#7757](https://github.com/apache/trafficcontrol/pull/7757) *Traffic Router* Changed Traffic Router to point to api version 5.0 of Traffic Ops.
 - [#7732](https://github.com/apache/trafficcontrol/pull/7732) *Traffic Router* Increased negative TTL value to 900 seconds.
 - [#7584](https://github.com/apache/trafficcontrol/pull/7584) *Documentation* Upgrade Traffic Control Sphinx documentation Makefile OS intelligent.
@@ -80,31 +81,34 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - [#7766](https://github.com/apache/trafficcontrol/pull/7766) *Traffic Portal* now uses TO APIv5
 
 ### Fixed
+- [#7764](https://github.com/apache/trafficcontrol/pull/7764) *Traffic Ops* Collapsed DB migrations
 - [#7767](https://github.com/apache/trafficcontrol/pull/7767) *Traffic Ops* Fixed ASN update logic for APIv5
 - [RFC3339](https://github.com/apache/trafficcontrol/issues/5911)
-    - [#7759](https://github.com/apache/trafficcontrol/pull/7759) *Traffic Ops* Fixed `/profiles/{{ID}}/parameters` and `profiles/name/{{name}}/parameters` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7734](https://github.com/apache/trafficcontrol/pull/7734) *Traffic Ops* Fixed `/profiles` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7708](https://github.com/apache/trafficcontrol/pull/7708) *Traffic Ops* Fixed `/parameters` v5 APIs to respond with `RFC3339` timestamps
-    - [#7740](https://github.com/apache/trafficcontrol/pull/7740) *Traffic Ops* Fixed `/staticDNSEntries` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7738](https://github.com/apache/trafficcontrol/pull/7738) *Traffic Ops* Fixed `/profileparameters` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7690](https://github.com/apache/trafficcontrol/pull/7690) *Traffic Ops* Fixed `/logs` v5 api to respond with RFC3339 timestamps.
-    - [#7605](https://github.com/apache/trafficcontrol/pull/7605) *Traffic Ops* Fixed `/cachegroups_request_comments` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7720](https://github.com/apache/trafficcontrol/pull/7720) *Traffic Ops* Fixed Delivery Service Servers v5 API to respond with `RFC3339` timestamps.
-    - [#7631](https://github.com/apache/trafficcontrol/pull/7631) *Traffic Ops* Fixed `/phys_location` V5 APIs to respond with `RFC3339` timestamps.
-    - [#7612](https://github.com/apache/trafficcontrol/pull/7612) *Traffic Ops* Fixed `/divisions` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7561](https://github.com/apache/trafficcontrol/pull/7561) *Traffic Ops* Fixed `/asns` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7575](https://github.com/apache/trafficcontrol/pull/7575) *Traffic Ops* Fixed `/types` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7698](https://github.com/apache/trafficcontrol/pull/7698) *Traffic Ops* Fixed `/region` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7660](https://github.com/apache/trafficcontrol/pull/7660) *Traffic Ops* Fixed `/deliveryServices` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7570](https://github.com/apache/trafficcontrol/pull/7570) *Traffic Ops* Fixed `/deliveryservice_request_comments` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7596](https://github.com/apache/trafficcontrol/pull/7596) *Traffic Ops* Fixed `/federation_resolvers` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7572](https://github.com/apache/trafficcontrol/pull/7572) *Traffic Ops* Fixed `/deliveryservice_requests` v5 APIs docs with `RFC3339` timestamps
-    - [#7544](https://github.com/apache/trafficcontrol/issues/7544) *Traffic Ops* Fixed `/stats_summary` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7542](https://github.com/apache/trafficcontrol/pull/7542) *Traffic Ops* Fixed `cdn_locks` documentation to reflect the correct `RFC3339` timestamps.
-    - [#7465](https://github.com/apache/trafficcontrol/issues/7465) *Traffic Ops* Fixed `/server_capabilities` v5 APIs to respond with RFC3339 timestamps.
-    - [#7691](https://github.com/apache/trafficcontrol/pull/7691) *Traffic Ops* Fixed `/topologies` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7413](https://github.com/apache/trafficcontrol/issues/7413) *Traffic Ops* Fixed `/service_category` v5 APIs to respond with `RFC3339` timestamps.
-    - [#7413](https://github.com/apache/trafficcontrol/issues/7706) *Traffic Ops* Fixed `/statuses` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7749](https://github.com/apache/trafficcontrol/pull/7749) *Traffic Ops* Fixed `/tenants` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7759](https://github.com/apache/trafficcontrol/pull/7759) *Traffic Ops* Fixed `/profiles/{{ID}}/parameters` and `profiles/name/{{name}}/parameters` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7734](https://github.com/apache/trafficcontrol/pull/7734) *Traffic Ops* Fixed `/profiles` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7708](https://github.com/apache/trafficcontrol/pull/7708) *Traffic Ops* Fixed `/parameters` v5 APIs to respond with `RFC3339` timestamps
+  - [#7718](https://github.com/apache/trafficcontrol/pull/7718) *Traffic Ops* `/servers` endpoint now responds with RFC3339 timestamps for all timestamp fields. Cleaned up naming conventions and superfluous data.
+  - [#7740](https://github.com/apache/trafficcontrol/pull/7740) *Traffic Ops* Fixed `/staticDNSEntries` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7738](https://github.com/apache/trafficcontrol/pull/7738) *Traffic Ops* Fixed `/profileparameters` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7690](https://github.com/apache/trafficcontrol/pull/7690) *Traffic Ops* Fixed `/logs` v5 api to respond with RFC3339 timestamps.
+  - [#7605](https://github.com/apache/trafficcontrol/pull/7605) *Traffic Ops* Fixed `/cachegroups_request_comments` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7720](https://github.com/apache/trafficcontrol/pull/7720) *Traffic Ops* Fixed Delivery Service Servers v5 API to respond with `RFC3339` timestamps.
+  - [#7631](https://github.com/apache/trafficcontrol/pull/7631) *Traffic Ops* Fixed `/phys_location` V5 APIs to respond with `RFC3339` timestamps.
+  - [#7612](https://github.com/apache/trafficcontrol/pull/7612) *Traffic Ops* Fixed `/divisions` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7561](https://github.com/apache/trafficcontrol/pull/7561) *Traffic Ops* Fixed `/asns` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7575](https://github.com/apache/trafficcontrol/pull/7575) *Traffic Ops* Fixed `/types` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7698](https://github.com/apache/trafficcontrol/pull/7698) *Traffic Ops* Fixed `/region` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7660](https://github.com/apache/trafficcontrol/pull/7660) *Traffic Ops* Fixed `/deliveryServices` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7570](https://github.com/apache/trafficcontrol/pull/7570) *Traffic Ops* Fixed `/deliveryservice_request_comments` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7596](https://github.com/apache/trafficcontrol/pull/7596) *Traffic Ops* Fixed `/federation_resolvers` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7572](https://github.com/apache/trafficcontrol/pull/7572) *Traffic Ops* Fixed `/deliveryservice_requests` v5 APIs docs with `RFC3339` timestamps
+  - [#7544](https://github.com/apache/trafficcontrol/issues/7544) *Traffic Ops* Fixed `/stats_summary` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7542](https://github.com/apache/trafficcontrol/pull/7542) *Traffic Ops* Fixed `cdn_locks` documentation to reflect the correct `RFC3339` timestamps.
+  - [#7465](https://github.com/apache/trafficcontrol/issues/7465) *Traffic Ops* Fixed `/server_capabilities` v5 APIs to respond with RFC3339 timestamps.
+  - [#7691](https://github.com/apache/trafficcontrol/pull/7691) *Traffic Ops* Fixed `/topologies` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7413](https://github.com/apache/trafficcontrol/issues/7413) *Traffic Ops* Fixed `/service_category` v5 APIs to respond with `RFC3339` timestamps.
+  - [#7413](https://github.com/apache/trafficcontrol/issues/7706) *Traffic Ops* Fixed `/statuses` v5 APIs to respond with `RFC3339` timestamps.
 - [#7762](https://github.com/apache/trafficcontrol/pull/7762) *Traffic Ops* Fixed `/phys_locations` update API to remove error related to mismatching region name and ID.
 - [#7743](https://github.com/apache/trafficcontrol/issues/7743) *Traffic Ops* Fixed `/server_server_capabilities` v5 APIs to respond with `RFC3339` timestamps.
 - [#7730](https://github.com/apache/trafficcontrol/pull/7730) *Traffic Monitor* Fixed the panic seen in TM when `plugin.system_stats.timestamp_ms` appears as float and not string.
@@ -169,7 +173,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - [#7628](https://github.com/apache/trafficcontrol/pull/7628) *Traffic Ops* Fixed an issue where certificate chain validation failed based on leading or trailing whitespace.
 - [#7686](https://github.com/apache/trafficcontrol/pull/7686) *Traffic Ops* Fixed secured parameters being visible when role has proper permissions.
 - [#7697](https://github.com/apache/trafficcontrol/pull/7697) *Traffic Ops* Fixed `iloPassword` and `xmppPassword` checking for priv-level instead of using permissions.
-- [#7749](https://github.com/apache/trafficcontrol/pull/7749) *Traffic Ops* Fixes `tenants` v5 apis to respond with `RFC3339` date/time Format.
 
 ### Removed
 - [#7271](https://github.com/apache/trafficcontrol/pull/7271) Removed components in `infrastructre/docker/`, not in use as cdn-in-a-box performs the same functionality.
@@ -616,33 +619,33 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Added an optional readiness check service to cdn-in-a-box that exits successfully when it is able to get a `200 OK` from all delivery services
 - Added health checks to Traffic Ops and Traffic Monitor in cdn-in-a-box
 - [Flexible Topologies](https://github.com/apache/trafficcontrol/blob/master/blueprints/flexible-topologies.md)
-    - Traffic Ops: Added an API 3.0 endpoint, `GET /api/3.0/topologies`, to create, read, update and delete flexible topologies.
-    - Traffic Ops: Added an API 3.0 endpoint, `POST /api/3.0/topologies/{name}/queue_update`, to queue or dequeue updates for all servers assigned to the Cachegroups in a given Topology.
-    - Traffic Ops: Added new `topology` field to the /api/3.0/deliveryservices APIs
-    - Traffic Ops: Added support for `topology` query parameter to `GET /api/3.0/cachegroups` to return all cachegroups used in the given topology.
-    - Traffic Ops: Added support for `topology` query parameter to `GET /api/3.0/deliveryservices` to return all delivery services that employ a given topology.
-    - Traffic Ops: Added support for `dsId` query parameter for `GET /api/3.0/servers` for topology-based delivery services.
-    - Traffic Ops: Excluded ORG-type servers from `GET /api/3.0/servers?dsId=#` for Topology-based Delivery Services unless the ORG server is assigned to that Delivery Service.
-    - Traffic Ops: Added support for `topology` query parameter for `GET /api/3.0/servers` to return all servers whose cachegroups are in a given topology.
-    - Traffic Ops: Added new topology-based delivery service fields for header rewrites: `firstHeaderRewrite`, `innerHeaderRewrite`, `lastHeaderRewrite`
-    - Traffic Ops: Added validation to prohibit assigning caches to topology-based delivery services
-    - Traffic Ops: Added validation to prohibit removing a capability from a server if no other server in the same cachegroup can satisfy the required capabilities of the delivery services assigned to it via topologies.
-    - Traffic Ops: Added validation to ensure that updated topologies are still valid with respect to the required capabilities of their assigned delivery services.
-    - Traffic Ops: Added validation to ensure that at least one server per cachegroup in a delivery service's topology has the delivery service's required capabilities.
-    - Traffic Ops: Added validation to ensure that at least one server exists in each cachegroup that is used in a Topology on the `/api/3.0/topologies` endpoint and the `/api/3.0/servers/{{ID}}` endpoint.
-    - Traffic Ops: Consider Topologies parentage when queueing or checking server updates
-    - ORT: Added Topologies to Config Generation.
-    - Traffic Portal: Added the ability to create, read, update and delete flexible topologies.
-    - Traffic Portal: Added the ability to assign topologies to delivery services.
-    - Traffic Portal: Added the ability to view all delivery services, cache groups and servers associated with a topology.
-    - Traffic Portal: Added the ability to define first, inner and last header rewrite values for DNS* and HTTP* delivery services that employ a topology.
-    - Traffic Portal: Adds the ability to view all servers utilized by a topology-based delivery service.
-    - Traffic Portal: Added topology section to cdn snapshot diff.
-    - Added to TP the ability to assign ORG servers to topology-based delivery services
-    - Traffic Router: Added support for topology-based delivery services
-    - Traffic Monitor: Added the ability to mark topology-based delivery services as available
-    - CDN-in-a-Box: Add a second mid to CDN-in-a-Box, add topology `demo1-top`, and make the `demo1` delivery service topology-based
-    - Traffic Ops: Added validation to ensure assigned ORG server cachegroups are in the topology when updating a delivery service
+  - Traffic Ops: Added an API 3.0 endpoint, `GET /api/3.0/topologies`, to create, read, update and delete flexible topologies.
+  - Traffic Ops: Added an API 3.0 endpoint, `POST /api/3.0/topologies/{name}/queue_update`, to queue or dequeue updates for all servers assigned to the Cachegroups in a given Topology.
+  - Traffic Ops: Added new `topology` field to the /api/3.0/deliveryservices APIs
+  - Traffic Ops: Added support for `topology` query parameter to `GET /api/3.0/cachegroups` to return all cachegroups used in the given topology.
+  - Traffic Ops: Added support for `topology` query parameter to `GET /api/3.0/deliveryservices` to return all delivery services that employ a given topology.
+  - Traffic Ops: Added support for `dsId` query parameter for `GET /api/3.0/servers` for topology-based delivery services.
+  - Traffic Ops: Excluded ORG-type servers from `GET /api/3.0/servers?dsId=#` for Topology-based Delivery Services unless the ORG server is assigned to that Delivery Service.
+  - Traffic Ops: Added support for `topology` query parameter for `GET /api/3.0/servers` to return all servers whose cachegroups are in a given topology.
+  - Traffic Ops: Added new topology-based delivery service fields for header rewrites: `firstHeaderRewrite`, `innerHeaderRewrite`, `lastHeaderRewrite`
+  - Traffic Ops: Added validation to prohibit assigning caches to topology-based delivery services
+  - Traffic Ops: Added validation to prohibit removing a capability from a server if no other server in the same cachegroup can satisfy the required capabilities of the delivery services assigned to it via topologies.
+  - Traffic Ops: Added validation to ensure that updated topologies are still valid with respect to the required capabilities of their assigned delivery services.
+  - Traffic Ops: Added validation to ensure that at least one server per cachegroup in a delivery service's topology has the delivery service's required capabilities.
+  - Traffic Ops: Added validation to ensure that at least one server exists in each cachegroup that is used in a Topology on the `/api/3.0/topologies` endpoint and the `/api/3.0/servers/{{ID}}` endpoint.
+  - Traffic Ops: Consider Topologies parentage when queueing or checking server updates
+  - ORT: Added Topologies to Config Generation.
+  - Traffic Portal: Added the ability to create, read, update and delete flexible topologies.
+  - Traffic Portal: Added the ability to assign topologies to delivery services.
+  - Traffic Portal: Added the ability to view all delivery services, cache groups and servers associated with a topology.
+  - Traffic Portal: Added the ability to define first, inner and last header rewrite values for DNS* and HTTP* delivery services that employ a topology.
+  - Traffic Portal: Adds the ability to view all servers utilized by a topology-based delivery service.
+  - Traffic Portal: Added topology section to cdn snapshot diff.
+  - Added to TP the ability to assign ORG servers to topology-based delivery services
+  - Traffic Router: Added support for topology-based delivery services
+  - Traffic Monitor: Added the ability to mark topology-based delivery services as available
+  - CDN-in-a-Box: Add a second mid to CDN-in-a-Box, add topology `demo1-top`, and make the `demo1` delivery service topology-based
+  - Traffic Ops: Added validation to ensure assigned ORG server cachegroups are in the topology when updating a delivery service
 - Updated /servers/details to use multiple interfaces in API v3
 - Added [Edge Traffic Routing](https://traffic-control-cdn.readthedocs.io/en/latest/admin/traffic_router.html#edge-traffic-routing) feature which allows Traffic Router to localize more DNS record types than just the routing name for DNS delivery services
 - Added the ability to speedily build development RPMs from any OS without needing Docker
