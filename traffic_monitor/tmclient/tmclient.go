@@ -197,23 +197,29 @@ func (c *TMClient) ConfigDoc() (handler.OpsConfig, error) {
 func (c *TMClient) getBytes(path string) ([]byte, error) {
 	url := c.url + path
 	httpClient := http.Client{Timeout: c.timeout}
+	fmt.Println("url is ", url)
+	fmt.Println("timeout is ", c.timeout.String())
 	if c.Transport != nil {
 		httpClient.Transport = c.Transport
 	}
 	resp, err := httpClient.Get(url)
 	if err != nil {
+		fmt.Println("error 1 ", err)
 		return nil, errors.New("getting from '" + url + "': " + err.Error())
 	}
 	defer log.Close(resp.Body, "Unable to close http client "+url)
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		fmt.Println("error 2 ", resp.StatusCode)
 		return nil, fmt.Errorf("monitor='"+url+"' monitor_status=%v event=\"error in TrafficMonitor polling returned bad status\"", resp.StatusCode)
 	}
 
 	respBts, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		fmt.Println("error 3 ", err)
 		return nil, errors.New("reading body from '" + url + "': " + err.Error())
 	}
+	fmt.Println("returning ", respBts)
 	return respBts, nil
 }
 
