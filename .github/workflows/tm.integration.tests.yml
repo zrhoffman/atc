@@ -59,3 +59,9 @@ jobs:
         uses: ./.github/actions/tm-integration-tests
         env:
           GOPATH: /github/workspace
+      - name: Upload the artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}
+          path: ${{ github.workspace }}/traffic_monitor/tests/_integration/*.json
