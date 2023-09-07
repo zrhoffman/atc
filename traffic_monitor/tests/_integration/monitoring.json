@@ -53,7 +53,14 @@
       "type": "RASCAL"
     }
   ],
-  "topologies": null,
+  "topologies": {
+    "address": {
+      "nodes": null
+    },
+    "gateway": {
+      "nodes": null
+    }
+  },
   "trafficMonitors": [
     {
       "cachegroup": "cg0",
