@@ -1,16 +1,16 @@
 {
   "cacheGroups": [
     {
-      "coordinates": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "name": "cg0"
+      "cg0": {
+        "coordinates": {
+          "latitude": 0,
+          "longitude": 0
+        },
+        "name": "cg0"
+      }
     }
   ],
   "config": {
-    "address": "172.31.0.2",
-    "gateway": "172.31.0.1",
     "health.polling.interval": 2000,
     "heartbeat.polling.interval": 2000,
     "peers.polling.interval": 30,
@@ -18,11 +18,10 @@
   },
   "deliveryServices": [
     {
-      "TotalKbpsThreshold": 1000000,
-      "TotalTpsThreshold": 1000000,
-      "hostRegexes": null,
       "status": "REPORTED",
       "topology": "",
+      "totalKbpsThreshold": 1000000,
+      "totalTpsThreshold": 1000000,
       "type": "HTTP",
       "xmlId": "ds0"
     }
@@ -31,36 +30,27 @@
     {
       "name": "Edge0",
       "parameters": {
-        "MinFreeKbps": 0,
         "health.connection.timeout": 10,
         "health.polling.format": "",
         "health.polling.type": "",
         "health.polling.url": "http://${hostname}/_astats?application=&inf.name=bond0",
-        "history.count": 0
+        "health.threshold.kbps": "<20000",
+        "health_threshold": {}
       },
       "type": "EDGE"
     },
     {
       "name": "Monitor0",
       "parameters": {
-        "MinFreeKbps": 0,
         "health.connection.timeout": 10,
         "health.polling.format": "",
         "health.polling.type": "",
-        "health.polling.url": "",
-        "history.count": 0
+        "health.threshold.kbps": "<20000",
+        "health_threshold": {}
       },
       "type": "RASCAL"
     }
   ],
-  "topologies": {
-    "address": {
-      "nodes": null
-    },
-    "gateway": {
-      "nodes": null
-    }
-  },
   "trafficMonitors": [
     {
       "cachegroup": "cg0",
@@ -82,7 +72,7 @@
         }
       ],
       "fqdn": "server0.monitor-integration.test",
-      "hashId": "server0",
+      "hashid": "server0",
       "hostName": "server0",
       "interfaces": [
         {
@@ -112,7 +102,7 @@
         }
       ],
       "fqdn": "server1.monitor-integration.test",
-      "hashId": "server1",
+      "hashid": "server1",
       "hostName": "server1",
       "interfaces": [
         {
