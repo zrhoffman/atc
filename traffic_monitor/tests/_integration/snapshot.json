@@ -40,7 +40,6 @@
       "hashId": "server0",
       "interfaceName": "bond0",
       "ip": "testcaches",
-      "ip6": null,
       "locationId": "",
       "port": 30000,
       "profile": "Edge0",
@@ -60,7 +59,6 @@
       "hashId": "server1",
       "interfaceName": "bond0",
       "ip": "testcaches",
-      "ip6": null,
       "locationId": "",
       "port": 30001,
       "profile": "Edge0",
@@ -72,10 +70,9 @@
   "deliveryServices": {
     "ds0": {
       "anonymousBlockingEnabled": "false",
-      "consistentHashQueryParams": [],
       "consistentHashRegex": "",
       "coverageZoneOnly": "false",
-      "deepCachingType": "",
+      "deepCachingType": "NEVER",
       "dispersion": {
         "limit": 1,
         "shuffled": "false"
@@ -98,7 +95,7 @@
       "maxDnsIpsForLocation": 3,
       "missLocation": {
         "lat": 0,
-        "lon": 0
+        "long": 0
       },
       "protocol": {
         "acceptHttp": "true",
@@ -106,8 +103,6 @@
         "redirectToHttps": "false"
       },
       "regionalGeoBlocking": "false",
-      "requestHeaders": [],
-      "responseHeaders": {},
       "routingName": "ccr",
       "soa": {
         "admin": "60",
@@ -117,7 +112,6 @@
         "retry": "60"
       },
       "sslEnabled": "false",
-      "staticDnsEntries": [],
       "ttl": 60,
       "ttls": {
         "A": "60",
@@ -131,6 +125,9 @@
   },
   "edgeLocations": {
     "cg0": {
+      "backupLocations": {
+        "fallbackToClosest": "false"
+      },
       "latitude": 0,
       "longitude": 0
     }
@@ -139,7 +136,6 @@
     "trafficmonitor": {
       "fqdn": "trafficmonitor.monitor-integration.test",
       "ip": "trafficmonitor",
-      "ip6": null,
       "location": "cg0",
       "port": 80,
       "profile": "Monitor0",
@@ -156,6 +152,9 @@
   },
   "trafficRouterLocations": {
     "tr0": {
+      "backupLocations": {
+        "fallbackToClosest": "false"
+      },
       "latitude": 0,
       "longitude": 0
     }
