@@ -261,7 +261,7 @@ class TriageRoleAssigner(Github):
 		"""
 		if len(prs_by_contributor) > 0:
 			joiner = ", " if len(prs_by_contributor) > 2 else " "
-			list_of_contributors = [f"@{contributor}" for contributor in
+			list_of_contributors = [f"＠{contributor}" for contributor in
 				prs_by_contributor.keys()]
 			if len(list_of_contributors) > 1:
 				list_of_contributors[-1] = f"and {list_of_contributors[-1]}"
