@@ -16,14 +16,18 @@
 # macOS's version of realpath does not resolve symlinks, so we add a function
 # for it.
 if ! realpath -e . >/dev/null 2>&1; then
+	if ! type -p readlink; then
+		cat <<'MESSAGE'
+readlink is required to build Apache Traffic Control if your
+realpath binary does not support the -e flag, as is the case on BSD-like
+operating systems like macOS. Install it by running the following command:
+    brew install coreutils
+MESSAGE
+		exit 1
+	fi
 	# by default, macOS does not have realpath
 	realpath() {
-        local path="$1"
-        shift
-		ls "$(
-			cd "$(dirname "$path")"
-			pwd -P # -P resolves symlinks
-		)/$(basename "$path")"
+		readlink "$@"
 	}
 	export -f realpath
 fi;
