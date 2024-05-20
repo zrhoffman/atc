@@ -41,6 +41,8 @@ RUN if [[ "${RHEL_VERSION%%.*}" -eq 7 ]]; then \
         git \
         java-1.8.0-openjdk \
         net-tools \
+        # cypress dependencies from https://docs.cypress.io/guides/getting-started/installing-cypress#CentOS
+        xorg-x11-server-Xvfb \
         $utils_package && \
     set -o pipefail && \
     dnf -y install jq && \
