@@ -199,6 +199,10 @@ jobs:
           key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('./experimental/traffic-portal/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-modules-
+      - name: Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}.x
       - name: Initialize Traffic Ops Database
         id: todb
         uses: ./.github/actions/todb-init
