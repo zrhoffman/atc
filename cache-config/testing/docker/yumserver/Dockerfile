@@ -23,6 +23,14 @@
 FROM centos:7
 MAINTAINER dev@trafficcontrol.apache.org
 
+# Switch to a vault now that CentOS7 reached EoL and dropped mirrors
+# https://unix.stackexchange.com/questions/398609/how-do-i-stick-with-one-version-on-centos-7-via-yum-update/444344#444344
+RUN sed -e '/mirrorlist=.*/d' \
+    -e 's/#baseurl=/baseurl=/' \
+    -e "s/mirror.centos.org\\/centos/vault.centos.org/g" \
+    -e "s/\$releasever/7.9.2009/g" \
+    -i /etc/yum.repos.d/CentOS-Base.repo
+
 RUN yum install -y httpd createrepo yum-utils
 
 RUN mkdir -p /var/www/html/traffic-control/7/x86_64/Packages
